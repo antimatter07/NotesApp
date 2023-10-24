@@ -2,15 +2,27 @@ package com.mobdeve.xx22.villarica.matthew.notes;
 
 import java.util.ArrayList;
 
-public class CheckListNoteModel {
+public class CheckListNoteModel extends ParentNoteModel{
 
     private ArrayList<ChecklistItemModel> checkItemData;
 
 
-    private String title;
 
-    public CheckListNoteModel(ArrayList<ChecklistItemModel> checkItemData, String title) {
+
+    public CheckListNoteModel(String title, String dateCreated, ArrayList<ChecklistItemModel> checkItemData) {
+
+        super(title, dateCreated);
         this.checkItemData = checkItemData;
-        this.title = title;
+
+
+    }
+
+    public void addToCheckList(ChecklistItemModel checklistItem) {
+        checkItemData.add(checklistItem);
+    }
+
+    public void removeFromCheckList(int adapterPosition) {
+        checkItemData.remove(adapterPosition);
+
     }
 }
