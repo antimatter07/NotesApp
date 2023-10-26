@@ -30,7 +30,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<CheckItemHolder>{
 
 
 
-        return new CheckItemHolder(checklistItemBinding);
+        return new CheckItemHolder(checklistItemBinding, data, this);
     }
 
     @Override
