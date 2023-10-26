@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/folderItemRl"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:maxWidth="90dp">
+
+    <RelativeLayout
+        android:id="@+id/folderIconRl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/folderIv"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_folder"
+            app:tint="@color/folderDefault" />
+
+        <TextView
+            android:id="@+id/folderNoteCountTv"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="45dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="0"
+            android:textAlignment="viewEnd"
+            android:textColor="@color/blackDefault"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/folderNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="68dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/poppins_regular"
+        android:singleLine="true"
+        android:maxWidth="100dp"
+        android:text="FolderName"
+        android:textAlignment="center"
+        android:textColor="@color/blackDefault" />
+</RelativeLayout>
