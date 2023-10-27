@@ -25,4 +25,8 @@ public class CheckListNoteModel extends ParentNoteModel{
         checkItemData.remove(adapterPosition);
 
     }
+
+    public ArrayList<ChecklistItemModel> getCheckItemData() {
+        return checkItemData;
+    }
 }
