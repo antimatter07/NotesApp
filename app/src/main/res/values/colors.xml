@@ -4,8 +4,34 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="ic_logo_background">#FDFAFD</color>
-    <color name="folderDefault">#D0D0D0</color> <!--#A81095-->
     <color name="whiteAccent">#F7F9FC</color>
     <color name="whiteAccentDark">#9B9B9B</color>
-    <color name="blackDefault">#1F1F1F</color>
+    <color name="blackDefault">#1F1F1F</color> <!-- default black for text -->
+
+    <!--    FOLDER & NOTE COLORS-->
+    <color name="folderDefault">#B1AEB1</color> <!--default category color-->
+    <!--    use "whiteAccent for the default folder color accent -->
+
+    <color name="folderRed">#FF7575</color>
+    <color name="redAccent">#FFCDD1</color>
+
+    <color name="folderOrange">#F5A623</color>
+    <color name="orangeAccent">#FFE4D1</color>
+
+    <color name="folderYellow">#FCEE40</color>
+    <color name="yellowAccent">#FFF7D1</color>
+
+    <color name="folderCyan">#73E8ED</color>
+    <color name="cyanAccent">#E2F1FF</color>
+
+    <color name="folderBlue">#6E8EFA</color>
+    <color name="blueAccent">#C9DEFF</color>
+
+    <color name="folderGreen">#C6FA84</color>
+    <color name="greenAccent">#ECF9E0</color>
+
+    <color name="folderPurple">#CF80E6</color>
+    <color name="purpleAccent">#FFDDFF</color>
+
+
 </resources>

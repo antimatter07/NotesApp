@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ToggleButton;
 
 import com.mobdeve.xx22.villarica.matthew.notes.databinding.ActivityMainBinding;
 
@@ -18,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityAdapter mainAdapter;
     private ActivityMainBinding viewBinding;
 
+//    TEMP data
+    private boolean isOrderAscending = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +33,22 @@ public class MainActivity extends AppCompatActivity {
         this.folders = FolderDataHelper.generateFolderData();
 
         setupRecyclerView();
+
+        // TODO: Sort Order functionality
+        ToggleButton orderBtn = this.viewBinding.orderBtn;
+
+        orderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isOrderAscending = !isOrderAscending;
+                if(isOrderAscending) {
+                    orderBtn.setBackgroundResource(R.drawable.ic_ascend);
+                }
+                else {
+                    orderBtn.setBackgroundResource(R.drawable.ic_descend);
+                }
+            }
+        });
     }
 
     private void setupRecyclerView() {  // TODO: add ActivityResultLauncher
