@@ -1,6 +1,7 @@
 package com.mobdeve.xx22.villarica.matthew.notes;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
@@ -48,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
                     orderBtn.setBackgroundResource(R.drawable.ic_descend);
                 }
             }
+        });
+
+        viewBinding.sortBtn.setOnClickListener(v -> {
+            FragmentManager fm = getSupportFragmentManager();
+            SortingOptionsDialogFragment sortingOptionsFragment = new SortingOptionsDialogFragment();
+            sortingOptionsFragment.show(fm, "SettingsDialog");
+
         });
     }
 
