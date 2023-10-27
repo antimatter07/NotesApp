@@ -23,8 +23,7 @@ public class SortingOptionsDialogFragment extends DialogFragment {
 
         View view = binding.getRoot();
         builder.setView(view)
-
-                .setPositiveButton("Save", (dialog, which) -> {
+                .setPositiveButton("Select", (dialog, which) -> {
                     // Handle sorting option
                     int checkedId = binding.sortingOptionsRg.getCheckedRadioButtonId();
 

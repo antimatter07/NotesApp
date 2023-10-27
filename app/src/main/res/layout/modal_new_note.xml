@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/newFolderTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Create New Note"
+        android:textColor="@color/blackDefault"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/newTextNoteBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_rectangle"
+        android:clickable="true"
+        android:drawableLeft="@drawable/ic_note_text"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/folderBlue"
+        android:focusable="true"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Text Note"
+        android:textAlignment="textStart"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/newChecklistNoteBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_rectangle"
+        android:clickable="true"
+        android:drawableLeft="@drawable/ic_note_checklist"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/folderBlue"
+        android:focusable="true"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Checklist Note"
+        android:textAlignment="textStart"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/newDrawingNoteBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_rectangle"
+        android:clickable="true"
+        android:drawableLeft="@drawable/ic_note_drawing"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/folderBlue"
+        android:focusable="true"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Drawing Note"
+        android:textAlignment="textStart"
+        android:textAllCaps="false" />
+</LinearLayout>

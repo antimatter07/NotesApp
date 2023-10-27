@@ -8,9 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
@@ -62,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Setup Create New Folder Button
+        viewBinding.newFolderBtn.setOnClickListener(v -> {
+            FragmentManager fm = getSupportFragmentManager();
+            CreateFolderDialogFragment createFolderDialogFragment = new CreateFolderDialogFragment();
+            createFolderDialogFragment.show(fm, "NewFolderDialog");
+        });
+
 
         // Setup Search Button
         ImageButton searchBtn = this.viewBinding.searchBtn;
@@ -80,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
             sortingOptionsFragment.show(fm, "SettingsDialog");
 
 
+        });
+
+        // Setup Create New Note Button
+        viewBinding.newNoteBtn.setOnClickListener(v -> {
+            FragmentManager fm = getSupportFragmentManager();
+            CreateNoteDialogFragment createNoteDialogFragment = new CreateNoteDialogFragment();
+            createNoteDialogFragment.show(fm, "NewNoteDialog");
         });
     }
 
