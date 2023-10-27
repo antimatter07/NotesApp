@@ -27,6 +27,9 @@
         <activity android:name=".ChecklistTestActivity">
 
         </activity>
+        <activity android:name=".SearchActivity">
+
+        </activity>
     </application>
 
 </manifest>

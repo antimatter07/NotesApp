@@ -1,9 +1,12 @@
 package com.mobdeve.xx22.villarica.matthew.notes;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,9 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
-
 import com.mobdeve.xx22.villarica.matthew.notes.databinding.ActivityMainBinding;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +26,15 @@ public class MainActivity extends AppCompatActivity {
 //    TEMP data
     private boolean isOrderAscending = true;
 
+
+    private ActivityResultLauncher<Intent> mainActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupRecyclerView();
 
+        // Setup Toggle Order Button
         // TODO: Sort Order functionality
         ToggleButton orderBtn = this.viewBinding.orderBtn;
 
@@ -51,10 +62,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // Setup Search Button
+        ImageButton searchBtn = this.viewBinding.searchBtn;
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+          });
+        
+        // Setup Sorting Options Button
         viewBinding.sortBtn.setOnClickListener(v -> {
             FragmentManager fm = getSupportFragmentManager();
             SortingOptionsDialogFragment sortingOptionsFragment = new SortingOptionsDialogFragment();
             sortingOptionsFragment.show(fm, "SettingsDialog");
+
 
         });
     }
