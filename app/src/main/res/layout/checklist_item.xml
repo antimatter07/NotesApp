@@ -17,6 +17,7 @@
         android:layout_width="350dp"
         android:layout_height="match_parent"
         android:ems="10"
+        android:fontFamily="@font/poppins_regular"
         android:inputType="text|textMultiLine|textNoSuggestions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/checkBox"
