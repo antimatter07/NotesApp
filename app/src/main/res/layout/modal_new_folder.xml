@@ -12,7 +12,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/newFolderTitleTv"
+            android:id="@+id/createFolderTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_medium"
