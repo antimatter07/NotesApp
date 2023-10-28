@@ -1,6 +1,7 @@
 package com.mobdeve.xx22.villarica.matthew.notes;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -38,6 +39,7 @@ public class ViewFolderActivity extends AppCompatActivity {
         viewBinding.folderNameTv.setText(folderName);
         folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), intent.getIntExtra(folderColorKey, R.color.folderDefault));
         viewBinding.menuBarLl.setBackgroundColor(folderColor);
+        // viewBinding.newNoteBtn.setBackgroundTintList(ColorStateList.valueOf(folderColor));
 
 
         //TODO: set up notes recycler view to show notes in folder
@@ -78,6 +80,13 @@ public class ViewFolderActivity extends AppCompatActivity {
                     viewBinding.orderBtn.setBackgroundResource(R.drawable.ic_descend);
                 }
             }
+        });
+
+        // Setup Folder Options Button
+        viewBinding.folderOptionsBtn.setOnClickListener(v -> {
+            FragmentManager fm = getSupportFragmentManager();
+            FolderOptionsFragment folderOptionsFragment = new FolderOptionsFragment();
+            folderOptionsFragment.show(fm, "FolderOptionsDialog");
         });
 
 

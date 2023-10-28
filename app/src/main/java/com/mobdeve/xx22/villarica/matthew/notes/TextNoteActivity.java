@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -68,6 +70,14 @@ public class TextNoteActivity extends AppCompatActivity {
             titleContent = getIntent().getStringExtra("titleContent");
             noteTitleView.setText(titleContent);
         }
+
+        // Setup Note Options Button
+        ImageButton noteOptionsBtn = findViewById(R.id.textNoteOptionsBtn);
+        noteOptionsBtn.setOnClickListener(v -> {
+            FragmentManager fm = getSupportFragmentManager();
+            NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
+            noteOptionsFragment.show(fm, "NoteOptionsDialog");
+        });
     }
 
     @Override

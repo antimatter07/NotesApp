@@ -10,42 +10,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        android:text="Note Settings"
+        android:text="Folder Settings"
         android:textColor="@color/blackDefault"
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/lockNoteBtn"
+        android:id="@+id/changeColorBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/ripple_rectangle"
         android:clickable="true"
-        android:drawableLeft="@drawable/ic_lock_note"
+        android:drawableLeft="@drawable/ic_palette"
         android:drawablePadding="8dp"
         android:drawableTint="@color/folderBlue"
         android:focusable="true"
         android:fontFamily="@font/poppins_regular"
-        android:text="Lock Note"
+        android:text="Change Color"
         android:textAlignment="textStart"
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/changeFolderBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ripple_rectangle"
-        android:clickable="true"
-        android:drawableLeft="@drawable/ic_folder"
-        android:drawablePadding="8dp"
-        android:drawableTint="@color/folderBlue"
-        android:focusable="true"
-        android:fontFamily="@font/poppins_regular"
-        android:text="Change Folder"
-        android:textAlignment="textStart"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/deleteBtn"
+        android:id="@+id/newDrawingNoteBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/ripple_rectangle"
@@ -55,7 +40,7 @@
         android:drawableTint="@color/folderBlue"
         android:focusable="true"
         android:fontFamily="@font/poppins_regular"
-        android:text="Delete Note"
+        android:text="Delete Folder"
         android:textAlignment="textStart"
         android:textAllCaps="false" />
 </LinearLayout>
