@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 import com.mobdeve.xx22.villarica.matthew.notes.databinding.ActivityMainBinding;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<FolderModel> folders;
     private MainActivityAdapter mainAdapter;
     private ActivityMainBinding viewBinding;
+
+    private ArrayList<ParentNoteModel> data = new ArrayList<>();
 
 //    TEMP data
     private boolean isOrderAscending = true;
@@ -93,6 +96,19 @@ public class MainActivity extends AppCompatActivity {
             CreateNoteDialogFragment createNoteDialogFragment = new CreateNoteDialogFragment();
             createNoteDialogFragment.show(fm, "NewNoteDialog");
         });
+
+
+        data.addAll(DataGenerator.loadCheckListNote());
+
+        data.addAll(DataGenerator.loadTextNote());
+
+        NoteAdapter noteAdapter = new NoteAdapter(data);
+        GridView gridView = viewBinding.notesGv;
+        gridView.setAdapter(noteAdapter);
+
+
+
+
     }
 
     private void setupRecyclerView() {  // TODO: add ActivityResultLauncher
