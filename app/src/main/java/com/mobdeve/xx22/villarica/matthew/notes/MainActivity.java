@@ -102,7 +102,9 @@ public class MainActivity extends AppCompatActivity {
 
         data.addAll(DataGenerator.loadTextNote());
 
-        NoteAdapter noteAdapter = new NoteAdapter(data);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        NoteAdapter noteAdapter = new NoteAdapter(data, fragmentManager);
         GridView gridView = viewBinding.notesGv;
         gridView.setAdapter(noteAdapter);
 

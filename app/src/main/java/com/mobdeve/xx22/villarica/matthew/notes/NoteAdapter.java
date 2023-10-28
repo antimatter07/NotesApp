@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 
 public class NoteAdapter extends BaseAdapter {
     private ArrayList<ParentNoteModel> data;
+    private FragmentManager fragmentManager;
 
-    public NoteAdapter(ArrayList<ParentNoteModel> data) {
+    public NoteAdapter(ArrayList<ParentNoteModel> data, FragmentManager fragmentManager) {
         this.data = data;
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -55,17 +58,17 @@ public class NoteAdapter extends BaseAdapter {
         ImageButton optionsButton = convertView.findViewById(R.id.noteOptionsBtn);
 
         //listener for options btn
-        /*optionsButton.setOnClickListener(new View.OnClickListener() {
+        optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Open note options modal
-                FragmentManager fm = getSupportFragmentManager();
+
                 NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
-                noteOptionsFragment.show(fm, "SettingsDialog");
+                noteOptionsFragment.show(fragmentManager, "NoteOptionsDialog");
 
             }
         });
-        */
+
 
 
 
