@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.mobdeve.xx22.villarica.matthew.notes.databinding.NoteOptionsModalBinding;
 
+import java.util.concurrent.locks.Lock;
 
 
 public class NoteOptionsFragment extends DialogFragment {
@@ -25,6 +26,24 @@ public class NoteOptionsFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         binding = NoteOptionsModalBinding.inflate(inflater);
+
+        binding.lockNoteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                LockNoteFragment lockNoteFragment = new LockNoteFragment();
+                lockNoteFragment.show(getActivity().getSupportFragmentManager(), "LockNoteDialog");
+            }
+        });
+
+        binding.changeFolderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                ChangeFolderFragment changeFolderFragment = new ChangeFolderFragment();
+                changeFolderFragment.show(getActivity().getSupportFragmentManager(), "LockNoteDialog");
+            }
+        });
 
         View view = binding.getRoot();
         builder.setView(view);
