@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
+                    //TODO: handle changes to data in folder
 
                 }
             });
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {  // TODO: add ActivityResultLauncher
-        mainAdapter = new MainActivityAdapter(this.folders);
+        mainAdapter = new MainActivityAdapter(this.folders, mainActivityResultLauncher);
         viewBinding.folderRv.setAdapter(mainAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }

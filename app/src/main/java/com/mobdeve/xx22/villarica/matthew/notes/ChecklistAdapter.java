@@ -37,9 +37,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<CheckItemHolder>{
     public void onBindViewHolder(@NonNull CheckItemHolder holder, int position) {
         holder.bindData(data.get(position));
 
-
-
-
     }
 
     @Override

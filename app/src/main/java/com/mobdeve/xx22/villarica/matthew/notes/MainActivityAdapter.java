@@ -18,9 +18,9 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
     private ActivityResultLauncher<Intent> viewFolderLauncher;
 
 //    TODO: add ActivityResultLauncher<Intent> viewFolderLauncher
-    public MainActivityAdapter(ArrayList<FolderModel> data) {
+    public MainActivityAdapter(ArrayList<FolderModel> data, ActivityResultLauncher<Intent> viewFolderLauncher) {
         this.folderData = data;
-//        this.viewFolderLauncher = viewFolderLauncher;
+        this.viewFolderLauncher = viewFolderLauncher;
     }
     @NonNull
     @Override
@@ -36,6 +36,16 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
     @Override
     public void onBindViewHolder(@NonNull MainActivityViewHolder holder, int position) {
         holder.bindFolderData(folderData.get(position));
+
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), ViewFolderActivity.class);
+            intent.putExtra(ViewFolderActivity.folderNameKey, folderData.get(holder.getAdapterPosition()).getName());
+            intent.putExtra(ViewFolderActivity.folderColorKey, folderData.get(holder.getAdapterPosition()).getColorResId());
+            //TODO: add logic for putting in data to view in ViewFolderActivity (maybe passed through intent or some db call?)
+
+            //TODO: change to launcher in final
+             viewFolderLauncher.launch(intent);
+        });
 
     }
 
