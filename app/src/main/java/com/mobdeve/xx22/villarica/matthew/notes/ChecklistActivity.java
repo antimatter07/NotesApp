@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +54,13 @@ public class ChecklistActivity extends AppCompatActivity {
                 listData.add(new ChecklistItemModel(false, ""));
                 adapter.notifyItemInserted(listData.size() - 1);
             }
+        });
+
+        // Setup Note Options Button
+        viewBinding.noteOptionsBtn.setOnClickListener(v -> {
+            FragmentManager fm = getSupportFragmentManager();
+            NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
+            noteOptionsFragment.show(fm, "NoteOptionsDialog");
         });
 
 

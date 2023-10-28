@@ -38,13 +38,13 @@
             android:gravity="center_vertical"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton"
+            app:layout_constraintEnd_toStartOf="@+id/textNoteOptionsBtn"
             app:layout_constraintStart_toEndOf="@id/textNoteIv"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="New Text Note" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/textNoteOptionsBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -76,7 +76,6 @@
             android:background="@android:color/transparent"
             android:fontFamily="@font/poppins_regular"
             android:gravity="top"
-            android:hint="Enter Text..."
             android:inputType="textMultiLine"
             android:lines="100"
             android:overScrollMode="always"
