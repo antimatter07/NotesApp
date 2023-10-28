@@ -29,10 +29,10 @@
             android:layout_marginLeft="50dp"
             android:layout_marginTop="45dp"
             android:fontFamily="@font/poppins_regular"
-            tools:text="0"
             android:textAlignment="viewEnd"
             android:textColor="@color/blackDefault"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="0" />
     </RelativeLayout>
 
     <TextView
@@ -43,9 +43,9 @@
         android:layout_marginTop="68dp"
         android:ellipsize="end"
         android:fontFamily="@font/poppins_regular"
-        android:singleLine="true"
         android:maxWidth="100dp"
-        tools:text="FolderName"
+        android:singleLine="true"
         android:textAlignment="center"
-        android:textColor="@color/blackDefault" />
+        android:textColor="@color/blackDefault"
+        tools:text="FolderName" />
 </RelativeLayout>

@@ -14,14 +14,13 @@ import com.mobdeve.xx22.villarica.matthew.notes.databinding.ChecklistActivityBin
 
 import java.util.ArrayList;
 
+@Override
 public class TextNoteActivity extends AppCompatActivity {
     private TextView noteTextView;
     private TextView noteTitleView;
     private String noteContent = "";
     private String titleContent = "";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.textnote_activity);
 

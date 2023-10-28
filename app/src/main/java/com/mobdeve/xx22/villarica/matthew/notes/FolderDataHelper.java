@@ -9,8 +9,10 @@ import java.util.ArrayList;
 
 public class FolderDataHelper {
 
+    private static ArrayList<FolderModel> data = new ArrayList<>();
+    private static int folderCount = 5;    // serves as the temporary key tracker
+
     public static ArrayList<FolderModel> generateFolderData() {
-        ArrayList<FolderModel> data = new ArrayList<>();
 
         data.add(new FolderModel(0, "Drafts", R.color.folderRed));
         data.add(new FolderModel(1));
@@ -20,4 +22,10 @@ public class FolderDataHelper {
 
         return data;
     }
+
+    public static void addFolder(String name, int color) {
+        data.add(new FolderModel(folderCount, name, color));
+        folderCount++;
+    }
+
 }

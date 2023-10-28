@@ -18,9 +18,7 @@ import java.util.ArrayList;
 public class ChecklistActivity extends AppCompatActivity {
     public static final String ITEMLIST_KEY = "ITEMLIST_KEY";
     public static final String TITLE_KEY = "TITLE_KEY";
-
     public static final String DATE_CREATED_KEY = "DATE_KEY";
-
     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +32,6 @@ public class ChecklistActivity extends AppCompatActivity {
         ArrayList<ChecklistItemModel> listData = intent.getParcelableArrayListExtra(ITEMLIST_KEY);
 
 
-
-
         //set up views and adapter with received data
         viewBinding.noteTitle.setText(titleString);
         ChecklistAdapter adapter = new ChecklistAdapter(listData);
@@ -43,6 +39,12 @@ public class ChecklistActivity extends AppCompatActivity {
 
         recyclerview.setAdapter(adapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
+
+        // create a new item by default when creating new checklist
+        if (listData.size() == 0) {
+            listData.add(new ChecklistItemModel(false, ""));
+            adapter.notifyItemInserted(listData.size() - 1);
+        }
 
         //add notes with button
         viewBinding.addItemBtn.setOnClickListener(new View.OnClickListener() {
