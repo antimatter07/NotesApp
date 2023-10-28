@@ -32,6 +32,18 @@ public class CreateNoteDialogFragment extends DialogFragment {
 
         View view = binding.getRoot();
 
+        binding.newTextNoteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // switch to TextNoteActivity
+                Intent intent = new Intent(getActivity(), TextNoteActivity.class);
+                intent.putExtra(TextNoteActivity.TITLE_KEY, "New Text Note");
+                intent.putExtra(TextNoteActivity.TEXT_KEY, "");
+                startActivity(intent);
+                dismiss();
+            }
+        });
+
         binding.newChecklistNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
