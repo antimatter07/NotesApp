@@ -4,7 +4,11 @@ public class TextNoteModel extends ParentNoteModel {
     private String text = "";
 
     public TextNoteModel (String title, String dateCreated, String text) {
-        super(title, dateCreated);
+        super(title, -1, dateCreated);
+        this.text = text;
+    }
+    public TextNoteModel (String title, String dateCreated, int folderKey, String text) {
+        super(title, folderKey, dateCreated);
         this.text = text;
     }
 
