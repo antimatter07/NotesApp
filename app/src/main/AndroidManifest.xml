@@ -30,6 +30,11 @@
         <activity android:name=".SearchActivity">
 
         </activity>
+
+        <activity android:name=".TextNoteActivity">
+
+        </activity>
+
     </application>
 
 </manifest>
