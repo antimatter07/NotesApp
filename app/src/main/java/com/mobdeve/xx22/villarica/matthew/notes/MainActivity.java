@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
@@ -104,11 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        NoteAdapter noteAdapter = new NoteAdapter(data, fragmentManager);
+        NoteAdapter noteAdapter = new NoteAdapter(this, data, fragmentManager);
         GridView gridView = viewBinding.notesGv;
         gridView.setAdapter(noteAdapter);
-
-
 
 
     }
@@ -117,6 +118,11 @@ public class MainActivity extends AppCompatActivity {
         mainAdapter = new MainActivityAdapter(this.folders, mainActivityResultLauncher);
         viewBinding.folderRv.setAdapter(mainAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
+    private String getNoteType(ParentNoteModel note) {
+        String fullString = note.getClass().getCanonicalName();
+        return fullString.substring(fullString.lastIndexOf(".") + 1);
     }
 
 }

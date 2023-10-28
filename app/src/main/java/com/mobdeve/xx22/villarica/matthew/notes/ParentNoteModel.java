@@ -10,12 +10,20 @@ public class ParentNoteModel {
     private final String dateCreated;
     private String dateModified;
 
-
-
     public ParentNoteModel(String title, String dateCreated) {
         this.dateCreated = dateCreated;
         this.dateModified = dateCreated;
         this.title = title;
+        this.folderKey = -1;
+
+    }
+
+
+    public ParentNoteModel(String title, int folderKey, String dateCreated) {
+        this.dateCreated = dateCreated;
+        this.dateModified = dateCreated;
+        this.title = title;
+        this.folderKey = folderKey;
 
     }
 

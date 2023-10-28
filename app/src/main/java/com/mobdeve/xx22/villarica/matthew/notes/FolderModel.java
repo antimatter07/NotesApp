@@ -27,4 +27,6 @@ public class FolderModel {
     public int getColorResId() { return colorResId; }
 
     public void setColorResId(int colorResId) { this.colorResId = colorResId; }
+
+    public int getKey() { return key; }
 }

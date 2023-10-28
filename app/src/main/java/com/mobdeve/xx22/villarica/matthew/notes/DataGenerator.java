@@ -8,14 +8,15 @@ public class DataGenerator {
         ArrayList<TextNoteModel> data = new ArrayList<>();
 
         data.add(new TextNoteModel(
-                "Brownisaur", "January 1",
+                "Brownisaur", "January 1", 0,
                 "Sunlight is absorbed by its whipped cream and used to make the cherry on its back grow larger in size."
         ));
         data.add(new TextNoteModel(
-                "Chocosaur", "February 14", "The cherry on its back is known to be quite delicious but it is also heavy making it a useful blunt attack."
+                "Chocosaur", "February 14", 0,
+                "The cherry on its back is known to be quite delicious but it is also heavy making it a useful blunt attack."
         ));
         data.add(new TextNoteModel(
-                "Fudgasaur", "December 31", "It grows many cherries. It can trap prey inside its whipped cream but it’s also a fun ride."
+                "Fudgasaur", "December 31","It grows many cherries. It can trap prey inside its whipped cream but it’s also a fun ride."
         ));
 
         return data;
@@ -57,7 +58,7 @@ public class DataGenerator {
                 item
         ));
         data.add(new CheckListNoteModel(
-                "Task To Do", "February 14", todo
+                "Task To Do", "February 14", 2, todo
         ));
 
         return data;
