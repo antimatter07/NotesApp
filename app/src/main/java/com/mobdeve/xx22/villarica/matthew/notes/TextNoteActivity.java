@@ -11,7 +11,7 @@ import com.mobdeve.xx22.villarica.matthew.notes.databinding.ChecklistActivityBin
 
 import java.util.ArrayList;
 
-public class TextNoteActivity extends{
+public class TextNoteActivity {
 
 
 }

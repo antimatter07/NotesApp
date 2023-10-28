@@ -1,12 +1,18 @@
 package com.mobdeve.xx22.villarica.matthew.notes;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 import android.app.Dialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -25,6 +31,20 @@ public class CreateNoteDialogFragment extends DialogFragment {
         binding = ModalNewNoteBinding.inflate(inflater);
 
         View view = binding.getRoot();
+
+        binding.newChecklistNoteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // switch to CheckListActivity
+                Intent intent = new Intent(getActivity(), ChecklistActivity.class);
+                intent.putExtra(ChecklistActivity.TITLE_KEY, "New Checklist");
+                intent.putExtra(ChecklistActivity.ITEMLIST_KEY, new ArrayList<ChecklistItemModel>());
+                startActivity(intent);
+                dismiss();
+            }
+        });
+
+
         builder.setView(view);
 
         return builder.create();
