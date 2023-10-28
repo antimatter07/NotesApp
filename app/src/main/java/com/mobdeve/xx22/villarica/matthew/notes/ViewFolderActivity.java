@@ -6,17 +6,20 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.mobdeve.xx22.villarica.matthew.notes.databinding.FolderActivityBinding;
 
 public class ViewFolderActivity extends AppCompatActivity {
 
-    public static final String FOLDER_NAME_KEY = "FOLDER_NAME_KEY";
+    public static final String folderNameKey = "FOLDER_NAME_KEY",
+                            folderColorKey = "FOLDER_COLOR_KEY";
 
 
     //name to display
     private String folderName;
+    private int folderColor;
 
     private FolderActivityBinding viewBinding;
     private boolean isOrderAscending = true;
@@ -31,15 +34,16 @@ public class ViewFolderActivity extends AppCompatActivity {
 
         //set folder to name in intent
         Intent intent = getIntent();
-        folderName = intent.getStringExtra(FOLDER_NAME_KEY);
+        folderName = intent.getStringExtra(folderNameKey);
         viewBinding.folderNameTv.setText(folderName);
+        folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), intent.getIntExtra(folderColorKey, R.color.folderDefault));
+        viewBinding.menuBarLl.setBackgroundColor(folderColor);
 
 
         //TODO: set up notes recycler view to show notes in folder
 
         // Setup Search Button
-        ImageButton searchBtn = this.viewBinding.searchBtn;
-        searchBtn.setOnClickListener(new View.OnClickListener() {
+        viewBinding.searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ViewFolderActivity.this, SearchActivity.class);
