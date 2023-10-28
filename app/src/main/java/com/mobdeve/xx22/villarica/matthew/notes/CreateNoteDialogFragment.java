@@ -37,8 +37,8 @@ public class CreateNoteDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 // switch to TextNoteActivity
                 Intent intent = new Intent(getActivity(), TextNoteActivity.class);
-                intent.putExtra(TextNoteActivity.TITLE_KEY, "New Text Note");
-                intent.putExtra(TextNoteActivity.TEXT_KEY, "");
+                intent.putExtra("titleContent", "New Text Note");
+                intent.putExtra("noteContent", "");
                 startActivity(intent);
                 dismiss();
             }

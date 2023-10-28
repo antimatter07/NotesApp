@@ -35,13 +35,18 @@ import com.mobdeve.xx22.villarica.matthew.notes.databinding.TextnoteActivityBind
 
 //     }
 
-@Override
 public class TextNoteActivity extends AppCompatActivity {
+
+     public static final String TEXT_KEY = "TEXT_KEY";
+     public static final String TITLE_KEY = "TITLE_KEY";
+     public static final String DATE_CREATED_KEY = "DATE_KEY";
+     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
     private TextView noteTextView;
     private TextView noteTitleView;
     private String noteContent = "";
     private String titleContent = "";
 
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.textnote_activity);
 
