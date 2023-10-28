@@ -79,13 +79,12 @@ public class CreateFolderDialogFragment extends DialogFragment {
                     // add folder to data model (this renders the new folder in main activity)
                     FolderDataHelper.addFolder(folderName, folderColor);
 
-
                     // switch to ViewFolderActivity
                     Intent intent = new Intent(getActivity(), ViewFolderActivity.class);
                     intent.putExtra(ViewFolderActivity.folderNameKey, folderName);
                     intent.putExtra(ViewFolderActivity.folderColorKey, folderColor);
                     startActivity(intent);
-
+                    dismiss();
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {
                     // Remove modal
