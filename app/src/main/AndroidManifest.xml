@@ -21,23 +21,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TextNoteActivity">
+        <activity android:name=".note.note_text.TextNoteActivity">
 
         </activity>
-        <activity android:name=".ChecklistActivity">
+        <activity android:name=".note.note_checklist.ChecklistActivity">
 
         </activity>
-        <activity android:name=".ChecklistTestActivity">
+        <activity android:name=".note.note_checklist.ChecklistTestActivity">
 
         </activity>
-        <activity android:name=".ViewFolderActivity">
+        <activity android:name=".folder.ViewFolderActivity">
 
         </activity>
-        <activity android:name=".SearchActivity">
-
-        </activity>
-
-        <activity android:name=".TextNoteActivity">
+        <activity android:name=".search.SearchActivity">
 
         </activity>
 

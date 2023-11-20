@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.mobdeve.xx22.villarica.matthew.notes"
+    namespace = "com.mobdeve.xx22.memomate"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.mobdeve.xx22.villarica.matthew.notes"
+        applicationId = "com.mobdeve.xx22.memomate"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

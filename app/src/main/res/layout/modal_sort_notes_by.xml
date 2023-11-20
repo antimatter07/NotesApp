@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:fontFamily="@font/poppins_medium"
+    tools:context=".partials.SortingOptionsDialogFragment">
+
+
+    <TextView
+        android:id="@+id/sortTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Sort by:"
+        android:textColor="@color/blackDefault"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/sortingOptionsRg"
+        style="@style/RadioButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/poppins_regular"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sortTitleTv">
+
+        <RadioButton
+            android:id="@+id/nameSortingRb"
+            style="@style/RadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Title"
+            android:textColor="@color/blackDefault" />
+
+        <RadioButton
+            android:id="@+id/createdDateSortingRb"
+            style="@style/RadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Date Created"
+            android:textColor="@color/blackDefault" />
+
+        <RadioButton
+            android:id="@+id/modifiedDateSortingRb"
+            style="@style/RadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Date Modified"
+            android:textColor="@color/blackDefault" />
+
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
