@@ -35,6 +35,10 @@ public class CheckListNoteModel extends ParentNoteModel{
         return checkItemData;
     }
 
+    public void setCheckItemData(ArrayList<ChecklistItemModel> checkItemData) {
+        this.checkItemData = checkItemData;
+    }
+
     public String getCheckItemDataStrings() {
         StringBuilder combinedItems = new StringBuilder();
         for (ChecklistItemModel item: checkItemData) {
