@@ -9,17 +9,19 @@ public class DrawingNoteModel extends ParentNoteModel {
     private List<Path> paths;
 
     public DrawingNoteModel(){
-        super("test", "10/28/23");
+        super("test");
         paths = new ArrayList<>();
     }
-    public DrawingNoteModel(String title, String dateCreated) {
-        super(title, dateCreated);
+    public DrawingNoteModel(String title) {
+        super(title);
         paths = new ArrayList<>();
+        this.setNoteType("drawing");
     }
 
-    public DrawingNoteModel(String title, String dateCreated, ArrayList paths){
-        super(title, dateCreated);
+    public DrawingNoteModel(String title, ArrayList paths){
+        super(title);
         this.paths = paths;
+        this.setNoteType("drawing");
     }
 
     public List<Path> getPaths() {

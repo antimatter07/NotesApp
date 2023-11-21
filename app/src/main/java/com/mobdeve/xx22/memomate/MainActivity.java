@@ -15,6 +15,7 @@ import android.widget.ToggleButton;
 
 import com.mobdeve.xx22.memomate.database.NoteDataHelper;
 import com.mobdeve.xx22.memomate.database.FolderDataHelper;
+import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ActivityMainBinding;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
@@ -109,9 +110,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        data.addAll(NoteDataHelper.loadCheckListNote());
+        //data.addAll(NoteDataHelper.loadCheckListNote());
 
-        data.addAll(NoteDataHelper.loadTextNote());
+        //data.addAll(NoteDataHelper.loadTextNote());
+
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes();
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
