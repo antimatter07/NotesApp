@@ -37,6 +37,14 @@ public class NoteAdapter extends BaseAdapter {
         this.fragmentManager = fragmentManager;
     }
 
+    /**
+     * Replace note data to new list
+     * @param newData new arraylsit of parent notes
+     */
+    public void setData(ArrayList<ParentNoteModel> newData) {
+        this.data = newData;
+    }
+
     @Override
     public int getCount() {
         return data.size();
@@ -115,8 +123,13 @@ public class NoteAdapter extends BaseAdapter {
                 switch(noteType) {
                     case "TextNoteModel":
                         intent = new Intent(context, TextNoteActivity.class);
+
                         intent.putExtra("titleContent", noteData.getTitle());
                         intent.putExtra("noteContent", ((TextNoteModel) noteData).getText());
+                        intent.putExtra("noteID", noteData.getNoteID());
+                        intent.putExtra("folderKey", noteData.getFolderKey());
+
+
                         context.startActivity(intent);
                         break;
                     case "CheckListNoteModel":

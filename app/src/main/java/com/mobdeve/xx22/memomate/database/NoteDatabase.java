@@ -1,8 +1,10 @@
 package com.mobdeve.xx22.memomate.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
@@ -168,5 +170,36 @@ public class NoteDatabase {
         }
 
         return notes;
+    }
+
+    /**
+     * Add a new note into the db after user clicks on new text note
+     * @param note Note object with values to insert into db
+     * @return int of row id inserted
+     */
+    public synchronized int addTextNote(TextNoteModel note) {
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_TITLE, note.getTitle());
+        values.put(NoteDatabaseHandler.COLUMN_FOLDER_KEY, note.getFolderKey());
+        values.put(NoteDatabaseHandler.COLUMN_DATE_CREATED, note.getDateCreated());
+        values.put(NoteDatabaseHandler.COLUMN_DATE_MODIFIED, note.getDateModified());
+
+        boolean isLockedBoolean = note.getLocked();
+
+        if(isLockedBoolean)
+            values.put(NoteDatabaseHandler.COLUMN_IS_LOCKED, 1);
+        else
+            values.put(NoteDatabaseHandler.COLUMN_IS_LOCKED, 0);
+
+        values.put(NoteDatabaseHandler.COLUMN_NOTE_TEXT, note.getText());
+        values.put(NoteDatabaseHandler.COLUMN_NOTE_TYPE, note.getNoteType());
+
+        Log.d("ADDING NEW NOTE!", "Entering (Text)" +note.getTitle() + " INTO DB");
+        int row = (int) db.insert(NoteDatabaseHandler.TABLE_NOTES, null, values);
+
+        return row;
     }
 }

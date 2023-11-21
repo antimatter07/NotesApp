@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<FolderModel> folders;
     private MainActivityAdapter mainAdapter;
+    private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
 
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
@@ -110,9 +111,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //data.addAll(NoteDataHelper.loadCheckListNote());
 
-        //data.addAll(NoteDataHelper.loadTextNote());
 
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
         data = noteDatabase.getAllNotes();
@@ -121,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         NoteAdapter noteAdapter = new NoteAdapter(this, data, fragmentManager);
+        this.noteAdapter = noteAdapter;
+
         GridView gridView = viewBinding.notesGv;
         gridView.setAdapter(noteAdapter);
 
@@ -136,6 +137,31 @@ public class MainActivity extends AppCompatActivity {
     private String getNoteType(ParentNoteModel note) {
         String fullString = note.getClass().getCanonicalName();
         return fullString.substring(fullString.lastIndexOf(".") + 1);
+    }
+
+    /**
+     * Refreshes main activity with updated db data
+     */
+    private void reloadNoteData() {
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes();
+
+        if (mainAdapter != null) {
+            noteAdapter.setData(data);
+            noteAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    /**
+     * On resume of main activity, refresh screen with new note data
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Refresh the data when the activity is resumed, assuming changes are made to notes in db
+        reloadNoteData();
     }
 
 }

@@ -7,30 +7,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.model.TextNoteModel;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-// public class TextNoteActivity extends AppCompatActivity {
-//     public static final String TEXT_KEY = "TEXT_KEY";
-//     public static final String TITLE_KEY = "TITLE_KEY";
-//     public static final String DATE_CREATED_KEY = "DATE_KEY";
-//     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
-//     protected void onCreate(Bundle savedInstanceState) {
-//         super.onCreate(savedInstanceState);
-//         TextnoteActivityBinding viewBinding = TextnoteActivityBinding.inflate(getLayoutInflater());
-//         setContentView(viewBinding.getRoot());
 
-//         Intent intent = getIntent();
-//         String titleString = intent.getStringExtra(TITLE_KEY);
-//         String textString = intent.getStringExtra(TEXT_KEY);
-
-//         //set up views and adapter with received data
-//         viewBinding.noteTitleText.setText(titleString);
-//         viewBinding.noteBodyText.setText(textString);
-//         // TextNoteAdapter adapter = null;
-
-//     }
 
 public class TextNoteActivity extends AppCompatActivity {
 
@@ -42,6 +27,11 @@ public class TextNoteActivity extends AppCompatActivity {
     private TextView noteTitleView;
     private String noteContent = "";
     private String titleContent = "";
+
+    /**
+     * Thread for db operations
+     */
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +54,27 @@ public class TextNoteActivity extends AppCompatActivity {
         if (getIntent().hasExtra("titleContent")) {
             titleContent = getIntent().getStringExtra("titleContent");
             noteTitleView.setText(titleContent);
+        }
+
+        int noteID = getIntent().getIntExtra("noteID", -1);
+        int folderKey = getIntent().getIntExtra("folderKey", 0);
+
+        //if noteID retrieved is default value, creat new text note in db
+        if(noteID == -1) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    NoteDatabase db = new NoteDatabase(getApplicationContext());
+                    //make new text note and insert into db
+
+                    TextNoteModel textNote = new TextNoteModel(getIntent().getStringExtra("titleContent"),
+                            folderKey,
+                            getIntent().getStringExtra("noteContent"));
+
+                    db.addTextNote(textNote);
+
+                }
+            });
         }
 
         // Setup Note Options Button
