@@ -13,6 +13,17 @@ public class ChecklistItemModel implements Parcelable {
      */
     private int noteId;
 
+    /**
+     * Unique identifier for the item itself
+     */
+    private int itemId;
+
+    public ChecklistItemModel(int itemId, int noteId, boolean isChecked, String text) {
+        this.isChecked = isChecked;
+        this.text = text;
+        this.noteId = noteId;
+        this.itemId = itemId;
+    }
     public ChecklistItemModel(int noteId, boolean isChecked, String text) {
         this.isChecked = isChecked;
         this.text = text;
@@ -26,6 +37,8 @@ public class ChecklistItemModel implements Parcelable {
 
     }
 
+    public void setItemId(int itemId) { this.itemId = itemId;}
+    public int getItemId()  { return this.itemId; }
     public void setNoteId(int noteId) {
         this.noteId = noteId;
     }

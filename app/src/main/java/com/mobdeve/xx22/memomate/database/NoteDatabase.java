@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
+import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
 
@@ -25,6 +27,43 @@ public class NoteDatabase {
     }
 
     /**
+     * Given a note id, returns a cursor to go through every checklistitem given a specific note id.
+     * @param noteId noteId used to filter out notes irrelevant to checklist note
+     * @return Cursor for iterating through relevant checklistitems
+     */
+    public Cursor getChecklistItemsByNoteId(int noteId) {
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+
+        // Define the columns you want to retrieve
+        String[] projection = {
+                "ID",
+                NoteDatabaseHandler.COLUMN_NOTE_ID,
+                NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT,
+                NoteDatabaseHandler.COLUMN_IS_CHECKED
+        };
+
+        // Define the selection criteria
+        String selection = NoteDatabaseHandler.COLUMN_NOTE_ID + " = ?";
+        String[] selectionArgs = { String.valueOf(noteId) };
+
+        // Query the database
+        Cursor cursor = db.query(
+                NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        // Optionally, you can check if the cursor is not null and moveToFirst
+        // to position the cursor to the first row.
+
+        return cursor;
+    }
+
+    /**
      * Gets all notes in db to display in main activity
      * @return ArrayList<ParentNoteModel> of all notes in db
      */
@@ -35,17 +74,7 @@ public class NoteDatabase {
 
         Cursor c = db.query(dbHandler.TABLE_NOTES, null, null, null, null, null, null);
 
-        /*
-          private static final String CREATE_TABLE_NOTES = "CREATE TABLE IF NOT EXISTS " + TABLE_NOTES + "("
-            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + COLUMN_TITLE + " TEXT,"
-            + COLUMN_FOLDER_KEY + " INTEGER,"
-            + COLUMN_IS_LOCKED + " INTEGER,"
-            + COLUMN_DATE_CREATED + " TEXT,"
-            + COLUMN_DATE_MODIFIED + " TEXT,"
-            + COLUMN_NOTE_TYPE + " TEXT, "
-            + COLUMN_NOTE_TEXT + " TEXT)";
-         */
+
         while(c.moveToNext()) {
 
             int id = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_ID));
@@ -80,7 +109,54 @@ public class NoteDatabase {
                 notes.add(note);
 
             } else if (noteType.equals("checklist")) {
-                //TODO: Add logic for checklist notes
+
+
+                ArrayList<ChecklistItemModel> items = new ArrayList<>();
+
+                //query checklist item data, only those with current id should be considered
+                Cursor cursorCheckItem = getChecklistItemsByNoteId(id);
+
+                //go through of every checklist item needed for this note
+
+                if (cursorCheckItem != null && cursorCheckItem.moveToFirst()) {
+                    do {
+                        // Retrieve data from the cursor
+                        int itemId = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow("ID"));
+                        //int noteId = cursorCheckItem.getLong(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_ID));
+                        String checklistItemText = cursorCheckItem.getString(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT));
+
+                        int isCheckedInt = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_IS_CHECKED));
+
+                        boolean isChecked;
+                        if(isCheckedInt == 1)
+                            isChecked = true;
+                        else
+                            isChecked = false;
+
+
+                        items.add(new ChecklistItemModel(itemId, id, isChecked, checklistItemText));
+
+
+
+                    } while (cursorCheckItem.moveToNext());
+
+                    cursorCheckItem.close(); // Close the cursor
+                }
+
+
+                CheckListNoteModel checkNote = new CheckListNoteModel(title, folderKey, items);
+
+                ParentNoteModel note = (ParentNoteModel) checkNote;
+
+                note.setNoteID(id);
+                note.setLocked(isLocked);
+                note.setDateCreated(dateCreated);
+                note.setDateModified(dateModified);
+
+                notes.add(note);
+
+
+
 
             } else if (noteType.equals("drawing")) {
                 //TODO: Add logic for drawing notes

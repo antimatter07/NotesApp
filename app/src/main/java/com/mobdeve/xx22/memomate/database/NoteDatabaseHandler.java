@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
+import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
 
@@ -39,10 +40,10 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
      * Attributes for TABLE_CHECKLIST_ITEMS
      */
 
-    private static final String COLUMN_NOTE_ID = "note_id";
-    private static final String COLUMN_IS_CHECKED = "is_checked";
+    public static final String COLUMN_NOTE_ID = "note_id";
+    public static final String COLUMN_IS_CHECKED = "is_checked";
 
-    private static final String COLUMN_CHECKLIST_ITEM_TEXT = "checklist_item_text";
+    public static final String COLUMN_CHECKLIST_ITEM_TEXT = "checklist_item_text";
 
 
     // SQL statement to create the notes table
@@ -56,10 +57,13 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
             + COLUMN_NOTE_TYPE + " TEXT, "
             + COLUMN_NOTE_TEXT + " TEXT)";
 
+
     private static final String CREATE_TABLE_CHECKLIST_ITEMS = "CREATE TABLE IF NOT EXISTS " + TABLE_CHECKLIST_ITEMS + "("
+            + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_NOTE_ID + " INTEGER, "
             + COLUMN_CHECKLIST_ITEM_TEXT + " TEXT,"
-            + COLUMN_IS_CHECKED + " INTEGER)";
+            + COLUMN_IS_CHECKED + " INTEGER,"
+            + "FOREIGN KEY (" + COLUMN_NOTE_ID + ") REFERENCES " + TABLE_NOTES + "(" + COLUMN_ID + "))";
 
 
 
@@ -75,9 +79,10 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
         ArrayList<ParentNoteModel> noteData = new ArrayList<>();
 
         //insert dummy data into db
-        //noteData.addAll(NoteDataHelper.loadCheckListNote());
+
 
         noteData.addAll(NoteDataHelper.loadTextNote());
+        noteData.addAll(NoteDataHelper.loadCheckListNote());
 
         for (ParentNoteModel note: noteData) {
 
@@ -101,8 +106,48 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
                 values.put(COLUMN_NOTE_TEXT, textNote.getText());
                 values.put(COLUMN_NOTE_TYPE, textNote.getNoteType());
 
-                Log.d("DUMMY DATA", "Entering " +note.getTitle() + " INTO DB");
+                Log.d("DUMMY DATA", "Entering (Text)" +note.getTitle() + " INTO DB");
                 db.insert(TABLE_NOTES, null, values);
+
+            } else if (note.getNoteType().equals("checklist") && note instanceof CheckListNoteModel) {
+
+                CheckListNoteModel checkListNote = (CheckListNoteModel) note;
+
+
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_TITLE, note.getTitle());
+                values.put(COLUMN_FOLDER_KEY, note.getFolderKey());
+                values.put(COLUMN_DATE_CREATED, note.getDateCreated());
+                values.put(COLUMN_DATE_MODIFIED, note.getDateModified());
+
+                boolean isLockedBoolean = note.getLocked();
+
+                if(isLockedBoolean)
+                    values.put(COLUMN_IS_LOCKED, 1);
+                else
+                    values.put(COLUMN_IS_LOCKED, 0);
+
+                //values.put(COLUMN_NOTE_TEXT, textNote.getText());
+                values.put(COLUMN_NOTE_TYPE, note.getNoteType());
+
+                Log.d("DUMMY DATA", "Entering (Checklist) " +note.getTitle() + " INTO DB");
+
+                int row_id = (int) db.insert(TABLE_NOTES, null, values);
+
+                ArrayList<ChecklistItemModel> checklistItems = checkListNote.getCheckItemData();
+
+                //for every checklist item, insert into db with associated note id
+                for (ChecklistItemModel item: checklistItems) {
+                    ContentValues checklistValues = new ContentValues();
+
+                    checklistValues.put(COLUMN_CHECKLIST_ITEM_TEXT, item.getText());
+                    checklistValues.put(COLUMN_NOTE_ID, row_id);
+                    checklistValues.put(COLUMN_IS_CHECKED, item.getIsChecked());
+                    Log.d("CHECKLIST ITEM MODEL", "BEING INSERTED INTO DB:" + item.getText());
+                    int row = (int) db.insert(TABLE_CHECKLIST_ITEMS, null, checklistValues);
+                    Log.d("CHECKLIST ITEM INSERTED AT: ", String.valueOf(row));
+
+                }
 
             }
 
@@ -118,6 +163,6 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Method to add a note to the database
+
 
 }
