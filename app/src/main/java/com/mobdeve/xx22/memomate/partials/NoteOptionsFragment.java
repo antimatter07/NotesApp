@@ -17,6 +17,10 @@ import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
 public class NoteOptionsFragment extends DialogFragment {
 
     private ModalNoteOptionsBinding binding;
+    /**
+     * noteID to delete, lock, etc.
+     */
+    private int currentNoteID = -1;
 
     @NonNull
     @Override
@@ -43,9 +47,28 @@ public class NoteOptionsFragment extends DialogFragment {
             }
         });
 
+        binding.deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentNoteID != -1) {
+
+
+                }
+
+            }
+        });
+
         View view = binding.getRoot();
         builder.setView(view);
 
         return builder.create();
+    }
+
+    /**
+     * Set noteID so that ID to perform operation on is visible within fragment
+     * @param noteID
+     */
+    public void setNoteID(int noteID) {
+        this.currentNoteID = noteID;
     }
 }

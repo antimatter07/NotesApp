@@ -59,8 +59,7 @@ public class NoteDatabase {
                 null
         );
 
-        // Optionally, you can check if the cursor is not null and moveToFirst
-        // to position the cursor to the first row.
+
 
         return cursor;
     }
@@ -168,6 +167,7 @@ public class NoteDatabase {
 
 
         }
+        db.close();
 
         return notes;
     }
@@ -199,7 +199,55 @@ public class NoteDatabase {
 
         Log.d("ADDING NEW NOTE!", "Entering (Text)" +note.getTitle() + " INTO DB");
         int row = (int) db.insert(NoteDatabaseHandler.TABLE_NOTES, null, values);
+        db.close();
 
         return row;
+    }
+
+    /**
+     * Updates a text note with new text content
+     * @param currentNoteID id of edited note
+     * @param updatedText new text for text note
+     * @param updatedTime new date modified
+     */
+    public synchronized void updateTextNoteContent(int currentNoteID, String updatedText, String updatedTime) {
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_NOTE_TEXT, updatedText);
+        values.put(NoteDatabaseHandler.COLUMN_DATE_MODIFIED, updatedTime);
+
+        String selection = NoteDatabaseHandler.COLUMN_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(currentNoteID)};
+
+        db.update(NoteDatabaseHandler.TABLE_NOTES, values, selection, selectionArgs);
+
+        db.close();
+
+
+    }
+
+
+    /**
+     * Updates title of note.
+     * @param currentNoteID ID of note to change title
+     * @param updatedTitle new title of note
+     * @param updatedTime new date modified
+     */
+    public synchronized void updateNoteTitle(int currentNoteID, String updatedTitle, String updatedTime) {
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_TITLE, updatedTitle);
+        values.put(NoteDatabaseHandler.COLUMN_DATE_MODIFIED, updatedTime);
+
+        String selection = NoteDatabaseHandler.COLUMN_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(currentNoteID)};
+
+        db.update(NoteDatabaseHandler.TABLE_NOTES, values, selection, selectionArgs);
+
+        db.close();
+
+
     }
 }
