@@ -7,16 +7,18 @@ public class CheckListNoteModel extends ParentNoteModel{
     private ArrayList<ChecklistItemModel> checkItemData;
 
 
-    public CheckListNoteModel(String title, String dateCreated, ArrayList<ChecklistItemModel> checkItemData) {
-        super(title, dateCreated);
+    public CheckListNoteModel(String title, ArrayList<ChecklistItemModel> checkItemData) {
+        super(title);
         this.checkItemData = checkItemData;
+        super.setNoteType("checklist");
 
     }
 
-    public CheckListNoteModel(String title, String dateCreated, int folderKey, ArrayList<ChecklistItemModel> checkItemData) {
+    public CheckListNoteModel(String title, int folderKey, ArrayList<ChecklistItemModel> checkItemData) {
 
-        super(title, folderKey, dateCreated);
+        super(title, folderKey);
         this.checkItemData = checkItemData;
+        super.setNoteType("checklist");
 
     }
 

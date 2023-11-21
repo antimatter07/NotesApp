@@ -32,7 +32,7 @@ public class ChecklistTestActivity extends AppCompatActivity {
         data.add(new ChecklistItemModel(true, "carrot"));
 
 
-        CheckListNoteModel checklistNote = new CheckListNoteModel("Grocery List","2023-10-26 14:30:00",data);
+        CheckListNoteModel checklistNote = new CheckListNoteModel("Grocery List",data);
 
         // create Intent and put checklist data, launch
         Intent intent = new Intent(ChecklistTestActivity.this, ChecklistActivity.class);

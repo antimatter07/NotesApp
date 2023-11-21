@@ -8,11 +8,27 @@ public class ChecklistItemModel implements Parcelable {
     private boolean isChecked = false;
     private String text;
 
+    /**
+     * the note ID this checklist item belongs to.
+     */
+    private int noteId;
+
+    public ChecklistItemModel(int noteId, boolean isChecked, String text) {
+        this.isChecked = isChecked;
+        this.text = text;
+        this.noteId = noteId;
+    }
+
     public ChecklistItemModel(boolean isChecked, String text) {
         this.isChecked = isChecked;
         this.text = text;
+        this.noteId = ParentNoteModel.DEFAULT_NOTE_ID;
+
     }
 
+    public void setNoteId(int noteId) {
+        this.noteId = noteId;
+    }
     public String getText() {
         return text;
     }
@@ -42,6 +58,10 @@ public class ChecklistItemModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte((byte) (isChecked ? 1 : 0)); // Write boolean as a byte
         dest.writeString(text);
+    }
+
+    private int getNoteId() {
+        return noteId;
     }
 
     // Creator constant for generating instances of your Parcelable class
