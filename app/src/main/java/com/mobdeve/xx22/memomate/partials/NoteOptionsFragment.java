@@ -11,7 +11,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class NoteOptionsFragment extends DialogFragment {
@@ -21,6 +25,7 @@ public class NoteOptionsFragment extends DialogFragment {
      * noteID to delete, lock, etc.
      */
     private int currentNoteID = -1;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @NonNull
     @Override
@@ -52,6 +57,16 @@ public class NoteOptionsFragment extends DialogFragment {
             public void onClick(View v) {
                 if(currentNoteID != -1) {
 
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            NoteDatabase db = new NoteDatabase(requireContext());
+                            db.deleteNote(currentNoteID);
+
+
+                        }
+                    });
+                    dismiss();
 
                 }
 

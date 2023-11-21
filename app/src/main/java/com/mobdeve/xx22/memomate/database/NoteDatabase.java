@@ -250,4 +250,23 @@ public class NoteDatabase {
 
 
     }
+
+    /**
+     * Delete a note given its ID in the db
+     * @param noteID note to delete
+     */
+    public synchronized void deleteNote(int noteID) {
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+
+
+        String selection = NoteDatabaseHandler.COLUMN_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(noteID)};
+
+        db.delete(NoteDatabaseHandler.TABLE_NOTES, selection, selectionArgs);
+
+        db.close();
+
+
+    }
 }
