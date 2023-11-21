@@ -1,36 +1,26 @@
 package com.mobdeve.xx22.memomate.note.note_text;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.model.TextNoteModel;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-// public class TextNoteActivity extends AppCompatActivity {
-//     public static final String TEXT_KEY = "TEXT_KEY";
-//     public static final String TITLE_KEY = "TITLE_KEY";
-//     public static final String DATE_CREATED_KEY = "DATE_KEY";
-//     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
-//     protected void onCreate(Bundle savedInstanceState) {
-//         super.onCreate(savedInstanceState);
-//         TextnoteActivityBinding viewBinding = TextnoteActivityBinding.inflate(getLayoutInflater());
-//         setContentView(viewBinding.getRoot());
 
-//         Intent intent = getIntent();
-//         String titleString = intent.getStringExtra(TITLE_KEY);
-//         String textString = intent.getStringExtra(TEXT_KEY);
-
-//         //set up views and adapter with received data
-//         viewBinding.noteTitleText.setText(titleString);
-//         viewBinding.noteBodyText.setText(textString);
-//         // TextNoteAdapter adapter = null;
-
-//     }
 
 public class TextNoteActivity extends AppCompatActivity {
 
@@ -42,6 +32,17 @@ public class TextNoteActivity extends AppCompatActivity {
     private TextView noteTitleView;
     private String noteContent = "";
     private String titleContent = "";
+
+    private boolean isNoteContentChanged = false;
+    private boolean isTitleContentChanged = false;
+    private int currentNoteID = -1;
+
+    private String currentDateTime = getCurrentDateTime();
+
+    /**
+     * Thread for db operations
+     */
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,29 +67,129 @@ public class TextNoteActivity extends AppCompatActivity {
             noteTitleView.setText(titleContent);
         }
 
+        currentNoteID = getIntent().getIntExtra("noteID", -1);
+        int folderKey = getIntent().getIntExtra("folderKey", 0);
+
+        //if noteID retrieved is default value, creat new text note in db
+        if(currentNoteID == -1) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    NoteDatabase db = new NoteDatabase(getApplicationContext());
+                    //make new text note and insert into db
+
+                    TextNoteModel textNote = new TextNoteModel(getIntent().getStringExtra("titleContent"),
+                            folderKey,
+                            getIntent().getStringExtra("noteContent"));
+
+                    currentNoteID = db.addTextNote(textNote);
+
+                }
+            });
+        }
+
         // Setup Note Options Button
         ImageButton noteOptionsBtn = findViewById(R.id.textNoteOptionsBtn);
         noteOptionsBtn.setOnClickListener(v -> {
             FragmentManager fm = getSupportFragmentManager();
             NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
+
+            //set current noteID so that its visible inside fragment for deletion, locking, etc
+            noteOptionsFragment.setNoteID(currentNoteID);
+
             noteOptionsFragment.show(fm, "NoteOptionsDialog");
         });
+
+        noteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                isNoteContentChanged = true;
+                currentDateTime =getCurrentDateTime();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        noteTitleView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                isTitleContentChanged = true;
+                currentDateTime = getCurrentDateTime();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+
+
         // Save the note content when the activity is paused
-        noteContent = noteTextView.getText().toString();
-        titleContent = noteTitleView.getText().toString();
+        if (isNoteContentChanged || isTitleContentChanged) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    NoteDatabase db = new NoteDatabase(getApplicationContext());
+
+                    // Get the updated content
+                    String updatedTitle = noteTitleView.getText().toString();
+                    String updatedNoteContent = noteTextView.getText().toString();
+
+                    // Update the database only if the content has changed
+                    if (isTitleContentChanged) {
+                        // Update title in the database
+                        db.updateNoteTitle(currentNoteID, updatedTitle, currentDateTime);
+                        isTitleContentChanged = false; // Reset flag
+                    }
+
+                    if (isNoteContentChanged) {
+                        // Update note content in the database
+                        db.updateTextNoteContent(currentNoteID, updatedNoteContent, currentDateTime);
+                        isNoteContentChanged = false; // Reset flag
+                    }
+                }
+            });
+        }
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         // Update the TextView with the latest note content when the activity is resumed
-        noteTextView.setText(noteContent);
-        noteTitleView.setText(titleContent);
+        //noteTextView.setText(noteContent);
+        //noteTitleView.setText(titleContent);
+
+
+    }
+
+    /**
+     * Gets current date and time in proper format for sorting in SQLite
+     * @return SimpleDateFormat when ParantNoteModel was instantiated.
+     */
+    private String getCurrentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
     }
 
 }
