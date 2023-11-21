@@ -40,10 +40,10 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
      * Attributes for TABLE_CHECKLIST_ITEMS
      */
 
-    private static final String COLUMN_NOTE_ID = "note_id";
-    private static final String COLUMN_IS_CHECKED = "is_checked";
+    public static final String COLUMN_NOTE_ID = "note_id";
+    public static final String COLUMN_IS_CHECKED = "is_checked";
 
-    private static final String COLUMN_CHECKLIST_ITEM_TEXT = "checklist_item_text";
+    public static final String COLUMN_CHECKLIST_ITEM_TEXT = "checklist_item_text";
 
 
     // SQL statement to create the notes table
