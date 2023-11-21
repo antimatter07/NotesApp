@@ -8,18 +8,18 @@ import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import com.mobdeve.xx22.memomate.databinding.SortingModalLayoutBinding;
+import com.mobdeve.xx22.memomate.databinding.ModalSortNotesByBinding;
 
 public class SortingOptionsDialogFragment extends DialogFragment {
 
-    private SortingModalLayoutBinding binding; // Declare a variable to hold the ViewBinding instance
+    private ModalSortNotesByBinding binding; // Declare a variable to hold the ViewBinding instance
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        binding = SortingModalLayoutBinding.inflate(inflater);
+        binding = ModalSortNotesByBinding.inflate(inflater);
 
         View view = binding.getRoot();
         builder.setView(view)

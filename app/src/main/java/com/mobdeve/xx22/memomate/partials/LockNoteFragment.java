@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.mobdeve.xx22.memomate.databinding.ModalLockNoteBinding;
-import com.mobdeve.xx22.memomate.databinding.NoteOptionsModalBinding;
+import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
 
 public class LockNoteFragment extends DialogFragment {
     private ModalLockNoteBinding binding;

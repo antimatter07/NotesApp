@@ -11,19 +11,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
-import com.mobdeve.xx22.memomate.databinding.NoteOptionsModalBinding;
+import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
 
 
 public class NoteOptionsFragment extends DialogFragment {
 
-    private NoteOptionsModalBinding binding;
+    private ModalNoteOptionsBinding binding;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        binding = NoteOptionsModalBinding.inflate(inflater);
+        binding = ModalNoteOptionsBinding.inflate(inflater);
 
         binding.lockNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
