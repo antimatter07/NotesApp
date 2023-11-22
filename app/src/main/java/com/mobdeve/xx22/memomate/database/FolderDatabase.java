@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 
 import java.util.ArrayList;
@@ -119,6 +120,26 @@ public class FolderDatabase {
 
         return lastId;
     }
+
+    public int getFolderColor(int folderId) {
+        int folderColor = R.color.folderDefault;
+        SQLiteDatabase db = folderHandler.getReadableDatabase();
+
+        String query = "SELECT "+ FolderDatabaseHandler.FOLDER_COLOR + " FROM " +
+                        FolderDatabaseHandler.FOLDERS_TABLE + " WHERE " +
+                        FolderDatabaseHandler.FOLDER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(folderId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            folderColor = cursor.getInt(cursor.getColumnIndexOrThrow(FolderDatabaseHandler.FOLDER_COLOR));
+            cursor.close();
+        }
+
+        db.close();
+
+        return folderColor;
+    }
+
 
     public void printFolderDB(SQLiteDatabase db) {
 

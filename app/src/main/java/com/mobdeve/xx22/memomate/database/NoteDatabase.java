@@ -83,6 +83,7 @@ public class NoteDatabase {
             int folderKey = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_FOLDER_KEY));
             int isLockedInt = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_IS_LOCKED));
 
+
             boolean isLocked;
             if(isLockedInt == 1)
                 isLocked = true;
@@ -143,7 +144,6 @@ public class NoteDatabase {
 
                     cursorCheckItem.close(); // Close the cursor
                 }
-
 
                 CheckListNoteModel checkNote = new CheckListNoteModel(title, folderKey, items);
 

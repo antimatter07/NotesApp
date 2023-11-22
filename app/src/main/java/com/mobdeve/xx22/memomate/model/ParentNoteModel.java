@@ -2,6 +2,8 @@ package com.mobdeve.xx22.memomate.model;
 
 
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -10,7 +12,6 @@ public class ParentNoteModel {
 
 
     private String title;
-    // if folderKey = -1, note doesn't belong to folder
     private int folderKey;
     private Boolean isLocked = false;
 
@@ -28,14 +29,15 @@ public class ParentNoteModel {
      */
     private String noteType;
     public static final int DEFAULT_NOTE_ID = -1;
-
+    // if folderKey = -1, note doesn't belong to folder
+    public static final int DEFAULT_FOLDER_KEY = -1;
 
     public ParentNoteModel(String title) {
         this.dateCreated = getCurrentDateTime();
         this.dateModified = getCurrentDateTime();
         this.title = title;
+        this.folderKey = DEFAULT_FOLDER_KEY;
         this.noteID = DEFAULT_NOTE_ID;
-
     }
 
 

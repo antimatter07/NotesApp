@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         this.viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(this.viewBinding.getRoot());
 
+        setupFolderRecyclerView();
 
         // Setup Toggle Order Button
         // TODO: Sort Order functionality
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        // Setup Notes Recycler View
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
         data = noteDatabase.getAllNotes();
 
@@ -158,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
-        setupFolderRecyclerView();
         reloadNoteData();
     }
 
