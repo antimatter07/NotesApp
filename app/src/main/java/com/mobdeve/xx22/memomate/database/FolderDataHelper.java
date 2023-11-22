@@ -21,14 +21,14 @@ public class FolderDataHelper {
         return data;
     }
 
-    public static void addFolder(String name, int color) {
-        data.add(new FolderModel(folderCount, name, color));
-        folderCount++;
-    }
+//    public static void addFolder(String name, int color) {
+//        data.add(new FolderModel(folderCount, name, color));
+//        folderCount++;
+//    }
 
     public static int getFolderColor(int key) {
         for (FolderModel folder : data) {
-            if (folder.getKey() == key) {
+            if (folder.getFolderId() == key) {
                 return folder.getColorResId();
             }
         }

@@ -10,8 +10,8 @@ public class ParentNoteModel {
 
 
     private String title;
-    // if folderKey = 0, note doesn't belong to folder
-    private int folderKey = 0;
+    // if folderKey = -1, note doesn't belong to folder
+    private int folderKey;
     private Boolean isLocked = false;
 
     private String dateCreated;
@@ -34,7 +34,6 @@ public class ParentNoteModel {
         this.dateCreated = getCurrentDateTime();
         this.dateModified = getCurrentDateTime();
         this.title = title;
-        this.folderKey = -1;
         this.noteID = DEFAULT_NOTE_ID;
 
     }

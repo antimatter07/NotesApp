@@ -55,4 +55,12 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
     public int getItemCount() {
         return folderData.size();
     }
+
+    /*  Handles adding a folder item to the stored array list + updates the UI accordingly.
+     *  Note: When a folder item is added, it is added at the end of the RecyclerView.
+     */
+    public void addFolderItem(FolderModel folder) {
+        this.folderData.add(folder);
+        notifyItemInserted(this.folderData.size() - 1);
+    }
 }

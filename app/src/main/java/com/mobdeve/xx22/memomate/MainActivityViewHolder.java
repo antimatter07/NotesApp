@@ -18,7 +18,7 @@ public class MainActivityViewHolder extends RecyclerView.ViewHolder {
 
     public void bindFolderData(FolderModel folderData) {
         folderBinding.folderNameTv.setText(folderData.getName());
-        folderBinding.folderNoteCountTv.setText("0"); // TODO: set correct data
+        folderBinding.folderNoteCountTv.setText(String.valueOf(folderData.getNoteCount()));
         int iconColor = ContextCompat.getColor(folderBinding.folderIv.getContext(), folderData.getColorResId());
         folderBinding.folderIv.setColorFilter(iconColor);
     }

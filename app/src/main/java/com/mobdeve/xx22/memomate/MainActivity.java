@@ -13,8 +13,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
-import com.mobdeve.xx22.memomate.database.NoteDataHelper;
-import com.mobdeve.xx22.memomate.database.FolderDataHelper;
+import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ActivityMainBinding;
 import com.mobdeve.xx22.memomate.model.FolderModel;
@@ -55,9 +54,7 @@ public class MainActivity extends AppCompatActivity {
         this.viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(this.viewBinding.getRoot());
 
-        this.folders = FolderDataHelper.generateFolderData();
-
-        setupRecyclerView();
+        setupFolderRecyclerView();
 
         // Setup Toggle Order Button
         // TODO: Sort Order functionality
@@ -81,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentManager fm = getSupportFragmentManager();
             CreateFolderDialogFragment createFolderDialogFragment = new CreateFolderDialogFragment();
             createFolderDialogFragment.show(fm, "NewFolderDialog");
+            createFolderDialogFragment.setAdapter(mainAdapter);
         });
 
 
@@ -128,8 +126,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupRecyclerView() {  // TODO: add ActivityResultLauncher
-        mainAdapter = new MainActivityAdapter(this.folders, mainActivityResultLauncher);
+    private void setupFolderRecyclerView() {  // TODO: add ActivityResultLauncher
+        FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
+        mainAdapter = new MainActivityAdapter(folderDatabase.getAllFolders(), mainActivityResultLauncher);
         viewBinding.folderRv.setAdapter(mainAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
@@ -163,5 +162,6 @@ public class MainActivity extends AppCompatActivity {
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
     }
+
 
 }
