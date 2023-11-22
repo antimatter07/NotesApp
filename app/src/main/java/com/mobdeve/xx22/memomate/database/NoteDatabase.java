@@ -134,7 +134,7 @@ public class NoteDatabase {
                         else
                             isChecked = false;
 
-
+                        Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
                         items.add(new ChecklistItemModel(itemId, id, isChecked, checklistItemText));
 
 
@@ -206,7 +206,7 @@ public class NoteDatabase {
 
     /**
      *Add checklistNote item to db
-     * @param checkListNote note to add to db
+     * @param note note to add to db
      * @return row where note was inserted
      */
     public synchronized int addCheckListNote(CheckListNoteModel note) {
@@ -317,4 +317,24 @@ public class NoteDatabase {
 
 
     }
+
+    public synchronized void updateChecklistItemText(int item_id, String updatedText) {
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT, updatedText);
+        //values.put(NoteDatabaseHandler.COLUMN_DATE_MODIFIED, updatedTime);
+
+        String selection = "ID = ?";
+        String[] selectionArgs = {String.valueOf(item_id)};
+        Log.d("IN UPDATE CHECK ITEM", "item id: " + String.valueOf(item_id) + "new text: " + updatedText);
+
+        db.update(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, values, selection, selectionArgs);
+
+        db.close();
+
+
+    }
+
 }
