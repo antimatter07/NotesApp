@@ -41,9 +41,9 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ViewFolderActivity.class);
+            intent.putExtra(ViewFolderActivity.folderIdKey, folderData.get(holder.getAdapterPosition()).getFolderId());
             intent.putExtra(ViewFolderActivity.folderNameKey, folderData.get(holder.getAdapterPosition()).getName());
             intent.putExtra(ViewFolderActivity.folderColorKey, folderData.get(holder.getAdapterPosition()).getColorResId());
-            //TODO: add logic for putting in data to view in ViewFolderActivity (maybe passed through intent or some db call?)
 
             //TODO: change to launcher in final
              viewFolderLauncher.launch(intent);

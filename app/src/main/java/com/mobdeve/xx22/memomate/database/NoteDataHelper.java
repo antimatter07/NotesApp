@@ -45,7 +45,7 @@ public class NoteDataHelper {
                 true, "water"
         ));
 
-        //todo data
+        //todolist data
         todo.add(new ChecklistItemModel(
                 true, "STINTSY Notebook 6"
         ));

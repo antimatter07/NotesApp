@@ -35,7 +35,7 @@ public class CreateFolderDialogFragment extends DialogFragment {
     private MainActivityAdapter mainActivityAdapter;
 
     // Temporarily holds values for the new folder
-    private String folderName = "New Folder";
+    private String folderName;
     int folderColor = R.color.folderDefault;
 
     @NonNull
@@ -80,9 +80,10 @@ public class CreateFolderDialogFragment extends DialogFragment {
         builder.setView(view)
                 .setPositiveButton("Create", (dialog, which) -> {
                     String name = String.valueOf(this.binding.folderNameEt.getText());
-                    if (name.length() != 0){
+                    if (name.length() != 0)
                         folderName = name;
-                    }
+                    else folderName = "Folder" + (folderDatabase.getLastId() + 1);
+
                     // add folder into the folder DB
                     FolderModel folder = new FolderModel(folderDatabase.getLastId() + 1, folderName, folderColor);
                     folderDatabase.addFolder(folder);

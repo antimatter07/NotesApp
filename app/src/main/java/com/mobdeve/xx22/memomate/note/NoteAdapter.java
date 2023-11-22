@@ -95,8 +95,7 @@ public class NoteAdapter extends BaseAdapter {
                 break;
         }
 
-        // TODO: set note color based on folder
-//        Log.d("JVC", "Create ParentNoteModel. Folder Key: " + noteData.getFolderKey() + " Name: " + noteData.getTitle());
+        // sets note color based on folder
         FolderDatabase folderDatabase = new FolderDatabase(parent.getContext());
         ConstraintLayout noteCl = convertView.findViewById(R.id.noteItemCl);
         int colorId = folderDatabase.getFolderColor(noteData.getFolderKey());

@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup Notes Recycler View
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
-        data = noteDatabase.getAllNotes();
+        data = noteDatabase.getAllNotes(-1);
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void reloadNoteData() {
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
-        data = noteDatabase.getAllNotes();
+        data = noteDatabase.getAllNotes(-1);
 
         if (mainAdapter != null) {
             noteAdapter.setData(data);

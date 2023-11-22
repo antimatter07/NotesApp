@@ -68,12 +68,15 @@ public class NoteDatabase {
      * Gets all notes in db to display in main activity
      * @return ArrayList<ParentNoteModel> of all notes in db
      */
-    public ArrayList<ParentNoteModel> getAllNotes() {
+    public ArrayList<ParentNoteModel> getAllNotes(int folderId) {
         ArrayList<ParentNoteModel> notes = new ArrayList<>();
 
         SQLiteDatabase db = dbHandler.getReadableDatabase();
 
-        Cursor c = db.query(dbHandler.TABLE_NOTES, null, null, null, null, null, null);
+        Cursor c = db.query(dbHandler.TABLE_NOTES, null,
+                    NoteDatabaseHandler.COLUMN_FOLDER_KEY + " = ?",
+                            new String[]{String.valueOf(folderId)},
+                    null, null, null);
 
 
         while(c.moveToNext()) {
