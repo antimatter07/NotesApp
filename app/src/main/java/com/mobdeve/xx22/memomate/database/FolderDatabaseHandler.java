@@ -25,13 +25,15 @@ public class FolderDatabaseHandler extends SQLiteOpenHelper {
     public static final String FOLDER_ID = "folderId";
     public static final String FOLDER_NAME = "name";
     public static final String FOLDER_COLOR = "colorResId";
+    public static final String FOLDER_NOTE_COUNT = "noteCount";
 
     // SQL statement for creating the folders table
     private static final String CREATE_FOLDERS_TABLE = 
             "CREATE TABLE IF NOT EXISTS " + FOLDERS_TABLE + "(" +
             FOLDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             FOLDER_NAME + " TEXT, " +
-            FOLDER_COLOR +  " INTEGER) ";
+            FOLDER_COLOR +  " INTEGER, " +
+            FOLDER_NOTE_COUNT +  " INTEGER) ";
 
     public FolderDatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -50,6 +52,7 @@ public class FolderDatabaseHandler extends SQLiteOpenHelper {
             values.put(FOLDER_ID, folder.getFolderId());
             values.put(FOLDER_NAME, folder.getName());
             values.put(FOLDER_COLOR, folder.getColorResId());
+            values.put(FOLDER_NOTE_COUNT, folder.getNoteCount());
             db.insert(FOLDERS_TABLE, null, values);
             values.clear();
         }

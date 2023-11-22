@@ -3,7 +3,9 @@ package com.mobdeve.xx22.memomate.partials;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -82,9 +84,8 @@ public class CreateFolderDialogFragment extends DialogFragment {
                         folderName = name;
                     }
                     // add folder into the folder DB
-                    FolderModel folder = new FolderModel(folderName, folderColor);
-                    int folderId = folderDatabase.addFolder(folder);
-                    folder.setFolderId(folderId);
+                    FolderModel folder = new FolderModel(folderDatabase.getLastId() + 1, folderName, folderColor);
+                    folderDatabase.addFolder(folder);
 
                     // update main activity UI w/ the new folder
                     mainActivityAdapter.addFolderItem(folder);
