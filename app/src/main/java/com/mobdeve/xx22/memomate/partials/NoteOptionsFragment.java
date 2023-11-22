@@ -1,6 +1,7 @@
 package com.mobdeve.xx22.memomate.partials;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.mobdeve.xx22.memomate.MainActivity;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
 
@@ -62,6 +64,14 @@ public class NoteOptionsFragment extends DialogFragment {
                         public void run() {
                             NoteDatabase db = new NoteDatabase(requireContext());
                             db.deleteNote(currentNoteID);
+
+                            Intent intent = new Intent(requireContext(), MainActivity.class);
+                            //add flags to clear back stack
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+                            startActivity(intent);
 
 
                         }
