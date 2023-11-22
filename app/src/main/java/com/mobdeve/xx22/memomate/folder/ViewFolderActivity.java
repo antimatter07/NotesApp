@@ -2,12 +2,20 @@ package com.mobdeve.xx22.memomate.folder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.mobdeve.xx22.memomate.MainActivityAdapter;
+import com.mobdeve.xx22.memomate.database.FolderDatabase;
+import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.model.ParentNoteModel;
+import com.mobdeve.xx22.memomate.note.NoteAdapter;
 import com.mobdeve.xx22.memomate.partials.CreateNoteDialogFragment;
 import com.mobdeve.xx22.memomate.partials.FolderOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
@@ -15,19 +23,24 @@ import com.mobdeve.xx22.memomate.search.SearchActivity;
 import com.mobdeve.xx22.memomate.partials.SortingOptionsDialogFragment;
 import com.mobdeve.xx22.memomate.databinding.FolderActivityBinding;
 
+import java.util.ArrayList;
+
 public class ViewFolderActivity extends AppCompatActivity {
 
-    public static final String folderNameKey = "FOLDER_NAME_KEY",
+    public static final String folderIdKey = "FOLDER_ID",
+                            folderNameKey = "FOLDER_NAME_KEY",
                             folderColorKey = "FOLDER_COLOR_KEY";
 
 
     //name to display
     private String folderName;
     private int folderColor;
+    private int folderId;
 
     private FolderActivityBinding viewBinding;
+    private NoteAdapter noteAdapter;
     private boolean isOrderAscending = true;
-
+    private ArrayList<ParentNoteModel> data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +49,10 @@ public class ViewFolderActivity extends AppCompatActivity {
         this.viewBinding = FolderActivityBinding.inflate(getLayoutInflater());
         setContentView(viewBinding.getRoot());
 
+        // set note adapter
         //set folder to name in intent
         Intent intent = getIntent();
+        folderId = intent.getIntExtra(folderIdKey, -1);
         folderName = intent.getStringExtra(folderNameKey);
         viewBinding.folderNameTv.setText(folderName);
         folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), intent.getIntExtra(folderColorKey, R.color.folderDefault));
@@ -46,6 +61,16 @@ public class ViewFolderActivity extends AppCompatActivity {
 
 
         //TODO: set up notes recycler view to show notes in folder
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(folderId);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        NoteAdapter noteAdapter = new NoteAdapter(this, data, fragmentManager);
+        this.noteAdapter = noteAdapter;
+
+        GridView gridView = viewBinding.notesGv;
+        gridView.setAdapter(noteAdapter);
 
         // Setup Search Button
         viewBinding.searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +94,7 @@ public class ViewFolderActivity extends AppCompatActivity {
         viewBinding.newNoteBtn.setOnClickListener(v -> {
             FragmentManager fm = getSupportFragmentManager();
             CreateNoteDialogFragment createNoteDialogFragment = new CreateNoteDialogFragment();
+            createNoteDialogFragment.setFolderId(this.folderId);
             createNoteDialogFragment.show(fm, "NewNoteDialog");
         });
 
@@ -92,6 +118,29 @@ public class ViewFolderActivity extends AppCompatActivity {
             folderOptionsFragment.show(fm, "FolderOptionsDialog");
         });
 
+    }
 
+    /**
+     * Refreshes main activity with updated db data
+     */
+    private void reloadNoteData() {
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(this.folderId);
+
+        if (noteAdapter != null) {
+            noteAdapter.setData(data);
+            noteAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    /**
+     * On resume of main activity, refresh screen with new note data
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the data when the activity is resumed, assuming changes are made to notes in db
+        reloadNoteData();
     }
 }

@@ -41,9 +41,9 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ViewFolderActivity.class);
+            intent.putExtra(ViewFolderActivity.folderIdKey, folderData.get(holder.getAdapterPosition()).getFolderId());
             intent.putExtra(ViewFolderActivity.folderNameKey, folderData.get(holder.getAdapterPosition()).getName());
             intent.putExtra(ViewFolderActivity.folderColorKey, folderData.get(holder.getAdapterPosition()).getColorResId());
-            //TODO: add logic for putting in data to view in ViewFolderActivity (maybe passed through intent or some db call?)
 
             //TODO: change to launcher in final
              viewFolderLauncher.launch(intent);
@@ -54,5 +54,13 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
     @Override
     public int getItemCount() {
         return folderData.size();
+    }
+
+    /*  Handles adding a folder item to the stored array list + updates the UI accordingly.
+     *  Note: When a folder item is added, it is added at the end of the RecyclerView.
+     */
+    public void addFolderItem(FolderModel folder) {
+        this.folderData.add(folder);
+        notifyItemInserted(this.folderData.size() - 1);
     }
 }

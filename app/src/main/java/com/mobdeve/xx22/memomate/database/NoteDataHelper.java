@@ -12,7 +12,7 @@ public class NoteDataHelper {
         ArrayList<TextNoteModel> data = new ArrayList<>();
 
         data.add(new TextNoteModel(
-                "Brownisaur", 0,
+                "Brownisaur", -1,
                 "Sunlight is absorbed by its whipped cream and used to make the cherry on its back grow larger in size."
         ));
         data.add(new TextNoteModel(
@@ -45,7 +45,7 @@ public class NoteDataHelper {
                 true, "water"
         ));
 
-        //todo data
+        //todolist data
         todo.add(new ChecklistItemModel(
                 true, "STINTSY Notebook 6"
         ));

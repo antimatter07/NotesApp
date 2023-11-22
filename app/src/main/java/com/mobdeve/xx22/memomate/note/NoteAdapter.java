@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.note.note_checklist.ChecklistActivity;
@@ -60,6 +61,7 @@ public class NoteAdapter extends BaseAdapter {
         return position;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -93,9 +95,10 @@ public class NoteAdapter extends BaseAdapter {
                 break;
         }
 
-        // TODO: set note color based on folder
+        // sets note color based on folder
+        FolderDatabase folderDatabase = new FolderDatabase(parent.getContext());
         ConstraintLayout noteCl = convertView.findViewById(R.id.noteItemCl);
-        int colorId = FolderDataHelper.getFolderColor(noteData.getFolderKey());
+        int colorId = folderDatabase.getFolderColor(noteData.getFolderKey());
         int folderColor =  ContextCompat.getColor(noteCl.getContext(), colorId);
         noteCl.setBackgroundColor(folderColor);
         noteTypeIv.setColorFilter(folderColor);
@@ -121,7 +124,7 @@ public class NoteAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = null;
-                Log.d("GridView", noteType);
+
                 switch(noteType) {
                     case "TextNoteModel":
                         intent = new Intent(context, TextNoteActivity.class);
@@ -130,6 +133,7 @@ public class NoteAdapter extends BaseAdapter {
                         intent.putExtra("noteContent", ((TextNoteModel) noteData).getText());
                         intent.putExtra("noteID", noteData.getNoteID());
                         intent.putExtra("folderKey", noteData.getFolderKey());
+                        intent.putExtra("noteColor", folderDatabase.getFolderColor(noteData.getFolderKey()));
 
 
                         context.startActivity(intent);
@@ -138,6 +142,8 @@ public class NoteAdapter extends BaseAdapter {
                         intent = new Intent(context, ChecklistActivity.class);
                         intent.putExtra(ChecklistActivity.TITLE_KEY, noteData.getTitle());
                         intent.putExtra(ChecklistActivity.ITEMLIST_KEY, ((CheckListNoteModel) noteData).getCheckItemData());
+                        intent.putExtra("noteColor", folderDatabase.getFolderColor(noteData.getFolderKey()));
+
                         context.startActivity(intent);
                         break;
                     case "DrawingNoteModel":

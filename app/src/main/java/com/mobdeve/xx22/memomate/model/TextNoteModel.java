@@ -4,7 +4,7 @@ public class TextNoteModel extends ParentNoteModel {
     private String text = "";
 
     public TextNoteModel (String title, String text) {
-        super(title, -1);
+        super(title);
         this.text = text;
         super.setNoteType("text");
     }
