@@ -94,6 +94,7 @@ public class ViewFolderActivity extends AppCompatActivity {
         viewBinding.newNoteBtn.setOnClickListener(v -> {
             FragmentManager fm = getSupportFragmentManager();
             CreateNoteDialogFragment createNoteDialogFragment = new CreateNoteDialogFragment();
+            createNoteDialogFragment.setFolderId(this.folderId);
             createNoteDialogFragment.show(fm, "NewNoteDialog");
         });
 
@@ -119,27 +120,27 @@ public class ViewFolderActivity extends AppCompatActivity {
 
     }
 
-//    /**
-//     * Refreshes main activity with updated db data
-//     */
-//    private void reloadNoteData() {
-//        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
-//        data = noteDatabase.getAllNotes(this.folderId);
-//
-//        if (noteAdapter != null) {
-//            noteAdapter.setData(data);
-//            noteAdapter.notifyDataSetChanged();
-//        }
-//
-//    }
-//
-//    /**
-//     * On resume of main activity, refresh screen with new note data
-//     */
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        // Refresh the data when the activity is resumed, assuming changes are made to notes in db
-//        reloadNoteData();
-//    }
+    /**
+     * Refreshes main activity with updated db data
+     */
+    private void reloadNoteData() {
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(this.folderId);
+
+        if (noteAdapter != null) {
+            noteAdapter.setData(data);
+            noteAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    /**
+     * On resume of main activity, refresh screen with new note data
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the data when the activity is resumed, assuming changes are made to notes in db
+        reloadNoteData();
+    }
 }

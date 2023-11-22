@@ -76,8 +76,9 @@ public class TextNoteActivity extends AppCompatActivity {
             noteTitleView.setText(titleContent);
         }
 
+
         currentNoteID = getIntent().getIntExtra("noteID", -1);
-        int folderKey = getIntent().getIntExtra("folderKey", 0);
+        int folderKey = getIntent().getIntExtra("folderKey", -1);
 
         //if noteID retrieved is default value, create new text note in db
         if(currentNoteID == -1) {

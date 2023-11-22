@@ -86,13 +86,14 @@ public class CreateFolderDialogFragment extends DialogFragment {
 
                     // add folder into the folder DB
                     FolderModel folder = new FolderModel(folderDatabase.getLastId() + 1, folderName, folderColor);
-                    folderDatabase.addFolder(folder);
+                    int folderId = folderDatabase.addFolder(folder);
 
                     // update main activity UI w/ the new folder
                     mainActivityAdapter.addFolderItem(folder);
 
                     // switch to ViewFolderActivity
                     Intent intent = new Intent(getActivity(), ViewFolderActivity.class);
+                    intent.putExtra(ViewFolderActivity.folderIdKey, folderId);
                     intent.putExtra(ViewFolderActivity.folderNameKey, folderName);
                     intent.putExtra(ViewFolderActivity.folderColorKey, folderColor);
                     startActivity(intent);

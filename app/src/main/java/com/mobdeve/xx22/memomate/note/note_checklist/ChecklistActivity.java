@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class ChecklistActivity extends AppCompatActivity {
     public static final String ITEMLIST_KEY = "ITEMLIST_KEY";
     public static final String TITLE_KEY = "TITLE_KEY";
+    public static final String FOLDER_KEY = "FOLDER_KEY";
     public static final String DATE_CREATED_KEY = "DATE_KEY";
     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
 

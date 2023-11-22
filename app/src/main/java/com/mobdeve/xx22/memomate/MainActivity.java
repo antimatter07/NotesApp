@@ -25,14 +25,14 @@ import com.mobdeve.xx22.memomate.partials.SortingOptionsDialogFragment;
 import com.mobdeve.xx22.memomate.search.SearchActivity;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<FolderModel> folders;
     private MainActivityAdapter mainAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
-
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
 
 //    TEMP data
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         this.viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(this.viewBinding.getRoot());
 
+        // setup and load folders
         setupFolderRecyclerView();
 
         // Setup Toggle Order Button
@@ -128,9 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFolderRecyclerView() {  // TODO: add ActivityResultLauncher
         FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
-        mainAdapter = new MainActivityAdapter(folderDatabase.getAllFolders(), mainActivityResultLauncher);
+        ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
+        mainAdapter = new MainActivityAdapter(folders, mainActivityResultLauncher);
         viewBinding.folderRv.setAdapter(mainAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
     }
 
     private String getNoteType(ParentNoteModel note) {
@@ -161,6 +164,5 @@ public class MainActivity extends AppCompatActivity {
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
     }
-
 
 }
