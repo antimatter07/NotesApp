@@ -10,18 +10,33 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
+import com.mobdeve.xx22.memomate.model.TextNoteModel;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.databinding.ChecklistActivityBinding;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChecklistActivity extends AppCompatActivity {
     public static final String ITEMLIST_KEY = "ITEMLIST_KEY";
     public static final String TITLE_KEY = "TITLE_KEY";
     public static final String DATE_CREATED_KEY = "DATE_KEY";
     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
+
+    /**
+     * note id of current checklist note
+     */
+    private int currentNoteID;
+
+    /**
+     * Thread for db operations
+     */
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +78,27 @@ public class ChecklistActivity extends AppCompatActivity {
             NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
             noteOptionsFragment.show(fm, "NoteOptionsDialog");
         });
+
+        currentNoteID = getIntent().getIntExtra("noteID", -1);
+        int folderKey = getIntent().getIntExtra("folderKey", 0);
+
+        //if noteID retrieved is default value, create a new checklist note in db
+        if(currentNoteID == -1) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    NoteDatabase db = new NoteDatabase(getApplicationContext());
+                    //make new text note and insert into db
+
+                    CheckListNoteModel checklistNote = new CheckListNoteModel(titleString,
+                            folderKey,
+                            listData);
+
+                    currentNoteID = db.addCheckListNote(checklistNote);
+
+                }
+            });
+        }
 
 
     }

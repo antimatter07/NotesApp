@@ -205,6 +205,54 @@ public class NoteDatabase {
     }
 
     /**
+     *Add checklistNote item to db
+     * @param checkListNote note to add to db
+     * @return row where note was inserted
+     */
+    public synchronized int addCheckListNote(CheckListNoteModel note) {
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_TITLE, note.getTitle());
+        values.put(NoteDatabaseHandler.COLUMN_FOLDER_KEY, note.getFolderKey());
+        values.put(NoteDatabaseHandler.COLUMN_DATE_CREATED, note.getDateCreated());
+        values.put(NoteDatabaseHandler.COLUMN_DATE_MODIFIED, note.getDateModified());
+
+        boolean isLockedBoolean = note.getLocked();
+
+        if(isLockedBoolean)
+            values.put(NoteDatabaseHandler.COLUMN_IS_LOCKED, 1);
+        else
+            values.put(NoteDatabaseHandler.COLUMN_IS_LOCKED, 0);
+
+        values.put(NoteDatabaseHandler.COLUMN_NOTE_TYPE, note.getNoteType());
+
+        Log.d("ADDING NEW NOTE!", "Entering (Checklist)" +note.getTitle() + " INTO DB");
+        int row_id = (int) db.insert(NoteDatabaseHandler.TABLE_NOTES, null, values);
+
+        ArrayList<ChecklistItemModel> checklistItems = note.getCheckItemData();
+
+        //for every checklist item, insert into db with associated note id
+        for (ChecklistItemModel item: checklistItems) {
+            ContentValues checklistValues = new ContentValues();
+
+            checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT, item.getText());
+            checklistValues.put(NoteDatabaseHandler.COLUMN_NOTE_ID, row_id);
+            checklistValues.put(NoteDatabaseHandler.COLUMN_IS_CHECKED, item.getIsChecked());
+            Log.d("CHECKLIST ITEM MODEL", "BEING INSERTED INTO DB:" + item.getText());
+            int row = (int) db.insert(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, null, checklistValues);
+            Log.d("CHECKLIST ITEM INSERTED AT: ", String.valueOf(row));
+
+        }
+
+        db.close();
+
+        return row_id;
+
+    }
+
+    /**
      * Updates a text note with new text content
      * @param currentNoteID id of edited note
      * @param updatedText new text for text note

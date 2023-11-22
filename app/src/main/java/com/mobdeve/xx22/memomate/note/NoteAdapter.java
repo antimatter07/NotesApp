@@ -138,6 +138,10 @@ public class NoteAdapter extends BaseAdapter {
                         intent = new Intent(context, ChecklistActivity.class);
                         intent.putExtra(ChecklistActivity.TITLE_KEY, noteData.getTitle());
                         intent.putExtra(ChecklistActivity.ITEMLIST_KEY, ((CheckListNoteModel) noteData).getCheckItemData());
+
+                        intent.putExtra("noteID", noteData.getNoteID());
+                        intent.putExtra("folderKey", noteData.getFolderKey());
+
                         context.startActivity(intent);
                         break;
                     case "DrawingNoteModel":
