@@ -425,6 +425,221 @@ public class NoteDatabase {
     }
 
 
+    public ArrayList<ParentNoteModel> searchNotesWithFolderKey(String query, int folderId) {
+        ArrayList<ParentNoteModel> notes = new ArrayList<>();
+
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+
+        String selection = NoteDatabaseHandler.COLUMN_FOLDER_KEY + " = ? AND " +
+                NoteDatabaseHandler.COLUMN_TITLE + " LIKE ?";
+
+        String[] selectionArgs = {String.valueOf(folderId), "%" + query + "%"};
+
+        Cursor c = db.query(
+                NoteDatabaseHandler.TABLE_NOTES,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        while (c.moveToNext()) {
+
+            int id = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_ID));
+            String title = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_TITLE));
+            int folderKey = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_FOLDER_KEY));
+            int isLockedInt = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_IS_LOCKED));
+
+
+            boolean isLocked;
+            if (isLockedInt == 1)
+                isLocked = true;
+            else
+                isLocked = false;
+
+            String dateCreated = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_DATE_CREATED));
+            String dateModified = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_DATE_MODIFIED));
+
+            String noteType = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_TYPE));
+
+            //create note object based on type of note
+            if (noteType.equals("text")) {
+                String noteText = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_TEXT));
+
+                TextNoteModel textNote = new TextNoteModel(title, folderKey, noteText);
+
+                ParentNoteModel note = (ParentNoteModel) textNote;
+
+                note.setNoteID(id);
+                note.setLocked(isLocked);
+                note.setDateCreated(dateCreated);
+                note.setDateModified(dateModified);
+
+                notes.add(note);
+
+            } else if (noteType.equals("checklist")) {
+
+
+                ArrayList<ChecklistItemModel> items = new ArrayList<>();
+
+                //query checklist item data, only those with current id should be considered
+                Cursor cursorCheckItem = getChecklistItemsByNoteId(id);
+
+                //go through of every checklist item needed for this note
+
+                if (cursorCheckItem != null && cursorCheckItem.moveToFirst()) {
+                    do {
+                        // Retrieve data from the cursor
+                        int itemId = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow("ID"));
+                        //int noteId = cursorCheckItem.getLong(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_ID));
+                        String checklistItemText = cursorCheckItem.getString(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT));
+
+                        int isCheckedInt = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_IS_CHECKED));
+
+                        boolean isChecked;
+                        if (isCheckedInt == 1)
+                            isChecked = true;
+                        else
+                            isChecked = false;
+
+                        Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
+                        items.add(new ChecklistItemModel(itemId, id, isChecked, checklistItemText));
+
+
+                    } while (cursorCheckItem.moveToNext());
+
+                    cursorCheckItem.close(); // Close the cursor
+                }
+
+                CheckListNoteModel checkNote = new CheckListNoteModel(title, folderKey, items);
+
+                ParentNoteModel note = (ParentNoteModel) checkNote;
+                note.setNoteID(id);
+                note.setLocked(isLocked);
+                note.setDateCreated(dateCreated);
+                note.setDateModified(dateModified);
+                notes.add(note);
+            }
+
+
+        }
+        // Close the cursor and database
+        c.close();
+        db.close();
+
+        return notes;
+    }
+
+    public ArrayList<ParentNoteModel> searchNotes(String query) {
+        ArrayList<ParentNoteModel> notes = new ArrayList<>();
+
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+
+        String selection = NoteDatabaseHandler.COLUMN_TITLE + " LIKE ?";
+
+        String[] selectionArgs = {"%" + query + "%"};
+
+        Cursor c = db.query(
+                NoteDatabaseHandler.TABLE_NOTES,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        while (c.moveToNext()) {
+
+            int id = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_ID));
+            String title = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_TITLE));
+            int folderKey = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_FOLDER_KEY));
+            int isLockedInt = c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_IS_LOCKED));
+
+
+            boolean isLocked;
+            if (isLockedInt == 1)
+                isLocked = true;
+            else
+                isLocked = false;
+
+            String dateCreated = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_DATE_CREATED));
+            String dateModified = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_DATE_MODIFIED));
+
+            String noteType = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_TYPE));
+
+            //create note object based on type of note
+            if (noteType.equals("text")) {
+                String noteText = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_TEXT));
+
+                TextNoteModel textNote = new TextNoteModel(title, folderKey, noteText);
+
+                ParentNoteModel note = (ParentNoteModel) textNote;
+
+                note.setNoteID(id);
+                note.setLocked(isLocked);
+                note.setDateCreated(dateCreated);
+                note.setDateModified(dateModified);
+
+                notes.add(note);
+
+            } else if (noteType.equals("checklist")) {
+
+
+                ArrayList<ChecklistItemModel> items = new ArrayList<>();
+
+                //query checklist item data, only those with current id should be considered
+                Cursor cursorCheckItem = getChecklistItemsByNoteId(id);
+
+                //go through of every checklist item needed for this note
+
+                if (cursorCheckItem != null && cursorCheckItem.moveToFirst()) {
+                    do {
+                        // Retrieve data from the cursor
+                        int itemId = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow("ID"));
+                        //int noteId = cursorCheckItem.getLong(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_ID));
+                        String checklistItemText = cursorCheckItem.getString(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT));
+
+                        int isCheckedInt = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_IS_CHECKED));
+
+                        boolean isChecked;
+                        if (isCheckedInt == 1)
+                            isChecked = true;
+                        else
+                            isChecked = false;
+
+                        Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
+                        items.add(new ChecklistItemModel(itemId, id, isChecked, checklistItemText));
+
+
+                    } while (cursorCheckItem.moveToNext());
+
+                    cursorCheckItem.close(); // Close the cursor
+                }
+
+                CheckListNoteModel checkNote = new CheckListNoteModel(title, folderKey, items);
+
+                ParentNoteModel note = (ParentNoteModel) checkNote;
+                note.setNoteID(id);
+                note.setLocked(isLocked);
+                note.setDateCreated(dateCreated);
+                note.setDateModified(dateModified);
+                notes.add(note);
+            }
+
+
+        }
+        // Close the cursor and database
+        c.close();
+        db.close();
+
+        return notes;
+    }
+
+
+
 
 
 }

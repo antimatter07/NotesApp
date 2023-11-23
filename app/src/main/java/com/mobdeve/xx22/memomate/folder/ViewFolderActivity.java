@@ -77,6 +77,9 @@ public class ViewFolderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ViewFolderActivity.this, SearchActivity.class);
+
+                intent.putExtra("folderKey", folderId);
+
                 startActivity(intent);
             }
         });
