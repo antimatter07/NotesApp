@@ -9,13 +9,11 @@ import android.widget.GridView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.mobdeve.xx22.memomate.MainActivityAdapter;
-import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.note.NoteAdapter;
+import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.CreateNoteDialogFragment;
 import com.mobdeve.xx22.memomate.partials.FolderOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
@@ -25,7 +23,8 @@ import com.mobdeve.xx22.memomate.databinding.FolderActivityBinding;
 
 import java.util.ArrayList;
 
-public class ViewFolderActivity extends AppCompatActivity {
+public class ViewFolderActivity extends AppCompatActivity
+        implements ChangeFolderFragment.UpdateActivityGridView {
 
     public static final String folderIdKey = "FOLDER_ID",
                             folderNameKey = "FOLDER_NAME_KEY",
@@ -41,6 +40,12 @@ public class ViewFolderActivity extends AppCompatActivity {
     private NoteAdapter noteAdapter;
     private boolean isOrderAscending = true;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
+
+    @Override
+    public void updateGridView() {
+        // updates the grid view when a note is moved to a different folder
+        reloadNoteData();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +132,7 @@ public class ViewFolderActivity extends AppCompatActivity {
      * Refreshes main activity with updated db data
      */
     private void reloadNoteData() {
-        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        NoteDatabase noteDatabase = new NoteDatabase(this);
         data = noteDatabase.getAllNotes(this.folderId);
 
         if (noteAdapter != null) {

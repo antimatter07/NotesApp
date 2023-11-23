@@ -1,11 +1,8 @@
 package com.mobdeve.xx22.memomate.partials;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,11 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.mobdeve.xx22.memomate.MainActivityAdapter;
+import com.mobdeve.xx22.memomate.folder.FolderAdapter;
 import com.mobdeve.xx22.memomate.R;
-import com.mobdeve.xx22.memomate.database.FolderDataHelper;
 import com.mobdeve.xx22.memomate.database.FolderDatabase;
-import com.mobdeve.xx22.memomate.database.FolderDatabaseHandler;
 import com.mobdeve.xx22.memomate.databinding.ModalNewFolderBinding;
 import com.mobdeve.xx22.memomate.folder.ViewFolderActivity;
 import com.mobdeve.xx22.memomate.model.FolderModel;
@@ -32,7 +27,7 @@ public class CreateFolderDialogFragment extends DialogFragment {
 
     private ModalNewFolderBinding binding;
     private FolderDatabase folderDatabase;
-    private MainActivityAdapter mainActivityAdapter;
+    private FolderAdapter mainActivityAdapter;
 
     // Temporarily holds values for the new folder
     private String folderName;
@@ -106,7 +101,7 @@ public class CreateFolderDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    public void setAdapter(MainActivityAdapter adapter) {
+    public void setAdapter(FolderAdapter adapter) {
         this.mainActivityAdapter = adapter;
     }
 }

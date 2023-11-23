@@ -15,6 +15,7 @@ import org.w3c.dom.Text;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 public class NoteDatabase {
 
@@ -176,6 +177,27 @@ public class NoteDatabase {
     }
 
     /**
+     * Gets the note title of the given id
+     * @param noteID id of  note
+     */
+    public synchronized String getNoteTitle(int noteID) {
+        String noteTitle = "";
+        SQLiteDatabase db = dbHandler.getReadableDatabase();
+
+        String query = "SELECT " + NoteDatabaseHandler.COLUMN_TITLE + " FROM " +
+                        NoteDatabaseHandler.TABLE_NOTES + " WHERE " +
+                        NoteDatabaseHandler.COLUMN_ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[] {String.valueOf(noteID)});
+
+        if (c != null && c.moveToFirst()) {
+            noteTitle = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_TITLE));
+            c.close();
+        }
+        db.close();
+        return noteTitle;
+    }
+
+    /**
      * Add a new note into the db after user clicks on new text note
      * @param note Note object with values to insert into db
      * @return int of row id inserted
@@ -299,6 +321,26 @@ public class NoteDatabase {
 
         db.close();
 
+
+    }
+
+    /**
+     * Updates folder of note.
+     * @param currentNoteID ID of note to change title
+     * @param folderKey ID of new folder
+     */
+    public synchronized void updateNoteFolder(int currentNoteID, int folderKey) {
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_FOLDER_KEY, folderKey);
+
+        String selection = NoteDatabaseHandler.COLUMN_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(currentNoteID)};
+
+        db.update(NoteDatabaseHandler.TABLE_NOTES, values, selection, selectionArgs);
+
+        db.close();
 
     }
 

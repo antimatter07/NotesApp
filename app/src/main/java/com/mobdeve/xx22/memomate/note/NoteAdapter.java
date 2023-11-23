@@ -112,8 +112,11 @@ public class NoteAdapter extends BaseAdapter {
             public void onClick(View v) {
                 // Open note options modal
                 NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
+
                 //pass noteID for deletions
                 noteOptionsFragment.setNoteID(noteData.getNoteID());
+                noteOptionsFragment.setFolderID(noteData.getFolderKey());
+
                 noteOptionsFragment.show(fragmentManager, "NoteOptionsDialog");
 
             }

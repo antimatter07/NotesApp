@@ -16,31 +16,34 @@ import android.widget.ToggleButton;
 
 import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.database.NoteDatabaseHandler;
 import com.mobdeve.xx22.memomate.databinding.ActivityMainBinding;
+
+import com.mobdeve.xx22.memomate.folder.FolderAdapter;
+
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.note.NoteAdapter;
+import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.CreateFolderDialogFragment;
 import com.mobdeve.xx22.memomate.partials.CreateNoteDialogFragment;
 import com.mobdeve.xx22.memomate.partials.SortingOptionsDialogFragment;
 import com.mobdeve.xx22.memomate.search.SearchActivity;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+            implements ChangeFolderFragment.UpdateActivityGridView {
 
-    private MainActivityAdapter mainAdapter;
+    private FolderAdapter mainAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
 
 //    TEMP data
     private boolean isOrderAscending = true;
-
 
     private ActivityResultLauncher<Intent> mainActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupFolderRecyclerView() {  // TODO: add ActivityResultLauncher
+    private void setupFolderRecyclerView() {
         FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
         ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
-        mainAdapter = new MainActivityAdapter(folders, mainActivityResultLauncher);
+        mainAdapter = new FolderAdapter(folders, mainActivityResultLauncher);
         viewBinding.folderRv.setAdapter(mainAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
@@ -165,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
+        reloadNoteData();
+    }
+
+    @Override
+    public void updateGridView() {
+        // updates the grid view when a note is moved to a different folder
         reloadNoteData();
     }
 

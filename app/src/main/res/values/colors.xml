@@ -5,7 +5,7 @@
 
     <color name="ic_logo_background">#FDFAFD</color>
     <color name="whiteAccent">#F7F9FC</color>
-    <color name="whiteAccentDark">#9CA1A8</color> <!-- #9B9B9B -->
+    <color name="whiteAccentDark">#9CA1A8</color>
     <color name="blackDefault">#1F1F1F</color> <!-- default black for text -->
 
     <!--    FOLDER & NOTE COLORS-->

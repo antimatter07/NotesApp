@@ -7,13 +7,17 @@
     tools:ignore="MissingDefaultResource">
 
     <LinearLayout
+        android:id="@+id/foldersLl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="320dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -29,7 +33,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/foldersRl"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:fadeScrollbars="true"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/modal_change_folder_item" />
 
 
     </LinearLayout>

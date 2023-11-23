@@ -11,6 +11,7 @@ public class FolderDataHelper {
 
     public static ArrayList<FolderModel> generateFolderData() {
 
+        data.add(new FolderModel(-1, "MemoMate", R.color.folderDefault));
         data.add(new FolderModel(0, "Dino Drafts", R.color.folderRed));
         data.add(new FolderModel(1));
         data.add(new FolderModel(2, "TODOs", R.color.folderCyan));

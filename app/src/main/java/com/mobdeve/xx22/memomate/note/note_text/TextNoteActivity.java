@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
+import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
 
@@ -111,7 +112,6 @@ public class TextNoteActivity extends AppCompatActivity {
 
             //set current noteID so that its visible inside fragment for deletion, locking, etc
             noteOptionsFragment.setNoteID(currentNoteID);
-
             noteOptionsFragment.show(fm, "NoteOptionsDialog");
         });
 
