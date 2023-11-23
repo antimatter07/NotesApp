@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
+import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
 
@@ -24,7 +25,8 @@ import java.util.concurrent.Executors;
 
 
 
-public class TextNoteActivity extends AppCompatActivity {
+public class TextNoteActivity extends AppCompatActivity
+            implements ChangeFolderFragment.UpdateNoteColor {
 
      public static final String TEXT_KEY = "TEXT_KEY";
      public static final String TITLE_KEY = "TITLE_KEY";
@@ -202,5 +204,12 @@ public class TextNoteActivity extends AppCompatActivity {
         return sdf.format(new Date());
     }
 
+    @Override
+    public void updateNoteColor(int noteColor) {
+        // update the note color if the note is moved to another folder
+        noteColor = ContextCompat.getColor(this, noteColor);
+        noteBar.setBackgroundColor(noteColor);
+
+    }
 }
 

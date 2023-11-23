@@ -2,6 +2,7 @@ package com.mobdeve.xx22.memomate.folder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.note.NoteAdapter;
+import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.CreateNoteDialogFragment;
 import com.mobdeve.xx22.memomate.partials.FolderOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
@@ -21,7 +23,8 @@ import com.mobdeve.xx22.memomate.databinding.FolderActivityBinding;
 
 import java.util.ArrayList;
 
-public class ViewFolderActivity extends AppCompatActivity {
+public class ViewFolderActivity extends AppCompatActivity
+        implements ChangeFolderFragment.UpdateActivityGridView {
 
     public static final String folderIdKey = "FOLDER_ID",
                             folderNameKey = "FOLDER_NAME_KEY",
@@ -37,6 +40,12 @@ public class ViewFolderActivity extends AppCompatActivity {
     private NoteAdapter noteAdapter;
     private boolean isOrderAscending = true;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
+
+    @Override
+    public void updateGridView() {
+        // updates the grid view when a note is moved to a different folder
+        reloadNoteData();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -21,6 +22,7 @@ import com.mobdeve.xx22.memomate.folder.FolderAdapter;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.note.NoteAdapter;
+import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.CreateFolderDialogFragment;
 import com.mobdeve.xx22.memomate.partials.CreateNoteDialogFragment;
 import com.mobdeve.xx22.memomate.partials.SortingOptionsDialogFragment;
@@ -28,7 +30,8 @@ import com.mobdeve.xx22.memomate.search.SearchActivity;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+            implements ChangeFolderFragment.UpdateActivityGridView {
 
     private FolderAdapter mainAdapter;
     private NoteAdapter noteAdapter;
@@ -37,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
 //    TEMP data
     private boolean isOrderAscending = true;
-
 
     private ActivityResultLauncher<Intent> mainActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -163,6 +165,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
+        reloadNoteData();
+    }
+
+    @Override
+    public void updateGridView() {
+        // updates the grid view when a note is moved to a different folder
         reloadNoteData();
     }
 

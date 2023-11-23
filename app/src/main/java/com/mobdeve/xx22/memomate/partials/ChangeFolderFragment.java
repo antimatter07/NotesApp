@@ -2,6 +2,7 @@ package com.mobdeve.xx22.memomate.partials;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -40,6 +41,15 @@ public class ChangeFolderFragment extends DialogFragment {
     private ExecutorService executorService;
     private Handler handler;
 
+    public interface UpdateActivityGridView {
+        void updateGridView();
+    }
+
+    public interface UpdateNoteColor {
+        void updateNoteColor(int color);
+    }
+    private UpdateActivityGridView listener;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -63,7 +73,6 @@ public class ChangeFolderFragment extends DialogFragment {
         executorService = Executors.newFixedThreadPool(2);
         handler = new Handler();
 
-
         AlertDialog alertDialog = builder.setView(view)
                                 .setPositiveButton("Move", null)
                                 .setNegativeButton("Cancel", (dialog, which) -> {
@@ -77,6 +86,16 @@ public class ChangeFolderFragment extends DialogFragment {
         return alertDialog;
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            listener = (UpdateActivityGridView) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement updateActivityGridView");
+        }
+    }
+
     private void onMoveClick(Dialog dialog) {
         FolderModel selectedFolder = adapter.getSelectedFolder();
 
@@ -88,9 +107,14 @@ public class ChangeFolderFragment extends DialogFragment {
                         NoteDatabase db = new NoteDatabase(getContext());
                         db.updateNoteFolder(currentNoteId, selectedFolder.getFolderId());
 
-                        Intent moveIntent = new Intent();
-                        moveIntent.putExtra(NoteDatabaseHandler.COLUMN_ID, currentNoteId);
-                        requireActivity().setResult(Activity.RESULT_OK, moveIntent);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (listener != null) {
+                                    listener.updateGridView();
+                                }
+                            }
+                        });
                     }
             });
 
