@@ -20,6 +20,9 @@ public class SearchActivity extends AppCompatActivity {
     private ActivitySearchBinding viewBinding;
     private NoteAdapter searchNoteAdapter;
     private ArrayList<ParentNoteModel> searchResults = new ArrayList<>();
+    private int folderKey;
+
+    private String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class SearchActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(this.viewBinding.searchNoteSv, InputMethodManager.SHOW_IMPLICIT);
 
+        //if activity was started from a folder, get its folderkey
+        folderKey = getIntent().getIntExtra("folderKey", -1);
         // Initialize the adapter
         this.searchNoteAdapter = new NoteAdapter(this, searchResults, getSupportFragmentManager());
 
@@ -49,6 +54,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // Update the search results based on the entered query
+                query = newText;
                 searchNotes(newText);
                 return false;
             }
@@ -58,11 +64,18 @@ public class SearchActivity extends AppCompatActivity {
     private void searchNotes(String query) {
         // query needed notes in db
         NoteDatabase noteDatabase = new NoteDatabase(SearchActivity.this);
-        ArrayList<ParentNoteModel> matchingNotes = noteDatabase.searchNotes(query);
+
+
+        //if no folder, do a global search. else filter by folder
+        if(folderKey == -1)
+             searchResults = noteDatabase.searchNotes(query);
+        else
+            searchResults = noteDatabase.searchNotesWithFolderKey(query, folderKey);
+
 
 
         //update the adapter with the new search results
-        searchNoteAdapter.setData(matchingNotes);
+        searchNoteAdapter.setData(searchResults);
         searchNoteAdapter.notifyDataSetChanged();
     }
 
@@ -71,7 +84,13 @@ public class SearchActivity extends AppCompatActivity {
      */
     private void reloadNoteData() {
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
-        searchResults = noteDatabase.getAllNotes(-1);
+
+
+        //if no folder, do a global search. else filter by folder
+        if(folderKey == -1)
+            searchResults = noteDatabase.searchNotes(query);
+        else
+            searchResults = noteDatabase.searchNotesWithFolderKey(query, folderKey);
 
 
         searchNoteAdapter.setData(searchResults);
