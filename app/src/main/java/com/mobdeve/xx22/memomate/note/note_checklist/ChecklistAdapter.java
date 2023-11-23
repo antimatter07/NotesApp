@@ -23,7 +23,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<CheckItemHolder>{
     private ArrayList<ChecklistItemModel> data;
     private Context context;
     private int itemColor;
-    private Context context;
+
     private NoteDatabase noteDatabase;
 
     public ChecklistAdapter(Context context, ArrayList<ChecklistItemModel> data, NoteDatabase db, int color) {

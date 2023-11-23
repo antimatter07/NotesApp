@@ -69,7 +69,7 @@ public class ChecklistActivity extends AppCompatActivity {
 
         //set up views and adapter with received data
         viewBinding.noteTitle.setText(titleString);
-        ChecklistAdapter adapter = new ChecklistAdapter(listData, this, noteColor);
+        ChecklistAdapter adapter = new ChecklistAdapter(getApplicationContext(), listData, noteDatabase, noteColor);
         RecyclerView recyclerview = viewBinding.recyclerView;
 
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
@@ -80,7 +80,7 @@ public class ChecklistActivity extends AppCompatActivity {
             //adapter.notifyItemInserted(listData.size() - 1);
         }
 
-        ChecklistAdapter adapter = new ChecklistAdapter(getApplicationContext(), listData, noteDatabase);
+
 
 
         recyclerview.setAdapter(adapter);
