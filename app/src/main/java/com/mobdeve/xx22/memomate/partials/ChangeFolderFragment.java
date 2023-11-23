@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.mobdeve.xx22.memomate.databinding.ModalLockNoteBinding;
 import com.mobdeve.xx22.memomate.folder.ChooseFolderAdapter;
 import com.mobdeve.xx22.memomate.folder.FolderAdapter;
 import com.mobdeve.xx22.memomate.model.FolderModel;
+import com.mobdeve.xx22.memomate.note.note_text.TextNoteActivity;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -48,7 +50,8 @@ public class ChangeFolderFragment extends DialogFragment {
     public interface UpdateNoteColor {
         void updateNoteColor(int color);
     }
-    private UpdateActivityGridView listener;
+    private UpdateActivityGridView gridViewListener = null;
+    private UpdateNoteColor noteColorListener = null;
 
     @NonNull
     @Override
@@ -90,9 +93,12 @@ public class ChangeFolderFragment extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            listener = (UpdateActivityGridView) context;
+            // change the interface used based on the current activity
+            if (context instanceof TextNoteActivity)
+                noteColorListener = (UpdateNoteColor) context;
+            else gridViewListener = (UpdateActivityGridView) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement updateActivityGridView");
+            throw new ClassCastException(context.toString() + " must implement appropriate update interface");
         }
     }
 
@@ -107,11 +113,21 @@ public class ChangeFolderFragment extends DialogFragment {
                         NoteDatabase db = new NoteDatabase(getContext());
                         db.updateNoteFolder(currentNoteId, selectedFolder.getFolderId());
 
+                        FolderDatabase fdb = new FolderDatabase(getContext());
+                        Message message = handler.obtainMessage();
+                        if (fdb != null) {
+                            message.obj = fdb.getFolderColor(selectedFolder.getFolderId());
+                        } else message.obj = Color.TRANSPARENT;
+
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (listener != null) {
-                                    listener.updateGridView();
+                                if (gridViewListener != null) {
+                                    gridViewListener.updateGridView();
+                                }
+                                if (noteColorListener != null) {
+                                    int folderColor = (int) message.obj;
+                                    noteColorListener.updateNoteColor(folderColor);
                                 }
                             }
                         });

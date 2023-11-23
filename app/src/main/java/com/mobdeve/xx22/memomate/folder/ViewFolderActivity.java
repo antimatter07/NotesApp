@@ -129,7 +129,7 @@ public class ViewFolderActivity extends AppCompatActivity
      * Refreshes main activity with updated db data
      */
     private void reloadNoteData() {
-        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        NoteDatabase noteDatabase = new NoteDatabase(this);
         data = noteDatabase.getAllNotes(this.folderId);
 
         if (noteAdapter != null) {
