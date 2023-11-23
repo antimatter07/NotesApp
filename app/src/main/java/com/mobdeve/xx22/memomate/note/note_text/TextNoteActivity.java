@@ -50,9 +50,14 @@ public class TextNoteActivity extends AppCompatActivity {
      */
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    //note db
+    private NoteDatabase noteDatabase;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.textnote_activity);
+
+        noteDatabase = new NoteDatabase(getApplicationContext());
 
         noteTextView = findViewById(R.id.noteBodyText);
         noteTitleView = findViewById(R.id.noteTitleText);
@@ -120,6 +125,26 @@ public class TextNoteActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 isNoteContentChanged = true;
                 currentDateTime =getCurrentDateTime();
+
+                if(isNoteContentChanged) {
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+
+                            String updatedNoteContent = noteTextView.getText().toString();
+
+
+                            if (isNoteContentChanged) {
+                                // Update note content in the database
+                                noteDatabase.updateTextNoteContent(currentNoteID, updatedNoteContent, currentDateTime);
+                                isNoteContentChanged = false; // Reset flag
+                            }
+                        }
+                    });
+
+                }
             }
 
             @Override
@@ -138,6 +163,26 @@ public class TextNoteActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 isTitleContentChanged = true;
                 currentDateTime = getCurrentDateTime();
+
+                if(isTitleContentChanged) {
+
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                            // Get the updated content
+                            String updatedTitle = noteTitleView.getText().toString();
+
+                            // Update title in the database
+                            noteDatabase.updateNoteTitle(currentNoteID, updatedTitle, currentDateTime);
+                            isTitleContentChanged = false; // Reset flag
+
+
+                        }
+                    });
+
+                }
             }
 
             @Override
@@ -155,7 +200,7 @@ public class TextNoteActivity extends AppCompatActivity {
 
 
         // Save the note content when the activity is paused
-        if (isNoteContentChanged || isTitleContentChanged) {
+        /*if (isNoteContentChanged || isTitleContentChanged) {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -180,6 +225,8 @@ public class TextNoteActivity extends AppCompatActivity {
                 }
             });
         }
+        */
+
     }
 
 

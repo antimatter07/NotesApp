@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -58,6 +59,9 @@ public class CreateNoteDialogFragment extends DialogFragment {
                 intent.putExtra(ChecklistActivity.FOLDER_KEY, folderId);
                 intent.putExtra(ChecklistActivity.TITLE_KEY, "New Checklist");
                 intent.putExtra(ChecklistActivity.ITEMLIST_KEY, new ArrayList<ChecklistItemModel>());
+
+                Log.d("new create note dialog", "checklist w folderkey: " + folderId);
+
                 startActivity(intent);
                 dismiss();
             }
