@@ -37,7 +37,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
             implements ChangeFolderFragment.UpdateActivityGridView {
 
-    private FolderAdapter mainAdapter;
+    private FolderAdapter folderAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fm = getSupportFragmentManager();
             CreateFolderDialogFragment createFolderDialogFragment = new CreateFolderDialogFragment();
             createFolderDialogFragment.show(fm, "NewFolderDialog");
-            createFolderDialogFragment.setAdapter(mainAdapter);
+            createFolderDialogFragment.setAdapter(folderAdapter);
         });
 
 
@@ -137,8 +137,8 @@ public class MainActivity extends AppCompatActivity
     private void setupFolderRecyclerView() {
         FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
         ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
-        mainAdapter = new FolderAdapter(folders, mainActivityResultLauncher);
-        viewBinding.folderRv.setAdapter(mainAdapter);
+        folderAdapter = new FolderAdapter(folders, mainActivityResultLauncher);
+        viewBinding.folderRv.setAdapter(folderAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
     }
@@ -155,12 +155,13 @@ public class MainActivity extends AppCompatActivity
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
         data = noteDatabase.getAllNotes(-1);
 
-        if (mainAdapter != null) {
+        if (folderAdapter != null) {
             noteAdapter.setData(data);
             noteAdapter.notifyDataSetChanged();
         }
 
     }
+
 
     /**
      * On resume of main activity, refresh screen with new note data

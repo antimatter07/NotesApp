@@ -1,12 +1,9 @@
 package com.mobdeve.xx22.memomate.partials;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Message;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +21,6 @@ import com.mobdeve.xx22.memomate.database.NoteDatabaseHandler;
 import com.mobdeve.xx22.memomate.databinding.ModalChangeFolderBinding;
 import com.mobdeve.xx22.memomate.databinding.ModalLockNoteBinding;
 import com.mobdeve.xx22.memomate.folder.ChooseFolderAdapter;
-import com.mobdeve.xx22.memomate.folder.FolderAdapter;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 import com.mobdeve.xx22.memomate.note.note_text.TextNoteActivity;
 

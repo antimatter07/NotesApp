@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mobdeve.xx22.memomate.databinding.FolderItemBinding;
 import com.mobdeve.xx22.memomate.databinding.ModalChangeFolderItemBinding;
 import com.mobdeve.xx22.memomate.model.FolderModel;
+import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 
 import java.util.ArrayList;
 

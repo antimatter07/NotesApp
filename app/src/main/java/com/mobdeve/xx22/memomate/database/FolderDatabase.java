@@ -29,29 +29,49 @@ public class FolderDatabase {
     public ArrayList<FolderModel> getAllFolders () {
         ArrayList<FolderModel> result = new ArrayList<FolderModel>();
 
-        SQLiteDatabase db = folderHandler.getReadableDatabase();
+        SQLiteDatabase fdb = folderHandler.getReadableDatabase();
 
-        if (db != null) {
-            Cursor c = db.query(
+        if (fdb != null) {
+            Cursor fc = fdb.query(
                     folderHandler.FOLDERS_TABLE,
                     null, null, null, null, null,
                     folderHandler.FOLDER_ID + " ASC", null
             );
 
-            while(c.moveToNext()){
+            while(fc.moveToNext()){
                 FolderModel folder = new FolderModel(
-                        c.getInt(c.getColumnIndexOrThrow(folderHandler.FOLDER_ID)),
-                        c.getString(c.getColumnIndexOrThrow(folderHandler.FOLDER_NAME)),
-                        c.getInt(c.getColumnIndexOrThrow(folderHandler.FOLDER_COLOR))
+                        fc.getInt(fc.getColumnIndexOrThrow(folderHandler.FOLDER_ID)),
+                        fc.getString(fc.getColumnIndexOrThrow(folderHandler.FOLDER_NAME)),
+                        fc.getInt(fc.getColumnIndexOrThrow(folderHandler.FOLDER_COLOR))
                 );
-                folder.setNoteCount(0); //TODO: set proper folder count
                 result.add(folder);
             }
 
-            c.close();
+            fc.close();
+
         }
 
-        db.close();
+        fdb.close();
+
+        return result;
+    }
+
+    public ArrayList<Integer> getAllFolderCounts() {
+        ArrayList<Integer> result = new ArrayList<>();
+        SQLiteDatabase ndb = noteHandler.getReadableDatabase();
+
+        String query = "SELECT " + noteHandler.COLUMN_FOLDER_KEY + ", " +
+                "COUNT( " + noteHandler.COLUMN_FOLDER_KEY + ") AS folderCount FROM " +
+                noteHandler.TABLE_NOTES + " GROUP BY " + noteHandler.COLUMN_FOLDER_KEY;
+
+        Cursor nc = ndb.rawQuery(query, null);
+
+        if (nc!=null) {
+            while(nc.moveToNext()) {
+                result.add(nc.getInt(nc.getColumnIndexOrThrow("folderCount")));
+            }
+        }
+        nc.close();
 
         return result;
     }
