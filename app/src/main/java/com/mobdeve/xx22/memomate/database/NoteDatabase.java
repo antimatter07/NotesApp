@@ -321,6 +321,11 @@ public class NoteDatabase {
 
     }
 
+    /**
+     * Updates content of an item in a checklist
+     * @param item_id id of checklist item
+     * @param updatedText new text
+     */
     public synchronized void updateChecklistItemText(int item_id, String updatedText) {
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
@@ -339,5 +344,33 @@ public class NoteDatabase {
 
 
     }
+
+    /**
+     * Add a new checklist item when user presses add button in a checklist activity
+     * @param currentNoteID current checklist note of user
+     * @return int of added checklist item
+     */
+    public synchronized int addCheckListItem(int currentNoteID) {
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues checklistValues = new ContentValues();
+
+        checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT, "");
+        checklistValues.put(NoteDatabaseHandler.COLUMN_NOTE_ID, currentNoteID);
+        checklistValues.put(NoteDatabaseHandler.COLUMN_IS_CHECKED, false);
+
+        Log.d("CHECKLIST ITEM MODEL", "BEING INSERTED INTO DB AT NOTE:" + currentNoteID);
+        int row = (int) db.insert(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, null, checklistValues);
+        Log.d("CHECKLIST ITEM INSERTED AT: ", String.valueOf(row));
+
+
+
+        db.close();
+
+        return row;
+
+    }
+
 
 }

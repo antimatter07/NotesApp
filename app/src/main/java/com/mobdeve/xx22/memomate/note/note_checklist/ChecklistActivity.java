@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -48,6 +49,9 @@ public class ChecklistActivity extends AppCompatActivity {
     private NoteDatabase noteDatabase;
 
     private int noteColor;
+    // Handler associated with the main (UI) thread
+    private Handler mainHandler;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,9 @@ public class ChecklistActivity extends AppCompatActivity {
         setContentView(viewBinding.getRoot());
 
         noteDatabase = new NoteDatabase(getApplicationContext());
+
+        //make handler for ui updates
+        mainHandler = new Handler(getMainLooper());
 
         //retrieve data from intent
         Intent intent = getIntent();
@@ -88,14 +95,7 @@ public class ChecklistActivity extends AppCompatActivity {
         if(listData.size() == 0)
             adapter.notifyItemInserted(listData.size() - 1);
 
-        //add notes with button
-        viewBinding.addItemBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listData.add(new ChecklistItemModel(false, ""));
-                adapter.notifyItemInserted(listData.size() - 1);
-            }
-        });
+
 
         // Setup Note Options Button
         viewBinding.noteOptionsBtn.setOnClickListener(v -> {
@@ -127,6 +127,35 @@ public class ChecklistActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //add notes with button
+        viewBinding.addItemBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listData.add(new ChecklistItemModel(false, ""));
+
+
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        int newCheckListItemId = noteDatabase.addCheckListItem(currentNoteID);
+                        //UI updates after adding new check list item
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listData.get(listData.size() - 1).setItemId(newCheckListItemId);
+                                adapter.notifyItemInserted(listData.size() - 1);
+
+
+                            }
+                        });
+
+                    }
+                });
+                ;
+            }
+        });
 
 
     }
