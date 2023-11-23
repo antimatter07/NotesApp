@@ -42,6 +42,7 @@ public class ChecklistItemModel implements Parcelable {
     public void setNoteId(int noteId) {
         this.noteId = noteId;
     }
+
     public String getText() {
         return text;
     }
@@ -57,7 +58,9 @@ public class ChecklistItemModel implements Parcelable {
     public void setChecked(boolean b) {
         this.isChecked = b;
     }
-
+    public int getNoteId() {
+        return noteId;
+    }
     // Parcelable implementation
 
     // Describe the kinds of special objects contained in this Parcelable instance
@@ -71,11 +74,11 @@ public class ChecklistItemModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte((byte) (isChecked ? 1 : 0)); // Write boolean as a byte
         dest.writeString(text);
+        dest.writeInt(noteId);
+        dest.writeInt(itemId);
     }
 
-    private int getNoteId() {
-        return noteId;
-    }
+
 
     // Creator constant for generating instances of your Parcelable class
     public static final Parcelable.Creator<ChecklistItemModel> CREATOR = new Parcelable.Creator<ChecklistItemModel>() {
@@ -92,5 +95,7 @@ public class ChecklistItemModel implements Parcelable {
     private ChecklistItemModel(Parcel in) {
         isChecked = in.readByte() != 0; // Read byte as a boolean
         text = in.readString();
+        noteId = in.readInt();
+        itemId = in.readInt();
     }
 }

@@ -1,5 +1,6 @@
 package com.mobdeve.xx22.memomate.partials;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.mobdeve.xx22.memomate.MainActivity;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,7 +29,7 @@ public class NoteOptionsFragment extends DialogFragment {
      * noteID to delete, lock, etc.
      */
     private int currentNoteID = -1;
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     @NonNull
     @Override
@@ -59,23 +61,36 @@ public class NoteOptionsFragment extends DialogFragment {
             public void onClick(View v) {
                 if(currentNoteID != -1) {
 
+                    final WeakReference<Activity> activityRef = new WeakReference<>(requireActivity());
+
                     executorService.execute(new Runnable() {
+
+
                         @Override
                         public void run() {
-                            NoteDatabase db = new NoteDatabase(requireContext());
-                            db.deleteNote(currentNoteID);
+                            Activity activity = activityRef.get();
 
-                            Intent intent = new Intent(requireContext(), MainActivity.class);
-                            //add flags to clear back stack
+                            if(isAdded() && activity != null) {
+                                NoteDatabase db = new NoteDatabase(activity);
+                                db.deleteNote(currentNoteID);
 
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(isAdded()) {
+                                            Intent intent = new Intent(activity, MainActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                });
 
 
-                            startActivity(intent);
-
+                           }
 
                         }
                     });
+
                     dismiss();
 
                 }

@@ -142,6 +142,13 @@ public class NoteAdapter extends BaseAdapter {
                         intent = new Intent(context, ChecklistActivity.class);
                         intent.putExtra(ChecklistActivity.TITLE_KEY, noteData.getTitle());
                         intent.putExtra(ChecklistActivity.ITEMLIST_KEY, ((CheckListNoteModel) noteData).getCheckItemData());
+
+                        Log.d("In note adapter intent passing", "check item id of first" + ((CheckListNoteModel) noteData).getCheckItemData().get(0).getNoteId());
+
+
+                        intent.putExtra("noteID", noteData.getNoteID());
+                        intent.putExtra("folderKey", noteData.getFolderKey());
+
                         intent.putExtra("noteColor", folderDatabase.getFolderColor(noteData.getFolderKey()));
 
                         context.startActivity(intent);
