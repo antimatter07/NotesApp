@@ -372,7 +372,11 @@ public class NoteDatabase {
 
     }
 
-    // noteDatabase.updateChecklistItemChecked(currentItemID, isChecked);
+    /**
+     * Updates a checklist item box's boolean value (check or not checked)
+     * @param currentItemID id of check list item
+     * @param isChecked updated boolean
+     */
     public synchronized void updateChecklistItemChecked(int currentItemID, boolean isChecked) {
 
         int isCheckedInt;
@@ -399,6 +403,28 @@ public class NoteDatabase {
 
 
     }
+
+    /**
+     * Deletes checklist item of indicated id.
+     * @param currentItemID
+     */
+    public synchronized void removeChecklistItem(int currentItemID) {
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+
+
+        String selection = "ID = ?";
+        String[] selectionArgs = {String.valueOf(currentItemID)};
+
+        db.delete(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, selection, selectionArgs);
+
+        db.close();
+
+
+    }
+
+
 
 
 }

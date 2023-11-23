@@ -30,6 +30,9 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
     private NoteDatabase noteDatabase;
     private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
+    /**
+     * Item id of checklist item
+     */
     private int currentItemID;
     public CheckItemHolder(@NonNull ChecklistItemBinding binding, ArrayList<ChecklistItemModel> data, ChecklistAdapter adapter, NoteDatabase noteDatabase) {
         super(binding.getRoot());
@@ -54,6 +57,16 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
                         if (position != RecyclerView.NO_POSITION) {
                             data.remove(position);
                             adapter.notifyItemRemoved(position);
+
+                            executorService.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    noteDatabase.removeChecklistItem(currentItemID);
+
+                                }
+                            });
+
+
                             return true; // Consume the key event
                         }
                     }
