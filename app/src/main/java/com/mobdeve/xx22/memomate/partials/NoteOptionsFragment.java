@@ -1,5 +1,6 @@
 package com.mobdeve.xx22.memomate.partials;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,9 +12,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.mobdeve.xx22.memomate.MainActivity;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabaseHandler;
 import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
+import com.mobdeve.xx22.memomate.folder.ViewFolderActivity;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,6 +29,7 @@ public class NoteOptionsFragment extends DialogFragment {
      * noteID to delete, lock, etc.
      */
     private int currentNoteID = -1;
+    private int currentFolderID = -2;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @NonNull
@@ -44,18 +48,27 @@ public class NoteOptionsFragment extends DialogFragment {
             }
         });
 
-        binding.changeFolderBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                Bundle data = new Bundle();
-                data.putInt(NoteDatabaseHandler.COLUMN_NOTE_ID, currentNoteID);
 
-                ChangeFolderFragment changeFolderFragment = new ChangeFolderFragment();
-                changeFolderFragment.setArguments(data);
-                changeFolderFragment.show(getActivity().getSupportFragmentManager(), "ChangeFolderDialog");
-            }
-        });
+        Activity currentActivity = getActivity();
+        if (currentActivity instanceof MainActivity || currentActivity instanceof ViewFolderActivity) {
+            binding.changeFolderBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    Bundle data = new Bundle();
+                    data.putInt(NoteDatabaseHandler.COLUMN_NOTE_ID, currentNoteID);
+                    data.putInt(NoteDatabaseHandler.COLUMN_FOLDER_KEY, currentFolderID);
+
+                    ChangeFolderFragment changeFolderFragment = new ChangeFolderFragment();
+                    changeFolderFragment.setArguments(data);
+                    changeFolderFragment.show(getActivity().getSupportFragmentManager(), "ChangeFolderDialog");
+                }
+            });
+        }
+        else {  // Hide change folder button if it is not in MainActivity or ViewFolderActivity
+            binding.changeFolderBtn.setVisibility(View.GONE);
+        }
+
 
         binding.deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,5 +103,9 @@ public class NoteOptionsFragment extends DialogFragment {
      */
     public void setNoteID(int noteID) {
         this.currentNoteID = noteID;
+    }
+
+    public void setFolderID(int folderID) {
+        this.currentFolderID = folderID;
     }
 }

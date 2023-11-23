@@ -39,6 +39,7 @@ public class ChangeFolderFragment extends DialogFragment {
     private ChooseFolderAdapter adapter;
 
     private int currentNoteId;
+    private int currentFolderId;
 
     private ExecutorService executorService;
     private Handler handler;
@@ -47,11 +48,7 @@ public class ChangeFolderFragment extends DialogFragment {
         void updateGridView();
     }
 
-    public interface UpdateNoteColor {
-        void updateNoteColor(int color);
-    }
     private UpdateActivityGridView gridViewListener = null;
-    private UpdateNoteColor noteColorListener = null;
 
     @NonNull
     @Override
@@ -72,6 +69,7 @@ public class ChangeFolderFragment extends DialogFragment {
 
         Bundle args = getArguments();
         currentNoteId = args.getInt(NoteDatabaseHandler.COLUMN_NOTE_ID);
+        currentFolderId = args.getInt(NoteDatabaseHandler.COLUMN_FOLDER_KEY);
 
         executorService = Executors.newFixedThreadPool(2);
         handler = new Handler();
@@ -94,9 +92,8 @@ public class ChangeFolderFragment extends DialogFragment {
         super.onAttach(context);
         try {
             // change the interface used based on the current activity
-            if (context instanceof TextNoteActivity)
-                noteColorListener = (UpdateNoteColor) context;
-            else gridViewListener = (UpdateActivityGridView) context;
+            if (!(context instanceof TextNoteActivity))
+                gridViewListener = (UpdateActivityGridView) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement appropriate update interface");
         }
@@ -107,17 +104,17 @@ public class ChangeFolderFragment extends DialogFragment {
 
         if (selectedFolder != null) {
             dialog.dismiss();
-            executorService.execute(new Runnable() {
+
+            if (selectedFolder.getFolderId() == currentFolderId) {
+                Toast.makeText(getContext(), "Note is already in " + selectedFolder.getName(),
+                        Toast.LENGTH_SHORT).show();
+            }
+            else {
+                executorService.execute(new Runnable() {
                     @Override
                     public void run() {
                         NoteDatabase db = new NoteDatabase(getContext());
                         db.updateNoteFolder(currentNoteId, selectedFolder.getFolderId());
-
-                        FolderDatabase fdb = new FolderDatabase(getContext());
-                        Message message = handler.obtainMessage();
-                        if (fdb != null) {
-                            message.obj = fdb.getFolderColor(selectedFolder.getFolderId());
-                        } else message.obj = Color.TRANSPARENT;
 
                         handler.post(new Runnable() {
                             @Override
@@ -125,17 +122,14 @@ public class ChangeFolderFragment extends DialogFragment {
                                 if (gridViewListener != null) {
                                     gridViewListener.updateGridView();
                                 }
-                                if (noteColorListener != null) {
-                                    int folderColor = (int) message.obj;
-                                    noteColorListener.updateNoteColor(folderColor);
-                                }
                             }
                         });
                     }
-            });
+                });
 
-            Toast.makeText(getContext(), "Moved note to " + selectedFolder.getName(),
-                    Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Moved note to " + selectedFolder.getName(),
+                        Toast.LENGTH_SHORT).show();
+            }
 
         }
         else {

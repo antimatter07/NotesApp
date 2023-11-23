@@ -113,6 +113,7 @@ public class NoteAdapter extends BaseAdapter {
                 // Open note options modal
                 NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
                 noteOptionsFragment.setNoteID(noteData.getNoteID());
+                noteOptionsFragment.setFolderID(noteData.getFolderKey());
                 noteOptionsFragment.show(fragmentManager, "NoteOptionsDialog");
 
             }

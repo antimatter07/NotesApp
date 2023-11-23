@@ -25,8 +25,7 @@ import java.util.concurrent.Executors;
 
 
 
-public class TextNoteActivity extends AppCompatActivity
-            implements ChangeFolderFragment.UpdateNoteColor {
+public class TextNoteActivity extends AppCompatActivity {
 
      public static final String TEXT_KEY = "TEXT_KEY";
      public static final String TITLE_KEY = "TITLE_KEY";
@@ -108,7 +107,6 @@ public class TextNoteActivity extends AppCompatActivity
 
             //set current noteID so that its visible inside fragment for deletion, locking, etc
             noteOptionsFragment.setNoteID(currentNoteID);
-
             noteOptionsFragment.show(fm, "NoteOptionsDialog");
         });
 
@@ -204,12 +202,5 @@ public class TextNoteActivity extends AppCompatActivity
         return sdf.format(new Date());
     }
 
-    @Override
-    public void updateNoteColor(int noteColor) {
-        // update the note color if the note is moved to another folder
-        noteColor = ContextCompat.getColor(this, noteColor);
-        noteBar.setBackgroundColor(noteColor);
-
-    }
 }
 
