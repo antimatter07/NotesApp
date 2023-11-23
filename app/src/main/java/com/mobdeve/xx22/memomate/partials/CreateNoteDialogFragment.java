@@ -22,6 +22,11 @@ import com.mobdeve.xx22.memomate.note.note_text.TextNoteActivity;
 public class CreateNoteDialogFragment extends DialogFragment {
 
     private ModalNewNoteBinding binding;
+    private int folderId = -1;
+
+    public void setFolderId(int folderId) {
+        this.folderId = folderId;
+    }
 
     @NonNull
     @Override
@@ -37,6 +42,7 @@ public class CreateNoteDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 // switch to TextNoteActivity
                 Intent intent = new Intent(getActivity(), TextNoteActivity.class);
+                intent.putExtra("folderKey", folderId);
                 intent.putExtra("titleContent", "New Text Note");
                 intent.putExtra("noteContent", "");
                 startActivity(intent);
@@ -49,6 +55,7 @@ public class CreateNoteDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 // switch to CheckListActivity
                 Intent intent = new Intent(getActivity(), ChecklistActivity.class);
+                intent.putExtra(ChecklistActivity.FOLDER_KEY, folderId);
                 intent.putExtra(ChecklistActivity.TITLE_KEY, "New Checklist");
                 intent.putExtra(ChecklistActivity.ITEMLIST_KEY, new ArrayList<ChecklistItemModel>());
                 startActivity(intent);

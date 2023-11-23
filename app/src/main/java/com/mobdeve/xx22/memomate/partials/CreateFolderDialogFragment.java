@@ -1,8 +1,11 @@
 package com.mobdeve.xx22.memomate.partials;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -12,10 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.mobdeve.xx22.memomate.MainActivityAdapter;
 import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.database.FolderDataHelper;
+import com.mobdeve.xx22.memomate.database.FolderDatabase;
+import com.mobdeve.xx22.memomate.database.FolderDatabaseHandler;
 import com.mobdeve.xx22.memomate.databinding.ModalNewFolderBinding;
 import com.mobdeve.xx22.memomate.folder.ViewFolderActivity;
+import com.mobdeve.xx22.memomate.model.FolderModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +31,11 @@ import java.util.Map;
 public class CreateFolderDialogFragment extends DialogFragment {
 
     private ModalNewFolderBinding binding;
+    private FolderDatabase folderDatabase;
+    private MainActivityAdapter mainActivityAdapter;
 
     // Temporarily holds values for the new folder
-    private String folderName = "New Folder";
+    private String folderName;
     int folderColor = R.color.folderDefault;
 
     @NonNull
@@ -35,6 +44,8 @@ public class CreateFolderDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         binding = ModalNewFolderBinding.inflate(inflater);
+
+        folderDatabase = new FolderDatabase(this.getContext());
 
         View view = binding.getRoot();
 
@@ -69,23 +80,33 @@ public class CreateFolderDialogFragment extends DialogFragment {
         builder.setView(view)
                 .setPositiveButton("Create", (dialog, which) -> {
                     String name = String.valueOf(this.binding.folderNameEt.getText());
-                    if (name.length() != 0){
+                    if (name.length() != 0)
                         folderName = name;
-                    }
-                    // add folder to data model (this renders the new folder in main activity)
-                    FolderDataHelper.addFolder(folderName, folderColor);
+                    else folderName = "Folder" + (folderDatabase.getLastId() + 1);
+
+                    // add folder into the folder DB
+                    FolderModel folder = new FolderModel(folderDatabase.getLastId() + 1, folderName, folderColor);
+                    int folderId = folderDatabase.addFolder(folder);
+
+                    // update main activity UI w/ the new folder
+                    mainActivityAdapter.addFolderItem(folder);
 
                     // switch to ViewFolderActivity
                     Intent intent = new Intent(getActivity(), ViewFolderActivity.class);
+                    intent.putExtra(ViewFolderActivity.folderIdKey, folderId);
                     intent.putExtra(ViewFolderActivity.folderNameKey, folderName);
                     intent.putExtra(ViewFolderActivity.folderColorKey, folderColor);
                     startActivity(intent);
                     dismiss();
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {
-                    // Remove modal
+                    // Remove partial
                 });
 
         return builder.create();
+    }
+
+    public void setAdapter(MainActivityAdapter adapter) {
+        this.mainActivityAdapter = adapter;
     }
 }

@@ -1,16 +1,22 @@
 package com.mobdeve.xx22.memomate.note.note_checklist;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+
+
+import com.mobdeve.xx22.memomate.R;
+import com.mobdeve.xx22.memomate.databinding.ChecklistItemBinding;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
@@ -26,6 +32,7 @@ import java.util.concurrent.Executors;
 public class ChecklistActivity extends AppCompatActivity {
     public static final String ITEMLIST_KEY = "ITEMLIST_KEY";
     public static final String TITLE_KEY = "TITLE_KEY";
+    public static final String FOLDER_KEY = "FOLDER_KEY";
     public static final String DATE_CREATED_KEY = "DATE_KEY";
     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
 
@@ -40,6 +47,8 @@ public class ChecklistActivity extends AppCompatActivity {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private NoteDatabase noteDatabase;
 
+    private int noteColor;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ChecklistActivityBinding viewBinding = ChecklistActivityBinding.inflate(getLayoutInflater());
@@ -52,10 +61,15 @@ public class ChecklistActivity extends AppCompatActivity {
         String titleString = intent.getStringExtra(TITLE_KEY);
         ArrayList<ChecklistItemModel> listData = intent.getParcelableArrayListExtra(ITEMLIST_KEY);
 
+        // set colors of note bar and checkboxes
+        noteColor = ContextCompat.getColor(this, getIntent().getIntExtra("noteColor", R.color.folderDefault));
+        viewBinding.noteBarCl.setBackgroundColor(noteColor);
+
 
 
         //set up views and adapter with received data
         viewBinding.noteTitle.setText(titleString);
+        ChecklistAdapter adapter = new ChecklistAdapter(listData, this, noteColor);
         RecyclerView recyclerview = viewBinding.recyclerView;
 
         recyclerview.setLayoutManager(new LinearLayoutManager(this));

@@ -14,8 +14,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
-import com.mobdeve.xx22.memomate.database.NoteDataHelper;
-import com.mobdeve.xx22.memomate.database.FolderDataHelper;
+import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ActivityMainBinding;
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
@@ -29,14 +28,14 @@ import com.mobdeve.xx22.memomate.partials.SortingOptionsDialogFragment;
 import com.mobdeve.xx22.memomate.search.SearchActivity;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<FolderModel> folders;
     private MainActivityAdapter mainAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
-
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
 
 //    TEMP data
@@ -58,9 +57,8 @@ public class MainActivity extends AppCompatActivity {
         this.viewBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(this.viewBinding.getRoot());
 
-        this.folders = FolderDataHelper.generateFolderData();
-
-        setupRecyclerView();
+        // setup and load folders
+        setupFolderRecyclerView();
 
         // Setup Toggle Order Button
         // TODO: Sort Order functionality
@@ -84,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentManager fm = getSupportFragmentManager();
             CreateFolderDialogFragment createFolderDialogFragment = new CreateFolderDialogFragment();
             createFolderDialogFragment.show(fm, "NewFolderDialog");
+            createFolderDialogFragment.setAdapter(mainAdapter);
         });
 
 
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
           });
-        
+
         // Setup Sorting Options Button
         viewBinding.sortBtn.setOnClickListener(v -> {
             FragmentManager fm = getSupportFragmentManager();
@@ -115,9 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        // Setup Notes Recycler View
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
-        data = noteDatabase.getAllNotes();
+        data = noteDatabase.getAllNotes(-1);
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -131,10 +130,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupRecyclerView() {  // TODO: add ActivityResultLauncher
-        mainAdapter = new MainActivityAdapter(this.folders, mainActivityResultLauncher);
+    private void setupFolderRecyclerView() {  // TODO: add ActivityResultLauncher
+        FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
+        ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
+        mainAdapter = new MainActivityAdapter(folders, mainActivityResultLauncher);
         viewBinding.folderRv.setAdapter(mainAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
     }
 
     private String getNoteType(ParentNoteModel note) {
@@ -147,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void reloadNoteData() {
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
-        data = noteDatabase.getAllNotes();
+        data = noteDatabase.getAllNotes(-1);
 
         if (mainAdapter != null) {
             noteAdapter.setData(data);
@@ -162,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
     }

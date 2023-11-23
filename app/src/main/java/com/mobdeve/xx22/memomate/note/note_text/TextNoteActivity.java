@@ -7,6 +7,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
@@ -28,10 +30,13 @@ public class TextNoteActivity extends AppCompatActivity {
      public static final String TITLE_KEY = "TITLE_KEY";
      public static final String DATE_CREATED_KEY = "DATE_KEY";
      public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
-    private TextView noteTextView;
+
+     private ConstraintLayout noteBar;
+     private TextView noteTextView;
     private TextView noteTitleView;
     private String noteContent = "";
     private String titleContent = "";
+    private int noteColor;
 
     private boolean isNoteContentChanged = false;
     private boolean isTitleContentChanged = false;
@@ -55,6 +60,10 @@ public class TextNoteActivity extends AppCompatActivity {
 
         noteTextView = findViewById(R.id.noteBodyText);
         noteTitleView = findViewById(R.id.noteTitleText);
+        noteBar = findViewById(R.id.noteBarCl);
+
+        noteColor = ContextCompat.getColor(this, getIntent().getIntExtra("noteColor", R.color.folderDefault));
+        noteBar.setBackgroundColor(noteColor);
 
         // Initially set the TextView to display the note content
         noteTextView.setText(noteContent);
@@ -72,10 +81,11 @@ public class TextNoteActivity extends AppCompatActivity {
             noteTitleView.setText(titleContent);
         }
 
-        currentNoteID = getIntent().getIntExtra("noteID", -1);
-        int folderKey = getIntent().getIntExtra("folderKey", 0);
 
-        //if noteID retrieved is default value, creat new text note in db
+        currentNoteID = getIntent().getIntExtra("noteID", -1);
+        int folderKey = getIntent().getIntExtra("folderKey", -1);
+
+        //if noteID retrieved is default value, create new text note in db
         if(currentNoteID == -1) {
             executorService.execute(new Runnable() {
                 @Override
