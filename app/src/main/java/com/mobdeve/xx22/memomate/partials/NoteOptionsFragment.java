@@ -53,7 +53,7 @@ public class NoteOptionsFragment extends DialogFragment {
 
                 ChangeFolderFragment changeFolderFragment = new ChangeFolderFragment();
                 changeFolderFragment.setArguments(data);
-                changeFolderFragment.show(getActivity().getSupportFragmentManager(), "LockNoteDialog");
+                changeFolderFragment.show(getActivity().getSupportFragmentManager(), "ChangeFolderDialog");
             }
         });
 
