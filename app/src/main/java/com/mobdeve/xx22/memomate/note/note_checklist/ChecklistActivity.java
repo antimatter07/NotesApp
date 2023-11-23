@@ -105,7 +105,9 @@ public class ChecklistActivity extends AppCompatActivity {
         });
 
         currentNoteID = getIntent().getIntExtra("noteID", -1);
-        int folderKey = getIntent().getIntExtra("folderKey", 0);
+        int folderKey = getIntent().getIntExtra("folderKey", -1);
+
+        Log.d("IN CHECKLIST ACT", "note id: " + currentNoteID);
 
         //if noteID retrieved is default value, create a new checklist note in db
         if(currentNoteID == -1) {
