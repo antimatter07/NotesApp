@@ -5,6 +5,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
@@ -37,6 +39,8 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
 
 
         EditText editText = binding.editText;
+
+        CheckBox checkBox = binding.checkBox;
 
 
         editText.setOnKeyListener(new View.OnKeyListener() {
@@ -93,6 +97,23 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
                         }
                     });
 
+                }
+            }
+        });
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    data.get(position).setChecked(isChecked);
+
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            noteDatabase.updateChecklistItemChecked(currentItemID, isChecked);
+                        }
+                    });
                 }
             }
         });

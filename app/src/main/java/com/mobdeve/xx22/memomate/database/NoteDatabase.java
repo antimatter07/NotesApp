@@ -372,5 +372,33 @@ public class NoteDatabase {
 
     }
 
+    // noteDatabase.updateChecklistItemChecked(currentItemID, isChecked);
+    public synchronized void updateChecklistItemChecked(int currentItemID, boolean isChecked) {
+
+        int isCheckedInt;
+
+        if(isChecked)
+            isCheckedInt = 1;
+        else
+            isCheckedInt = 0;
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(NoteDatabaseHandler.COLUMN_IS_CHECKED, isCheckedInt);
+        //values.put(NoteDatabaseHandler.COLUMN_DATE_MODIFIED, updatedTime);
+
+        String selection = "ID = ?";
+        String[] selectionArgs = {String.valueOf(currentItemID)};
+        Log.d("IN UPDATE CHECK ITEM", "item id: " + String.valueOf(currentItemID) + "new chech boolean: " + isChecked);
+
+        db.update(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, values, selection, selectionArgs);
+
+        db.close();
+
+
+    }
+
 
 }
