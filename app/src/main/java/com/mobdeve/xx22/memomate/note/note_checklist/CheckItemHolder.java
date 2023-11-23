@@ -5,6 +5,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
@@ -28,6 +30,9 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
     private NoteDatabase noteDatabase;
     private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
+    /**
+     * Item id of checklist item
+     */
     private int currentItemID;
     public CheckItemHolder(@NonNull ChecklistItemBinding binding, ArrayList<ChecklistItemModel> data, ChecklistAdapter adapter, NoteDatabase noteDatabase) {
         super(binding.getRoot());
@@ -37,6 +42,8 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
 
 
         EditText editText = binding.editText;
+
+        CheckBox checkBox = binding.checkBox;
 
 
         editText.setOnKeyListener(new View.OnKeyListener() {
@@ -50,6 +57,16 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
                         if (position != RecyclerView.NO_POSITION) {
                             data.remove(position);
                             adapter.notifyItemRemoved(position);
+
+                            executorService.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    noteDatabase.removeChecklistItem(currentItemID);
+
+                                }
+                            });
+
+
                             return true; // Consume the key event
                         }
                     }
@@ -93,6 +110,23 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
                         }
                     });
 
+                }
+            }
+        });
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    data.get(position).setChecked(isChecked);
+
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            noteDatabase.updateChecklistItemChecked(currentItemID, isChecked);
+                        }
+                    });
                 }
             }
         });
