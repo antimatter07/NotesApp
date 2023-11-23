@@ -1,16 +1,17 @@
-package com.mobdeve.xx22.memomate;
+package com.mobdeve.xx22.memomate.folder;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.mobdeve.xx22.memomate.databinding.FolderItemBinding;
+import com.mobdeve.xx22.memomate.databinding.ModalChangeFolderItemBinding;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 
-public class MainActivityViewHolder extends RecyclerView.ViewHolder {
+public class FolderHolder extends RecyclerView.ViewHolder {
 
     private FolderItemBinding folderBinding;
 
-    public MainActivityViewHolder(@NonNull FolderItemBinding folderView) {
+    public FolderHolder(@NonNull FolderItemBinding folderView) {
         super(folderView.getRoot());
         this.folderBinding = folderView;
     }

@@ -1,4 +1,4 @@
-package com.mobdeve.xx22.memomate;
+package com.mobdeve.xx22.memomate.folder;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -6,37 +6,41 @@ import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobdeve.xx22.memomate.databinding.FolderItemBinding;
-import com.mobdeve.xx22.memomate.folder.ViewFolderActivity;
+import com.mobdeve.xx22.memomate.databinding.ModalChangeFolderItemBinding;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 
 import java.util.ArrayList;
 
-public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHolder> {
+public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
 
     private ArrayList<FolderModel> folderData;
     private ActivityResultLauncher<Intent> viewFolderLauncher;
 
+
 //    TODO: add ActivityResultLauncher<Intent> viewFolderLauncher
-    public MainActivityAdapter(ArrayList<FolderModel> data, ActivityResultLauncher<Intent> viewFolderLauncher) {
+    public FolderAdapter(ArrayList<FolderModel> data, ActivityResultLauncher<Intent> viewFolderLauncher) {
         this.folderData = data;
+        // skip the 1st folder since this is the "default folder"
+        folderData.remove(0);
         this.viewFolderLauncher = viewFolderLauncher;
     }
     @NonNull
     @Override
-    public MainActivityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FolderHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         FolderItemBinding folderItemBinding = FolderItemBinding.inflate(
                 LayoutInflater.from(parent.getContext()),
                 parent,
                 false
         );
-        return new MainActivityViewHolder(folderItemBinding);
+        return new FolderHolder(folderItemBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainActivityViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FolderHolder holder, int position) {
         holder.bindFolderData(folderData.get(position));
 
         holder.itemView.setOnClickListener(view -> {
@@ -45,7 +49,6 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityViewHo
             intent.putExtra(ViewFolderActivity.folderNameKey, folderData.get(holder.getAdapterPosition()).getName());
             intent.putExtra(ViewFolderActivity.folderColorKey, folderData.get(holder.getAdapterPosition()).getColorResId());
 
-            //TODO: change to launcher in final
              viewFolderLauncher.launch(intent);
         });
 

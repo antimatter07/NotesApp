@@ -15,7 +15,9 @@ import android.widget.ToggleButton;
 
 import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.database.NoteDatabaseHandler;
 import com.mobdeve.xx22.memomate.databinding.ActivityMainBinding;
+import com.mobdeve.xx22.memomate.folder.FolderAdapter;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.note.NoteAdapter;
@@ -25,12 +27,10 @@ import com.mobdeve.xx22.memomate.partials.SortingOptionsDialogFragment;
 import com.mobdeve.xx22.memomate.search.SearchActivity;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MainActivityAdapter mainAdapter;
+    private FolderAdapter mainAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupFolderRecyclerView() {  // TODO: add ActivityResultLauncher
+    private void setupFolderRecyclerView() {
         FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
         ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
-        mainAdapter = new MainActivityAdapter(folders, mainActivityResultLauncher);
+        mainAdapter = new FolderAdapter(folders, mainActivityResultLauncher);
         viewBinding.folderRv.setAdapter(mainAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 

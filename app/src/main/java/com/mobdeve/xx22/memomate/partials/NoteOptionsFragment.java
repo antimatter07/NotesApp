@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment;
 
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.database.NoteDatabaseHandler;
 import com.mobdeve.xx22.memomate.databinding.ModalNoteOptionsBinding;
 
 import java.util.concurrent.ExecutorService;
@@ -47,7 +48,11 @@ public class NoteOptionsFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 dismiss();
+                Bundle data = new Bundle();
+                data.putInt(NoteDatabaseHandler.COLUMN_NOTE_ID, currentNoteID);
+
                 ChangeFolderFragment changeFolderFragment = new ChangeFolderFragment();
+                changeFolderFragment.setArguments(data);
                 changeFolderFragment.show(getActivity().getSupportFragmentManager(), "LockNoteDialog");
             }
         });
