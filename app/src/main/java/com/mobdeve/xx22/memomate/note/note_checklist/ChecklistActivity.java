@@ -3,6 +3,8 @@ package com.mobdeve.xx22.memomate.note.note_checklist;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.os.Handler;
@@ -26,7 +28,10 @@ import com.mobdeve.xx22.memomate.databinding.ChecklistActivityBinding;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,6 +56,10 @@ public class ChecklistActivity extends AppCompatActivity {
     private int noteColor;
     // Handler associated with the main (UI) thread
     private Handler mainHandler;
+
+    private boolean isTitleContentChanged = false;
+
+    private String currentDateTime;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +166,56 @@ public class ChecklistActivity extends AppCompatActivity {
             }
         });
 
+        viewBinding.noteTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                isTitleContentChanged = true;
+                currentDateTime = getCurrentDateTime();
+
+                if(isTitleContentChanged) {
+
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                            // Get the updated content
+                            String updatedTitle = viewBinding.noteTitle.getText().toString();
+
+                            // Update title in the database
+                            noteDatabase.updateNoteTitle(currentNoteID, updatedTitle, currentDateTime);
+                            isTitleContentChanged = false; // Reset flag
+
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
 
     }
+
+
+
+    /**
+     * Gets current date and time in proper format for sorting in SQLite
+     * @return SimpleDateFormat when ParantNoteModel was instantiated.
+     */
+    private String getCurrentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
 }
