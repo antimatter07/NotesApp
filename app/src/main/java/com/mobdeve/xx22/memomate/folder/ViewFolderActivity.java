@@ -41,6 +41,8 @@ public class ViewFolderActivity extends AppCompatActivity
     private boolean isOrderAscending = true;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
 
+    private static final String SORTING_RESULT_KEY = "sortingKey";
+
     @Override
     public void updateGridView() {
         // updates the grid view when a note is moved to a different folder
@@ -96,6 +98,15 @@ public class ViewFolderActivity extends AppCompatActivity
             sortingOptionsFragment.show(fm, "SettingsDialog");
 
 
+            // Listen for the sorting result
+            fm.setFragmentResultListener(SORTING_RESULT_KEY, this, (requestKey, result) -> {
+                int sortingOption = result.getInt("sortingOption", R.id.nameSortingRb);
+                handleSortingOption(sortingOption);
+            });
+
+
+
+
         });
 
         // Setup Create New Note Button
@@ -116,6 +127,7 @@ public class ViewFolderActivity extends AppCompatActivity
                 else {
                     viewBinding.orderBtn.setBackgroundResource(R.drawable.ic_descend);
                 }
+                handleSortingOption();
             }
         });
 
@@ -151,4 +163,38 @@ public class ViewFolderActivity extends AppCompatActivity
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
     }
+
+
+    /**
+     * Handles sorting option in adapter.
+     * @param sortingOption
+     */
+    private void handleSortingOption(int sortingOption) {
+        // Sort notes based on the selected sorting option
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(folderId);
+        noteAdapter.setData(data);
+        noteAdapter.setSortingOption(sortingOption);
+        noteAdapter.setSortOrder(isOrderAscending);
+
+        noteAdapter.sortNotes(); // Add a method in your NoteAdapter to perform the sorting
+        noteAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Handles sorting option in adapter.
+     *
+     */
+    private void handleSortingOption() {
+        // Sort notes based on the selected sorting option
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(folderId);
+        noteAdapter.setData(data);
+
+        noteAdapter.setSortOrder(isOrderAscending);
+
+        noteAdapter.sortNotes(); // Add a method in your NoteAdapter to perform the sorting
+        noteAdapter.notifyDataSetChanged();
+    }
+
 }

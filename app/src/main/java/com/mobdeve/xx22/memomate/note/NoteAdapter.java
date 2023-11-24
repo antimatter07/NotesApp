@@ -26,11 +26,17 @@ import com.mobdeve.xx22.memomate.model.TextNoteModel;
 import com.mobdeve.xx22.memomate.note.note_text.TextNoteActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class NoteAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<ParentNoteModel> data;
     private FragmentManager fragmentManager;
+
+    private int currentSortingOption = R.id.nameSortingRb;
+
+    private boolean isOrderAscending = true;
 
     public NoteAdapter(Context context, ArrayList<ParentNoteModel> data, FragmentManager fragmentManager) {
         this.context = context;
@@ -187,4 +193,40 @@ public class NoteAdapter extends BaseAdapter {
 
        return ContextCompat.getColor(context, accentId);
     }
+
+    public void setSortingOption(int sortingOption) {
+        currentSortingOption = sortingOption;
+    }
+
+    public void setSortOrder(boolean b) {
+        this.isOrderAscending = b;
+
+    }
+
+    public void sortNotes() {
+        Comparator<ParentNoteModel> comparator;
+
+        if (currentSortingOption == R.id.nameSortingRb) {
+            // Sort by title
+            comparator = Comparator.comparing(ParentNoteModel::getTitle, String.CASE_INSENSITIVE_ORDER);
+        } else if (currentSortingOption == R.id.createdDateSortingRb) {
+            // Sort by date created (assuming date is stored as a string)
+            comparator = Comparator.comparing(ParentNoteModel::getDateCreated, String.CASE_INSENSITIVE_ORDER);
+        } else if (currentSortingOption == R.id.modifiedDateSortingRb) {
+            // Sort by date modified (assuming date is stored as a string)
+            comparator = Comparator.comparing(ParentNoteModel::getDateModified, String.CASE_INSENSITIVE_ORDER);
+        } else {
+            // Default sorting by title
+            comparator = Comparator.comparing(ParentNoteModel::getTitle, String.CASE_INSENSITIVE_ORDER);
+        }
+
+        if (!isOrderAscending) {
+            // Reverse the comparator if it's descending order
+            comparator = comparator.reversed();
+        }
+
+        Collections.sort(data, comparator);
+    }
+
+
 }
