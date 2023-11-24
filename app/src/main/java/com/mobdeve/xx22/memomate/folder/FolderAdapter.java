@@ -63,7 +63,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
         return folderData.size();
     }
 
-    /*  Handles adding a folder item to the stored array list + updates the UI accordingly.
+    /**
+     *  Handles adding a folder item to the stored array list + updates the UI accordingly.
      *  Note that when a folder item is added, it is added at the end of the RecyclerView.
      */
     public void addFolderItem(FolderModel folder) {
@@ -71,7 +72,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
         notifyItemInserted(this.folderData.size() - 1);
     }
 
-    /*
+    /**
      *  Handles updating a folder item name in the stored array list + updates the UI accordingly.
      */
     public void updateFolderItemName(int folderPos, String folderName) {
@@ -79,11 +80,19 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
         notifyItemChanged(folderPos);
     }
 
-    /*
+    /**
      *  Handles updating a folder item color in the stored array list + updates the UI accordingly.
      */
     public void updateFolderItemColor(int folderPos, int folderColor) {
         this.folderData.get(folderPos).setColorResId(folderColor);
         notifyItemChanged(folderPos);
     }
+    /**
+     *  Handles deleting a folder item in the stored array list + updates the UI accordingly.
+     */
+    public void deleteFolder(int folderPos) {
+        this.folderData.remove(folderPos);
+        notifyItemRemoved(folderPos);
+    }
+
 }

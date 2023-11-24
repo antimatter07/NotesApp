@@ -14,12 +14,10 @@ import java.util.ArrayList;
 public class FolderDatabase {
 
     private FolderDatabaseHandler folderHandler;
-    private NoteDatabaseHandler noteHandler;
 
     // Initializes the handlers instance using the context provided.
     public FolderDatabase(Context context) {
         this.folderHandler = new FolderDatabaseHandler(context);
-        this.noteHandler = new NoteDatabaseHandler(context);
     }
 
     /**
@@ -119,19 +117,15 @@ public class FolderDatabase {
     }
 
     // deletes a folder item along with the notes within it
-    public void deleteFolder(FolderModel folder) {
-        int folderId = folder.getFolderId();
-        SQLiteDatabase fdb = folderHandler.getWritableDatabase();
-        fdb.delete(
+    public void deleteFolder(int folderID) {
+        SQLiteDatabase db = folderHandler.getWritableDatabase();
+
+        db.delete(
                 folderHandler.FOLDERS_TABLE,
                 folderHandler.FOLDER_ID + " = ?",
-                new String[]{String.valueOf(folderId)});
-        fdb.close();
+                new String[]{String.valueOf(folderID)});
+        db.close();
 
-        SQLiteDatabase ndb = noteHandler.getWritableDatabase();
-        ndb.delete(noteHandler.TABLE_NOTES, noteHandler.COLUMN_FOLDER_KEY + "=?",
-                new String[]{String.valueOf(folderId)});
-        ndb.close();
     }
 
     public int getLastId() {

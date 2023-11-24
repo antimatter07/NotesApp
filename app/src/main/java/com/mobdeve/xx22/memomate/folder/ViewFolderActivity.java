@@ -178,11 +178,15 @@ public class ViewFolderActivity extends AppCompatActivity
         viewBinding.folderOptionsBtn.setOnClickListener(v -> {
             FragmentManager fm = getSupportFragmentManager();
             FolderOptionsFragment folderOptionsFragment = new FolderOptionsFragment();
-            folderOptionsFragment.setFolder(folderPos, folderId, folderColorId);
+            folderOptionsFragment.setFolder(folderPos, folderId, folderName, folderColorId);
             folderOptionsFragment.show(fm, "FolderOptionsDialog");
         });
 
     }
+
+    /**
+     *
+     */
 
     /**
      * Refreshes main activity with updated db data

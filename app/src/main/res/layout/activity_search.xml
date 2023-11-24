@@ -18,11 +18,10 @@
         android:focusableInTouchMode="true"
         android:iconifiedByDefault="false"
         android:queryBackground="@android:color/transparent"
-        android:queryHint="Search"
+        android:queryHint="Search Note Title..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:queryHint="Search Notes..." />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <GridView
         android:id="@+id/searchResultsGv"

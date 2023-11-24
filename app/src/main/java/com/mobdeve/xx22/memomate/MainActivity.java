@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final int RESULT_FOLDER_NAME = 1;
     public static final int RESULT_FOLDER_COLOR = 2;
+    public static final int RESULT_DELETE_FOLDER = 3;
 
     private FolderAdapter folderAdapter;
     private NoteAdapter noteAdapter;
@@ -55,23 +56,27 @@ public class MainActivity extends AppCompatActivity
     private ActivityResultLauncher<Intent> mainActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == RESULT_FOLDER_NAME) {
-                    // Updates the folder name
-                    if (folderAdapter != null) {
-                        String folderName =  result.getData().getStringExtra(ViewFolderActivity.folderNameKey);
-                        folderAdapter.updateFolderItemName(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
-                                        folderName);
+                if (folderAdapter != null) {
+                    switch(result.getResultCode()) {
+                        case RESULT_FOLDER_NAME: // Updates the folder name
+                            String folderName =  result.getData().getStringExtra(ViewFolderActivity.folderNameKey);
+                            folderAdapter.updateFolderItemName(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
+                                    folderName);
+                            break;
+                        case RESULT_FOLDER_COLOR: // Updates the folder color
+                            int folderColor =  result.getData().getIntExtra(ViewFolderActivity.folderColorKey, -1);
+                            folderAdapter.updateFolderItemColor(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
+                                    folderColor);
+                            break;
+                        case RESULT_DELETE_FOLDER:
+                            int folderPos = result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1);
+                            folderAdapter.deleteFolder(folderPos);
+                            break;
+                        default:
+                            break;
                     }
                 }
-                else if (result.getResultCode() == RESULT_FOLDER_COLOR) {
-                    // Updates the folder color
-                    if (folderAdapter != null) {
-                        int folderColor =  result.getData().getIntExtra(ViewFolderActivity.folderColorKey, -1);
-                        folderAdapter.updateFolderItemColor(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
-                                folderColor);
-                    }
 
-                }
             });
 
 
@@ -192,6 +197,9 @@ public class MainActivity extends AppCompatActivity
         reloadNoteData();
     }
 
+    /**
+     * Updates the MainActivity's Grid View of Note items
+     */
     @Override
     public void updateGridView() {
         // updates the grid view when a note is moved to a different folder
