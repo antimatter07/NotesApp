@@ -37,7 +37,7 @@ public class NoteDatabase {
     public Cursor getChecklistItemsByNoteId(int noteId) {
         SQLiteDatabase db = dbHandler.getReadableDatabase();
 
-        // Define the columns you want to retrieve
+        // Define the columns to retrieve
         String[] projection = {
                 "ID",
                 NoteDatabaseHandler.COLUMN_NOTE_ID,
@@ -467,6 +467,12 @@ public class NoteDatabase {
     }
 
 
+    /**
+     * Looks for notes with folder key filter.
+     * @param query String to query for title
+     * @param folderId folder used as a filter
+     * @return list of notes (ParentNoteModel) to display in search
+     */
     public ArrayList<ParentNoteModel> searchNotesWithFolderKey(String query, int folderId) {
         ArrayList<ParentNoteModel> notes = new ArrayList<>();
 
@@ -563,6 +569,9 @@ public class NoteDatabase {
                 note.setDateCreated(dateCreated);
                 note.setDateModified(dateModified);
                 notes.add(note);
+            } else if (noteType.equals("drawing")) {
+                //TODO: Add logic for drawing notes
+
             }
 
 
@@ -574,6 +583,11 @@ public class NoteDatabase {
         return notes;
     }
 
+    /**
+     * Retrieve all notes from all folders that match search query for search activity
+     * @param query query in search bar
+     * @return ParentNote model arraylist used to update adapter
+     */
     public ArrayList<ParentNoteModel> searchNotes(String query) {
         ArrayList<ParentNoteModel> notes = new ArrayList<>();
 
@@ -669,6 +683,9 @@ public class NoteDatabase {
                 note.setDateCreated(dateCreated);
                 note.setDateModified(dateModified);
                 notes.add(note);
+            } else if (noteType.equals("drawing")) {
+                //TODO: Add logic for drawing notes
+
             }
 
 
