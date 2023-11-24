@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity
     private ActivityMainBinding viewBinding;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
 
+    private static final String SORTING_RESULT_KEY = "sortingKey";
+
 //    TEMP data
     private boolean isOrderAscending = true;
 
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity
                 else {
                     orderBtn.setBackgroundResource(R.drawable.ic_descend);
                 }
+                handleSortingOption();
             }
         });
 
@@ -105,6 +108,12 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fm = getSupportFragmentManager();
             SortingOptionsDialogFragment sortingOptionsFragment = new SortingOptionsDialogFragment();
             sortingOptionsFragment.show(fm, "SettingsDialog");
+
+            // Listen for the sorting result
+            fm.setFragmentResultListener(SORTING_RESULT_KEY, this, (requestKey, result) -> {
+                int sortingOption = result.getInt("sortingOption", R.id.nameSortingRb);
+                handleSortingOption(sortingOption);
+            });
 
 
         });
@@ -175,6 +184,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     /**
      * On resume of main activity, refresh screen with new note data
      */
@@ -193,6 +203,38 @@ public class MainActivity extends AppCompatActivity
     public void updateGridView() {
         // updates the grid view when a note is moved to a different folder
         reloadNoteData();
+    }
+
+    /**
+     * Handles sorting option in adapter.
+     * @param sortingOption
+     */
+    private void handleSortingOption(int sortingOption) {
+        // Sort notes based on the selected sorting option
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(-1);
+        noteAdapter.setData(data);
+        noteAdapter.setSortingOption(sortingOption);
+        noteAdapter.setSortOrder(isOrderAscending);
+
+        noteAdapter.sortNotes(); // Add a method in your NoteAdapter to perform the sorting
+        noteAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Handles sorting option in adapter.
+     *
+     */
+    private void handleSortingOption() {
+        // Sort notes based on the selected sorting option
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(-1);
+        noteAdapter.setData(data);
+
+        noteAdapter.setSortOrder(isOrderAscending);
+
+        noteAdapter.sortNotes(); // Add a method in your NoteAdapter to perform the sorting
+        noteAdapter.notifyDataSetChanged();
     }
 
 }

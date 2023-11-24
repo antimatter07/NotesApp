@@ -38,6 +38,8 @@ public class ViewFolderActivity extends AppCompatActivity
                             folderNameKey = "FOLDER_NAME_KEY",
                             folderColorKey = "FOLDER_COLOR_KEY",
                             folderPosition = "FOLDER_POSITION";
+                            
+    private static final String SORTING_RESULT_KEY = "sortingKey";
 
 
     //name to display
@@ -146,6 +148,15 @@ public class ViewFolderActivity extends AppCompatActivity
             sortingOptionsFragment.show(fm, "SettingsDialog");
 
 
+            // Listen for the sorting result
+            fm.setFragmentResultListener(SORTING_RESULT_KEY, this, (requestKey, result) -> {
+                int sortingOption = result.getInt("sortingOption", R.id.nameSortingRb);
+                handleSortingOption(sortingOption);
+            });
+
+
+
+
         });
 
         // Setup Create New Note Button
@@ -166,6 +177,7 @@ public class ViewFolderActivity extends AppCompatActivity
                 else {
                     viewBinding.orderBtn.setBackgroundResource(R.drawable.ic_descend);
                 }
+                handleSortingOption();
             }
         });
 
@@ -207,6 +219,7 @@ public class ViewFolderActivity extends AppCompatActivity
         reloadNoteData();
     }
 
+
     /**
      *   Determines if there are any changes to either the title.
      */
@@ -216,10 +229,43 @@ public class ViewFolderActivity extends AppCompatActivity
 
     /**
      *   Updates the color of the activity titlebar
+     *   @param colorId note's updated folder color id
      */
     public void updateHeaderColor(int colorId) {
         folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), colorId);
         viewBinding.menuBarLl.setBackgroundColor(folderColor);
+     }
+
+    /**
+     * Handles sorting option in adapter.
+     * @param sortingOption
+     */
+    private void handleSortingOption(int sortingOption) {
+        // Sort notes based on the selected sorting option
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(folderId);
+        noteAdapter.setData(data);
+        noteAdapter.setSortingOption(sortingOption);
+        noteAdapter.setSortOrder(isOrderAscending);
+
+        noteAdapter.sortNotes(); // Add a method in your NoteAdapter to perform the sorting
+        noteAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Handles sorting option in adapter.
+     *
+     */
+    private void handleSortingOption() {
+        // Sort notes based on the selected sorting option
+        NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
+        data = noteDatabase.getAllNotes(folderId);
+        noteAdapter.setData(data);
+
+        noteAdapter.setSortOrder(isOrderAscending);
+
+        noteAdapter.sortNotes(); // Add a method in your NoteAdapter to perform the sorting
+        noteAdapter.notifyDataSetChanged();
     }
 
 }

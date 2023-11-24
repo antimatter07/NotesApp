@@ -15,6 +15,7 @@ import com.mobdeve.xx22.memomate.MainActivity;
 import com.mobdeve.xx22.memomate.databinding.FolderItemBinding;
 import com.mobdeve.xx22.memomate.databinding.ModalChangeFolderItemBinding;
 import com.mobdeve.xx22.memomate.model.FolderModel;
+import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
