@@ -36,7 +36,6 @@ public class FolderOptionsFragment extends DialogFragment {
     private String folderName;
 
     private ExecutorService executorService;
-    private Handler handler;
 
     @NonNull
     @Override
@@ -46,7 +45,6 @@ public class FolderOptionsFragment extends DialogFragment {
         binding = ModalFolderOptionsBinding.inflate(inflater);
 
         executorService = Executors.newFixedThreadPool(2);
-        handler = new Handler();
 
         binding.changeColorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,15 +79,6 @@ public class FolderOptionsFragment extends DialogFragment {
                             FolderDatabase fdb = new FolderDatabase(getContext());
 
                             fdb.deleteFolder(folderId);
-
-//                            handler.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Intent intent = new Intent();
-//                                    intent.putExtra(ViewFolderActivity.folderPosition, folderPos);
-//                                    requireActivity().setResult(MainActivity.RESULT_DELETE_FOLDER, intent);
-//                                }
-//                            });
 
                         }
                     });

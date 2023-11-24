@@ -40,15 +40,10 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
             implements ChangeFolderFragment.UpdateActivityGridView {
 
-    public static final int RESULT_FOLDER_NAME = 1;
-    public static final int RESULT_FOLDER_COLOR = 2;
-    public static final int RESULT_DELETE_FOLDER = 3;
-
     private FolderAdapter folderAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
-
 
 //    TEMP data
     private boolean isOrderAscending = true;
@@ -56,26 +51,6 @@ public class MainActivity extends AppCompatActivity
     private ActivityResultLauncher<Intent> mainActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (folderAdapter != null) {
-                    switch(result.getResultCode()) {
-                        case RESULT_FOLDER_NAME: // Updates the folder name
-                            String folderName =  result.getData().getStringExtra(ViewFolderActivity.folderNameKey);
-                            folderAdapter.updateFolderItemName(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
-                                    folderName);
-                            break;
-                        case RESULT_FOLDER_COLOR: // Updates the folder color
-                            int folderColor =  result.getData().getIntExtra(ViewFolderActivity.folderColorKey, -1);
-                            folderAdapter.updateFolderItemColor(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
-                                    folderColor);
-                            break;
-                        case RESULT_DELETE_FOLDER:
-                            int folderPos = result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1);
-                            folderAdapter.deleteFolder(folderPos);
-                            break;
-                        default:
-                            break;
-                    }
-                }
 
             });
 
@@ -172,9 +147,22 @@ public class MainActivity extends AppCompatActivity
         String fullString = note.getClass().getCanonicalName();
         return fullString.substring(fullString.lastIndexOf(".") + 1);
     }
+    
 
     /**
-     * Refreshes main activity with updated db data
+     * Refreshes main activity with updated db folder data
+     */
+    private void reloadFolderData() {
+        FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
+        ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
+
+        if (folderAdapter != null) {
+            folderAdapter.setFolderData(folders);
+        }
+    }
+
+    /**
+     * Refreshes main activity with updated db note data
      */
     private void reloadNoteData() {
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
@@ -195,6 +183,7 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
+        reloadFolderData();
     }
 
     /**

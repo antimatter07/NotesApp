@@ -120,11 +120,6 @@ public class ViewFolderActivity extends AppCompatActivity
                             // Update folder content in the database
                             folderDatabase.updateFolderName(folderId, newFolderName);
 
-                            // Set result for main activity to update this folder's gui
-                            Intent intent = new Intent();
-                            intent.putExtra(folderPosition, folderPos);
-                            intent.putExtra(folderNameKey, newFolderName);
-                            setResult(MainActivity.RESULT_FOLDER_NAME, intent);
                         }
 
                     });

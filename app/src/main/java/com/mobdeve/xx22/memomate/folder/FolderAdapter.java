@@ -16,6 +16,7 @@ import com.mobdeve.xx22.memomate.databinding.FolderItemBinding;
 import com.mobdeve.xx22.memomate.databinding.ModalChangeFolderItemBinding;
 import com.mobdeve.xx22.memomate.model.FolderModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
@@ -93,6 +94,15 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
     public void deleteFolder(int folderPos) {
         this.folderData.remove(folderPos);
         notifyItemRemoved(folderPos);
+    }
+
+    /**
+     *  Handles deleting a folder item in the stored array list + updates the UI accordingly.
+     */
+    public void setFolderData(ArrayList<FolderModel> folders) {
+        this.folderData = folders;
+        folderData.remove(0);
+        notifyDataSetChanged();
     }
 
 }

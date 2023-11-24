@@ -109,11 +109,6 @@ public class ChooseFolderColorFragment extends DialogFragment {
                                     activity.updateHeaderColor(folderColor);
                                     activity.updateGridView();
 
-
-                                    Intent intent = new Intent();
-                                    intent.putExtra(ViewFolderActivity.folderPosition, folderPos);
-                                    intent.putExtra(ViewFolderActivity.folderColorKey, folderColor);
-                                    requireActivity().setResult(MainActivity.RESULT_FOLDER_COLOR, intent);
                                 }
                             });
 
