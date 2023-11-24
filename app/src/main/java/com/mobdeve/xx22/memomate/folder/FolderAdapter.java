@@ -23,8 +23,6 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
     private ArrayList<FolderModel> folderData;
     private ActivityResultLauncher<Intent> viewFolderLauncher;
 
-    private int myPosition;
-
 
     public FolderAdapter(ArrayList<FolderModel> data, ActivityResultLauncher<Intent> viewFolderLauncher) {
         this.folderData = data;
@@ -50,6 +48,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
         holder.itemView.setOnClickListener(view -> {
 
             Intent intent = new Intent(view.getContext(), ViewFolderActivity.class);
+            intent.putExtra(ViewFolderActivity.folderPosition, holder.getAdapterPosition());
             intent.putExtra(ViewFolderActivity.folderIdKey, folderData.get(holder.getAdapterPosition()).getFolderId());
             intent.putExtra(ViewFolderActivity.folderNameKey, folderData.get(holder.getAdapterPosition()).getName());
             intent.putExtra(ViewFolderActivity.folderColorKey, folderData.get(holder.getAdapterPosition()).getColorResId());
@@ -73,10 +72,10 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
     }
 
     /*
-     *  Handles updating a folder item to the stored array list + updates the UI accordingly.
+     *  Handles updating a folder item name in the stored array list + updates the UI accordingly.
      */
-    public void updateFolderItem(int folderPos, FolderModel folder) {
-        this.folderData.set(folderPos, folder);
+    public void updateFolderItemName(int folderPos, String folderName) {
+        this.folderData.get(folderPos).setName(folderName);
         notifyItemChanged(folderPos);
     }
 }

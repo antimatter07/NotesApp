@@ -23,6 +23,7 @@ import com.mobdeve.xx22.memomate.databinding.ActivityMainBinding;
 
 import com.mobdeve.xx22.memomate.folder.FolderAdapter;
 
+import com.mobdeve.xx22.memomate.folder.ViewFolderActivity;
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 import com.mobdeve.xx22.memomate.model.FolderModel;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
-    
+
 
 //    TEMP data
     private boolean isOrderAscending = true;
@@ -52,6 +53,13 @@ public class MainActivity extends AppCompatActivity
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Updates the folder name
+                    if (folderAdapter != null) {
+                        String folderName =  result.getData().getStringExtra(ViewFolderActivity.folderNameKey);
+                        folderAdapter.updateFolderItemName(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
+                                        folderName);
+                    }
+
                 }
             });
 
@@ -164,19 +172,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Refreshes main activity with updated db folder data
-     */
-    private void reloadFolderData() {
-        FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
-        ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
-
-        if (folderAdapter != null) {
-            folderAdapter.setData(folders);
-            folderAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /**
      * On resume of main activity, refresh screen with new note data
      */
     @Override
@@ -184,7 +179,6 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
-        reloadFolderData();
     }
 
     @Override

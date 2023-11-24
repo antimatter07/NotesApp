@@ -35,13 +35,15 @@ public class ViewFolderActivity extends AppCompatActivity
 
     public static final String folderIdKey = "FOLDER_ID",
                             folderNameKey = "FOLDER_NAME_KEY",
-                            folderColorKey = "FOLDER_COLOR_KEY";
+                            folderColorKey = "FOLDER_COLOR_KEY",
+                            folderPosition = "FOLDER_POSITION";
 
 
     //name to display
     private String folderName;
     private int folderColor;
     private int folderId;
+    private int folderPos;
 
     private FolderActivityBinding viewBinding;
 
@@ -70,6 +72,7 @@ public class ViewFolderActivity extends AppCompatActivity
         Intent intent = getIntent();
         folderId = intent.getIntExtra(folderIdKey, -1);
         folderName = intent.getStringExtra(folderNameKey);
+        folderPos = intent.getIntExtra(folderPosition, -1);
         viewBinding.folderNameBarEt.setText(folderName);
         folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), intent.getIntExtra(folderColorKey, R.color.folderDefault));
         viewBinding.menuBarLl.setBackgroundColor(folderColor);
@@ -112,6 +115,14 @@ public class ViewFolderActivity extends AppCompatActivity
 
                             // Update folder content in the database
                             folderDatabase.updateFolderName(folderId, newFolderName);
+
+                            // Set result for main activity to update this folder's gui
+                            Intent intent = new Intent();
+                            intent.putExtra(folderPosition, folderPos);
+                            intent.putExtra(folderIdKey, folderId);
+                            intent.putExtra(folderNameKey, newFolderName);
+                            intent.putExtra(folderColorKey, folderColor);
+                            setResult(Activity.RESULT_OK, intent);
                         }
 
                     });
