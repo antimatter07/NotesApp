@@ -1,6 +1,8 @@
 package com.mobdeve.xx22.memomate.partials;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,7 @@ public class SortingOptionsDialogFragment extends DialogFragment {
                 .setPositiveButton("Select", (dialog, which) -> {
                     // Handle sorting option
                     int checkedId = binding.sortingOptionsRg.getCheckedRadioButtonId();
+                    sendSortingOption(checkedId);
 
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {
@@ -33,5 +36,12 @@ public class SortingOptionsDialogFragment extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    private void sendSortingOption(int checkedId) {
+        // Create an Intent to send the sorting option back to the MainActivity
+        Bundle result = new Bundle();
+        result.putInt("sortingOption", checkedId);
+        getParentFragmentManager().setFragmentResult("sortingKey", result);
     }
 }
