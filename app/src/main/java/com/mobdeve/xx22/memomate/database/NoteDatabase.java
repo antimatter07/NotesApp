@@ -364,6 +364,22 @@ public class NoteDatabase {
     }
 
     /**
+     * Delete the notes that has the given folderID
+     * @param folderID folder to delete
+     */
+    public synchronized void deleteNotesInFolder(int folderID) {
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        String selection = NoteDatabaseHandler.COLUMN_FOLDER_KEY + " = ?";
+        String[] selectionArgs = {String.valueOf(folderID)};
+
+        db.delete(NoteDatabaseHandler.TABLE_NOTES, selection, selectionArgs);
+
+        db.close();
+
+    }
+
+    /**
      * Updates content of an item in a checklist
      * @param item_id id of checklist item
      * @param updatedText new text

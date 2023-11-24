@@ -41,12 +41,9 @@ public class ChooseFolderAdapter extends RecyclerView.Adapter<ChooseFolderHolder
     public void onBindViewHolder(@NonNull ChooseFolderHolder holder, int position) {
 
         if (position == selectedFolderPos) {
-            // Set the selected folder
-
             holder.setBackgroundColor(true);
         }
         else if (position == previousSelectedFolder) {
-            holder.itemView.setSelected(false);
             holder.setBackgroundColor(false);
         }
         else {

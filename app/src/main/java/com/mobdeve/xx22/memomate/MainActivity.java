@@ -1,5 +1,6 @@
 package com.mobdeve.xx22.memomate;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.mobdeve.xx22.memomate.databinding.ActivityMainBinding;
 
 import com.mobdeve.xx22.memomate.folder.FolderAdapter;
 
+import com.mobdeve.xx22.memomate.folder.ViewFolderActivity;
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 import com.mobdeve.xx22.memomate.model.FolderModel;
@@ -50,10 +53,7 @@ public class MainActivity extends AppCompatActivity
     private ActivityResultLauncher<Intent> mainActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    //TODO: handle changes to data in folder
 
-                }
             });
 
 
@@ -156,9 +156,22 @@ public class MainActivity extends AppCompatActivity
         String fullString = note.getClass().getCanonicalName();
         return fullString.substring(fullString.lastIndexOf(".") + 1);
     }
+    
 
     /**
-     * Refreshes main activity with updated db data
+     * Refreshes main activity with updated db folder data
+     */
+    private void reloadFolderData() {
+        FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
+        ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
+
+        if (folderAdapter != null) {
+            folderAdapter.setFolderData(folders);
+        }
+    }
+
+    /**
+     * Refreshes main activity with updated db note data
      */
     private void reloadNoteData() {
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
@@ -180,8 +193,12 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
+        reloadFolderData();
     }
 
+    /**
+     * Updates the MainActivity's Grid View of Note items
+     */
     @Override
     public void updateGridView() {
         // updates the grid view when a note is moved to a different folder

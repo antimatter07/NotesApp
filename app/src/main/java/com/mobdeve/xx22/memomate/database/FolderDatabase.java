@@ -14,12 +14,10 @@ import java.util.ArrayList;
 public class FolderDatabase {
 
     private FolderDatabaseHandler folderHandler;
-    private NoteDatabaseHandler noteHandler;
 
     // Initializes the handlers instance using the context provided.
     public FolderDatabase(Context context) {
         this.folderHandler = new FolderDatabaseHandler(context);
-        this.noteHandler = new NoteDatabaseHandler(context);
     }
 
     /**
@@ -110,20 +108,44 @@ public class FolderDatabase {
 
     }
 
+    // updates a folder item's name
+    public void updateFolderName(int folderId, String folderName) {
+        SQLiteDatabase db = folderHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(folderHandler.FOLDER_NAME, folderName);
+
+        db.update(folderHandler.FOLDERS_TABLE, values,
+                folderHandler.FOLDER_ID + " = ?", new String[]{String.valueOf(folderId)});
+
+        db.close();
+
+    }
+
+    // updates a folder item's color
+    public void updateFolderColor(int folderId, int folderColor) {
+        SQLiteDatabase db = folderHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(folderHandler.FOLDER_COLOR, folderColor);
+
+        db.update(folderHandler.FOLDERS_TABLE, values,
+                folderHandler.FOLDER_ID + " = ?", new String[]{String.valueOf(folderId)});
+
+        db.close();
+
+    }
+
     // deletes a folder item along with the notes within it
-    public void deleteFolder(FolderModel folder) {
-        int folderId = folder.getFolderId();
-        SQLiteDatabase fdb = folderHandler.getWritableDatabase();
-        fdb.delete(
+    public void deleteFolder(int folderID) {
+        SQLiteDatabase db = folderHandler.getWritableDatabase();
+
+        db.delete(
                 folderHandler.FOLDERS_TABLE,
                 folderHandler.FOLDER_ID + " = ?",
-                new String[]{String.valueOf(folderId)});
-        fdb.close();
+                new String[]{String.valueOf(folderID)});
+        db.close();
 
-        SQLiteDatabase ndb = noteHandler.getWritableDatabase();
-        ndb.delete(noteHandler.TABLE_NOTES, noteHandler.COLUMN_FOLDER_KEY + "=?",
-                new String[]{String.valueOf(folderId)});
-        ndb.close();
     }
 
     public int getLastId() {

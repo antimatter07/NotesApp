@@ -34,17 +34,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/folderNameTv"
+        <EditText
+            android:id="@+id/folderNameBarEt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:background="@android:color/transparent"
             android:ellipsize="end"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="Folder Name"
+            tools:text="Folder Name"
             android:textColor="@color/blackDefault"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -67,7 +68,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@id/folderOptionsBtn"
-            app:layout_constraintStart_toEndOf="@id/folderNameTv"
+            app:layout_constraintStart_toEndOf="@id/folderNameBarEt"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
