@@ -40,6 +40,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
             implements ChangeFolderFragment.UpdateActivityGridView {
 
+    public static final int RESULT_FOLDER_NAME = 1;
+    public static final int RESULT_FOLDER_COLOR = 2;
+
     private FolderAdapter folderAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
@@ -52,12 +55,20 @@ public class MainActivity extends AppCompatActivity
     private ActivityResultLauncher<Intent> mainActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
+                if (result.getResultCode() == RESULT_FOLDER_NAME) {
                     // Updates the folder name
                     if (folderAdapter != null) {
                         String folderName =  result.getData().getStringExtra(ViewFolderActivity.folderNameKey);
                         folderAdapter.updateFolderItemName(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
                                         folderName);
+                    }
+                }
+                else if (result.getResultCode() == RESULT_FOLDER_COLOR) {
+                    // Updates the folder color
+                    if (folderAdapter != null) {
+                        int folderColor =  result.getData().getIntExtra(ViewFolderActivity.folderColorKey, -1);
+                        folderAdapter.updateFolderItemColor(result.getData().getIntExtra(ViewFolderActivity.folderPosition, -1),
+                                folderColor);
                     }
 
                 }

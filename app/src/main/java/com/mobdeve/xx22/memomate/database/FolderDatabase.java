@@ -104,6 +104,20 @@ public class FolderDatabase {
 
     }
 
+    // updates a folder item's color
+    public void updateFolderColor(int folderId, int folderColor) {
+        SQLiteDatabase db = folderHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(folderHandler.FOLDER_COLOR, folderColor);
+
+        db.update(folderHandler.FOLDERS_TABLE, values,
+                folderHandler.FOLDER_ID + " = ?", new String[]{String.valueOf(folderId)});
+
+        db.close();
+
+    }
+
     // deletes a folder item along with the notes within it
     public void deleteFolder(FolderModel folder) {
         int folderId = folder.getFolderId();

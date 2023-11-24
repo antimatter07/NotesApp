@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.mobdeve.xx22.memomate.MainActivity;
 import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.FolderModel;
@@ -41,6 +42,8 @@ public class ViewFolderActivity extends AppCompatActivity
 
     //name to display
     private String folderName;
+
+    private int folderColorId;
     private int folderColor;
     private int folderId;
     private int folderPos;
@@ -74,7 +77,8 @@ public class ViewFolderActivity extends AppCompatActivity
         folderName = intent.getStringExtra(folderNameKey);
         folderPos = intent.getIntExtra(folderPosition, -1);
         viewBinding.folderNameBarEt.setText(folderName);
-        folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), intent.getIntExtra(folderColorKey, R.color.folderDefault));
+        folderColorId = intent.getIntExtra(folderColorKey, R.color.folderDefault);
+        folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), folderColorId);
         viewBinding.menuBarLl.setBackgroundColor(folderColor);
         // viewBinding.newNoteBtn.setBackgroundTintList(ColorStateList.valueOf(folderColor));
 
@@ -119,10 +123,8 @@ public class ViewFolderActivity extends AppCompatActivity
                             // Set result for main activity to update this folder's gui
                             Intent intent = new Intent();
                             intent.putExtra(folderPosition, folderPos);
-                            intent.putExtra(folderIdKey, folderId);
                             intent.putExtra(folderNameKey, newFolderName);
-                            intent.putExtra(folderColorKey, folderColor);
-                            setResult(Activity.RESULT_OK, intent);
+                            setResult(MainActivity.RESULT_FOLDER_NAME, intent);
                         }
 
                     });
@@ -176,6 +178,7 @@ public class ViewFolderActivity extends AppCompatActivity
         viewBinding.folderOptionsBtn.setOnClickListener(v -> {
             FragmentManager fm = getSupportFragmentManager();
             FolderOptionsFragment folderOptionsFragment = new FolderOptionsFragment();
+            folderOptionsFragment.setFolder(folderPos, folderId, folderColorId);
             folderOptionsFragment.show(fm, "FolderOptionsDialog");
         });
 
@@ -205,10 +208,19 @@ public class ViewFolderActivity extends AppCompatActivity
         reloadNoteData();
     }
 
-    /*
+    /**
      *   Determines if there are any changes to either the title.
-     * */
+     */
     private Boolean isTextStillOriginal() {
         return this.viewBinding.folderNameBarEt.getText().toString().equals(folderName);
     }
+
+    /**
+     *   Updates the color of the activity titlebar
+     */
+    public void updateHeaderColor(int colorId) {
+        folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), colorId);
+        viewBinding.menuBarLl.setBackgroundColor(folderColor);
+    }
+
 }

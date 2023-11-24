@@ -78,4 +78,12 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderHolder> {
         this.folderData.get(folderPos).setName(folderName);
         notifyItemChanged(folderPos);
     }
+
+    /*
+     *  Handles updating a folder item color in the stored array list + updates the UI accordingly.
+     */
+    public void updateFolderItemColor(int folderPos, int folderColor) {
+        this.folderData.get(folderPos).setColorResId(folderColor);
+        notifyItemChanged(folderPos);
+    }
 }

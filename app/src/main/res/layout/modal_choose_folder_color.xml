@@ -40,7 +40,6 @@
                     android:layout_height="36dp"
                     android:layout_margin="4dp"
                     android:background="@color/folderDefault"
-                    android:src="@drawable/ic_check"
                     app:layout_columnWeight="1"
                     app:layout_gravity="fill" />
 
