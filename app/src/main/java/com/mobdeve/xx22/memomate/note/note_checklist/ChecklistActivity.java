@@ -91,10 +91,6 @@ public class ChecklistActivity extends AppCompatActivity {
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
 
         // create a new item by default when creating new checklist
-        if (listData.size() == 0) {
-            listData.add(new ChecklistItemModel(false, ""));
-            //adapter.notifyItemInserted(listData.size() - 1);
-        }
 
 
 
@@ -135,6 +131,28 @@ public class ChecklistActivity extends AppCompatActivity {
 
                 }
             });
+        }
+
+        if (listData.size() == 0) {
+
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    int newCheckListItemId = noteDatabase.addCheckListItem(currentNoteID);
+                    ChecklistItemModel newItem = new ChecklistItemModel(false, "");
+                    newItem.setItemId(newCheckListItemId);
+
+                    // Update the UI on the main thread
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listData.add(newItem);
+                            adapter.notifyItemInserted(listData.size() - 1);
+                        }
+                    });
+                }
+            });
+
         }
 
         //add notes with button
