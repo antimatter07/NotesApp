@@ -1,5 +1,6 @@
 package com.mobdeve.xx22.memomate;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,10 +39,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
             implements ChangeFolderFragment.UpdateActivityGridView {
 
-    private FolderAdapter mainAdapter;
+    private FolderAdapter folderAdapter;
     private NoteAdapter noteAdapter;
     private ActivityMainBinding viewBinding;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
+    
 
 //    TEMP data
     private boolean isOrderAscending = true;
@@ -49,8 +52,6 @@ public class MainActivity extends AppCompatActivity
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    //TODO: handle changes to data in folder
-
                 }
             });
 
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fm = getSupportFragmentManager();
             CreateFolderDialogFragment createFolderDialogFragment = new CreateFolderDialogFragment();
             createFolderDialogFragment.show(fm, "NewFolderDialog");
-            createFolderDialogFragment.setAdapter(mainAdapter);
+            createFolderDialogFragment.setAdapter(folderAdapter);
         });
 
 
@@ -137,8 +138,8 @@ public class MainActivity extends AppCompatActivity
     private void setupFolderRecyclerView() {
         FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
         ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
-        mainAdapter = new FolderAdapter(folders, mainActivityResultLauncher);
-        viewBinding.folderRv.setAdapter(mainAdapter);
+        folderAdapter = new FolderAdapter(folders, mainActivityResultLauncher);
+        viewBinding.folderRv.setAdapter(folderAdapter);
         viewBinding.folderRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
     }
@@ -155,11 +156,24 @@ public class MainActivity extends AppCompatActivity
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
         data = noteDatabase.getAllNotes(-1);
 
-        if (mainAdapter != null) {
+        if (folderAdapter != null) {
             noteAdapter.setData(data);
             noteAdapter.notifyDataSetChanged();
         }
 
+    }
+
+    /**
+     * Refreshes main activity with updated db folder data
+     */
+    private void reloadFolderData() {
+        FolderDatabase folderDatabase = new FolderDatabase(getApplicationContext());
+        ArrayList<FolderModel> folders = folderDatabase.getAllFolders();
+
+        if (folderAdapter != null) {
+            folderAdapter.setData(folders);
+            folderAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -170,6 +184,7 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
+        reloadFolderData();
     }
 
     @Override

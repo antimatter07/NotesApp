@@ -1,7 +1,10 @@
 package com.mobdeve.xx22.memomate.folder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
@@ -10,7 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.model.FolderModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.note.NoteAdapter;
 import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
@@ -22,6 +27,8 @@ import com.mobdeve.xx22.memomate.partials.SortingOptionsDialogFragment;
 import com.mobdeve.xx22.memomate.databinding.FolderActivityBinding;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ViewFolderActivity extends AppCompatActivity
         implements ChangeFolderFragment.UpdateActivityGridView {
@@ -37,9 +44,13 @@ public class ViewFolderActivity extends AppCompatActivity
     private int folderId;
 
     private FolderActivityBinding viewBinding;
+
+    private FolderDatabase folderDatabase;
     private NoteAdapter noteAdapter;
     private boolean isOrderAscending = true;
     private ArrayList<ParentNoteModel> data = new ArrayList<>();
+
+    ExecutorService executorService;
 
     @Override
     public void updateGridView() {
@@ -59,15 +70,17 @@ public class ViewFolderActivity extends AppCompatActivity
         Intent intent = getIntent();
         folderId = intent.getIntExtra(folderIdKey, -1);
         folderName = intent.getStringExtra(folderNameKey);
-        viewBinding.folderNameTv.setText(folderName);
+        viewBinding.folderNameBarEt.setText(folderName);
         folderColor = ContextCompat.getColor(viewBinding.menuBarLl.getContext(), intent.getIntExtra(folderColorKey, R.color.folderDefault));
         viewBinding.menuBarLl.setBackgroundColor(folderColor);
         // viewBinding.newNoteBtn.setBackgroundTintList(ColorStateList.valueOf(folderColor));
 
+        executorService = Executors.newSingleThreadExecutor();
 
-        //TODO: set up notes recycler view to show notes in folder
         NoteDatabase noteDatabase = new NoteDatabase(getApplicationContext());
         data = noteDatabase.getAllNotes(folderId);
+
+        folderDatabase = new FolderDatabase(getApplicationContext());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -76,6 +89,35 @@ public class ViewFolderActivity extends AppCompatActivity
 
         GridView gridView = viewBinding.notesGv;
         gridView.setAdapter(noteAdapter);
+
+        // Setup Change Folder Name
+        viewBinding.folderNameBarEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!isTextStillOriginal()) {
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            String newFolderName = viewBinding.folderNameBarEt.getText().toString();
+
+                            // Update folder content in the database
+                            folderDatabase.updateFolderName(folderId, newFolderName);
+                        }
+
+                    });
+                }
+            }
+        });
 
         // Setup Search Button
         viewBinding.searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -150,5 +192,12 @@ public class ViewFolderActivity extends AppCompatActivity
         super.onResume();
         // Refresh the data when the activity is resumed, assuming changes are made to notes in db
         reloadNoteData();
+    }
+
+    /*
+     *   Determines if there are any changes to either the title.
+     * */
+    private Boolean isTextStillOriginal() {
+        return this.viewBinding.folderNameBarEt.getText().toString().equals(folderName);
     }
 }

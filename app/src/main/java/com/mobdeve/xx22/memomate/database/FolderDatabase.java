@@ -90,6 +90,20 @@ public class FolderDatabase {
 
     }
 
+    // updates a folder item's name
+    public void updateFolderName(int folderId, String folderName) {
+        SQLiteDatabase db = folderHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(folderHandler.FOLDER_NAME, folderName);
+
+        db.update(folderHandler.FOLDERS_TABLE, values,
+                folderHandler.FOLDER_ID + " = ?", new String[]{String.valueOf(folderId)});
+
+        db.close();
+
+    }
+
     // deletes a folder item along with the notes within it
     public void deleteFolder(FolderModel folder) {
         int folderId = folder.getFolderId();
