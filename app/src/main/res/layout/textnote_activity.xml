@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
+    android:background="@color/whiteAccent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -91,7 +92,7 @@
         android:id="@+id/fontOptionsLl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/folderDefault"
+        android:background="@drawable/bg_rectangle_border"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

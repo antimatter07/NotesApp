@@ -147,6 +147,7 @@ public class TextNoteActivity extends AppCompatActivity
         });
 
         noteTextView.addTextChangedListener(new TextWatcher() {
+            int textLength = noteTextView.getText().toString().length();
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
 
@@ -155,7 +156,8 @@ public class TextNoteActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 isNoteContentChanged = true;
-                currentDateTime =getCurrentDateTime();
+                currentDateTime = getCurrentDateTime();
+
 
                 if(isNoteContentChanged) {
                     executorService.execute(new Runnable() {
@@ -178,7 +180,11 @@ public class TextNoteActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable editable) {
+                // update character font color based on selected font color
+                if (textLength < editable.length())
+                    updateFontColor(editable);
 
+                textLength = editable.length();
             }
         });
 
@@ -198,8 +204,6 @@ public class TextNoteActivity extends AppCompatActivity
                     executorService.execute(new Runnable() {
                         @Override
                         public void run() {
-                            // update character font color based on selected font color
-                            updateFontColor();
                             // Get the updated content
                             String updatedTitle = noteTitleView.getText().toString();
 
@@ -331,13 +335,13 @@ public class TextNoteActivity extends AppCompatActivity
     private void setFontColor(int color, int startPos, int endPos) {
         if (startPos == endPos) {
             selectedFontColor = color;
+            fontColorBtn.setColorFilter(ContextCompat.getColor(this, color));
         }
         else {
-            String text = noteTextView.getText().toString();
-            SpannableString ss = new SpannableString(text);
+            Editable editable = noteTextView.getText();
             int fontColor = ContextCompat.getColor(this, color);
-            ss.setSpan(new ForegroundColorSpan(fontColor), startPos, endPos, 0);
-            noteTextView.setText(ss);
+            editable.setSpan(new ForegroundColorSpan(fontColor), startPos,
+                    endPos, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             noteTextView.setSelection(endPos);
         }
     }
@@ -345,21 +349,12 @@ public class TextNoteActivity extends AppCompatActivity
     /**
      * Changes the font color of the last character in noteTextView
      */
-    private void updateFontColor() {
-        Editable editable = noteTextView.getText();
-
-        ForegroundColorSpan[] existingSpans = editable.getSpans(0, editable.length(), ForegroundColorSpan.class);
-        for (ForegroundColorSpan span : existingSpans) {
-            editable.removeSpan(span);
-        }
+    private void updateFontColor(Editable editable) {
         int fontColor = ContextCompat.getColor(this, selectedFontColor);
-        editable.setSpan(new ForegroundColorSpan(fontColor), 0, editable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-//        int fontColor = ContextCompat.getColor(this, selectedFontColor);
-//        ss.setSpan(new ForegroundColorSpan(fontColor), 0, endPos, 0);
-//        noteTextView.setText(ss);
-
+        editable.setSpan(new ForegroundColorSpan(fontColor), noteTextView.getSelectionEnd() - 1,
+                noteTextView.getSelectionEnd(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
     }
+
     /**
      * Handles the font color settings menu
      * @param anchorView the button view it will be attached to
@@ -394,6 +389,7 @@ public class TextNoteActivity extends AppCompatActivity
                     int color = colorBtn.getValue();
                     setFontColor(color, noteTextView.getSelectionStart(), noteTextView.getSelectionEnd());
                     popupWindow.dismiss();
+                    popupWindow = null;
                 }
             });
         }
