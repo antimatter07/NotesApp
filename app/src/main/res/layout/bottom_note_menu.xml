@@ -17,8 +17,7 @@
         android:stateListAnimator="@null"
         android:shadowRadius="@null"
         android:drawableBottom="@null"
-        style="@null"
-        android:textDecorationLine="underline"
+        style="?android:attr/borderlessButtonStyle"
         android:text="16"
         />
 
