@@ -6,7 +6,6 @@
     <color name="ic_logo_background">#FDFAFD</color>
     <color name="whiteAccent">#F7F9FC</color>
     <color name="whiteAccentDark">#9CA1A8</color>
-    <color name="blackDefault">#1F1F1F</color> <!-- default black for text -->
 
     <!--    FOLDER & NOTE COLORS-->
     <color name="folderDefault">#B1AEB1</color> <!--default category color-->
@@ -32,6 +31,16 @@
 
     <color name="folderPurple">#CF80E6</color>
     <color name="purpleAccent">#FFDDFF</color>
+
+<!--    FONT COLORS -->
+    <color name="blackDefault">#1F1F1F</color>
+    <color name="fontRed">#F44336</color>
+    <color name="fontOrange">#EB8C00</color>
+    <color name="fontYellow">#FFC107</color>
+    <color name="fontCyan">#00BCD4</color>
+    <color name="fontBlue">#3F51B5</color>
+    <color name="fontGreen">#4CAF50</color>
+    <color name="fontPurple">#9C27B0</color>
 
 
 </resources>

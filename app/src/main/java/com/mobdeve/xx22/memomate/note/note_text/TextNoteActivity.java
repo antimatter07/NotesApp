@@ -1,9 +1,21 @@
 package com.mobdeve.xx22.memomate.note.note_text;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,8 +45,10 @@ public class TextNoteActivity extends AppCompatActivity {
      public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
 
      private ConstraintLayout noteBar;
+     private LinearLayout fontOptionsBar;
      private TextView noteTextView;
     private TextView noteTitleView;
+    private ImageButton fontColorBtn;
     private String noteContent = "";
     private String titleContent = "";
     private int noteColor;
@@ -59,9 +73,12 @@ public class TextNoteActivity extends AppCompatActivity {
 
         noteDatabase = new NoteDatabase(getApplicationContext());
 
+        fontOptionsBar = findViewById(R.id.fontOptionsLl);
+
         noteTextView = findViewById(R.id.noteBodyText);
         noteTitleView = findViewById(R.id.noteTitleText);
         noteBar = findViewById(R.id.noteBarCl);
+        fontColorBtn = findViewById(R.id.fontColorBtn);
 
         noteColor = ContextCompat.getColor(this, getIntent().getIntExtra("noteColor", R.color.folderDefault));
         noteBar.setBackgroundColor(noteColor);
@@ -131,8 +148,6 @@ public class TextNoteActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-
-
                             String updatedNoteContent = noteTextView.getText().toString();
 
 
@@ -188,6 +203,34 @@ public class TextNoteActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
 
+            }
+        });
+
+        // Only show the note options when the keyboard is open
+        // Source: https://stackoverflow.com/questions/4745988/how-do-i-detect-if-software-keyboard-is-visible-on-android-device-or-not
+        fontOptionsBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect r = new Rect();
+                fontOptionsBar.getWindowVisibleDisplayFrame(r);
+                int screenHeight = fontOptionsBar.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+
+                if (keypadHeight > (screenHeight * 0.15))
+                    fontOptionsBar.setVisibility(View.VISIBLE);
+                else  {
+                    fontOptionsBar.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        // Font Color
+        fontColorBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFontColorPopup(v);
             }
         });
 
@@ -247,6 +290,39 @@ public class TextNoteActivity extends AppCompatActivity {
     private String getCurrentDateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date());
+    }
+
+    /**
+     * Handles the font color settings menu
+     * @param anchorView the button view it will be attached to
+     */
+    private void showFontColorPopup(View anchorView) {
+        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_choose_font_color, null);
+
+        PopupWindow popupWindow = new PopupWindow(
+                popupView,
+                450,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        // find the location of the button
+        int[] location = new int[2];
+        anchorView.getLocationOnScreen(location);
+        int x = location[0] - 100;
+        int y = location[1] - popupWindow.getHeight() - 325;
+        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
+
+//        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                // Handle dismiss actions if needed
+            }
+        });
+
     }
 
 }

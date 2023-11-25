@@ -82,15 +82,16 @@
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
             android:scrollHorizontally="false"
-            android:textColorHint="@color/blackDefault" />
+            android:textColorHint="@color/blackDefault"
+            android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
-        android:id="@+id/noteMenuLl"
+        android:id="@+id/fontOptionsLl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/whiteAccentDark"
+        android:background="@color/folderDefault"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -98,19 +99,21 @@
 
         <Button
             android:id="@+id/fontSizeBtn"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:backgroundTint="@android:color/transparent"
+            android:background="@drawable/ripple_rectangle"
             android:drawableEnd="@drawable/ic_arrow_down"
+            android:outlineProvider="bounds"
             android:text="16" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/fontColorBtn"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:backgroundTint="@android:color/transparent"
+            android:background="@drawable/ripple_rectangle"
             android:src="@drawable/ic_text_color" />
 
     </LinearLayout>
