@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.resources.TextAppearance;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
@@ -38,8 +40,7 @@ import java.util.concurrent.Executors;
 
 
 
-public class TextNoteActivity extends AppCompatActivity
-                                implements PopupMenu.OnMenuItemClickListener {
+public class TextNoteActivity extends AppCompatActivity {
 
      public static final String TEXT_KEY = "TEXT_KEY";
      public static final String TITLE_KEY = "TITLE_KEY";
@@ -50,14 +51,14 @@ public class TextNoteActivity extends AppCompatActivity
      private LinearLayout fontOptionsBar;
      private EditText noteTextView;
     private TextView noteTitleView;
-    private Button fontSizeBtn;
+    private ImageButton fontSizeBtn;
     private ImageButton fontColorBtn;
 
-    private PopupWindow popupWindow;
+    private PopupWindow fontColorPopup;
+    private PopupWindow fontSizePopup;
     private String noteContent = "";
     private String titleContent = "";
     private int noteColor;
-    private int selectedFontColor = R.color.blackDefault;
 
     private boolean isNoteContentChanged = false;
     private boolean isTitleContentChanged = false;
@@ -110,7 +111,7 @@ public class TextNoteActivity extends AppCompatActivity
 
         currentNoteID = getIntent().getIntExtra("noteID", -1);
         int folderKey = getIntent().getIntExtra("folderKey", -1);
-        
+
         setFontColor(getIntent().getIntExtra("noteFontColor", -1));
 
         //if noteID retrieved is default value, create new text note in db
@@ -229,8 +230,8 @@ public class TextNoteActivity extends AppCompatActivity
                 if (keypadHeight > (screenHeight * 0.15))
                     fontOptionsBar.setVisibility(View.VISIBLE);
                 else  {
-                    if (popupWindow != null)
-                        popupWindow.dismiss();
+                    if (fontColorPopup != null)
+                        fontColorPopup.dismiss();
                     fontOptionsBar.setVisibility(View.GONE);
                 }
             }
@@ -248,20 +249,10 @@ public class TextNoteActivity extends AppCompatActivity
         fontSizeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (popupWindow != null)
-                    popupWindow.dismiss();
-                PopupMenu popup = new PopupMenu(TextNoteActivity.this, v);
-                popup.setOnMenuItemClickListener(TextNoteActivity.this);
-                popup.inflate(R.menu.popup_font_size);
-                popup.show();
+                showFontSizePopup(v);
             }
         });
 
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        return false;
     }
 
     @Override
@@ -306,7 +297,7 @@ public class TextNoteActivity extends AppCompatActivity
         // Font Color
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_choose_font_color, null);
 
-        popupWindow = new PopupWindow(
+        fontColorPopup = new PopupWindow(
                 popupView,
                 450,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -329,7 +320,7 @@ public class TextNoteActivity extends AppCompatActivity
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    popupWindow.dismiss();
+                    fontColorPopup.dismiss();
                     setFontColor(colorBtn.getValue());
 
                     executorService.execute(new Runnable() {
@@ -343,8 +334,66 @@ public class TextNoteActivity extends AppCompatActivity
             });
         }
 
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+        fontColorPopup.setOutsideTouchable(true);
+        fontColorPopup.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+
+
+        // Font Size
+        View popupView2 = LayoutInflater.from(this).inflate(R.layout.popup_choose_font_size, null);
+
+        fontSizePopup = new PopupWindow(
+                popupView2,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        // setup buttons for popup
+        Button smallBtn = popupView2.findViewById(R.id.fontSmall);
+        Button mediumBtn = popupView2.findViewById(R.id.fontMedium);
+        Button largeBtn = popupView2.findViewById(R.id.fontLarge);
+
+        // If a size is selected, close popup and set font size
+        View.OnClickListener sizeListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fontSizePopup.dismiss();
+                String fontSize = ((Button) v).getText().toString();
+                float textSize = 0;
+                switch(fontSize) {
+                    case "Small":
+                        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getResources().getDisplayMetrics());
+                        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                        break;
+                    case "Medium":
+                        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 18, getResources().getDisplayMetrics());
+                        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                        break;
+                    case "Large":
+                        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 22, getResources().getDisplayMetrics());
+                        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                        break;
+                    default:
+                        break;
+                }
+                // setFontColor(colorBtn.getValue());
+
+
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        NoteDatabase db = new NoteDatabase(getApplicationContext());
+                       // db.updateTextNoteColor(currentNoteID, colorBtn.getValue());
+                    }
+                });
+            }
+        };
+
+        smallBtn.setOnClickListener(sizeListener);
+        mediumBtn.setOnClickListener(sizeListener);
+        largeBtn.setOnClickListener(sizeListener);
+
+        fontSizePopup.setOutsideTouchable(true);
+        fontSizePopup.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
 
     }
 
@@ -358,8 +407,24 @@ public class TextNoteActivity extends AppCompatActivity
         int[] location = new int[2];
         anchorView.getLocationOnScreen(location);
         int x = location[0] - 100;
-        int y = location[1] - popupWindow.getHeight() - 325;
-        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
+        int y = location[1] - fontColorPopup.getHeight() - 325;
+        fontColorPopup.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
+
+
+    }
+
+    /**
+     * Handles the font size settings menu
+     * @param anchorView the button view it will be attached to
+     */
+    private void showFontSizePopup(View anchorView) {
+
+        // find the location of the button
+        int[] location = new int[2];
+        anchorView.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1] - fontSizePopup.getHeight() - 500;
+        fontSizePopup.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
 
 
     }
