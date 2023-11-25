@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        android:text="Font Color"
+        android:text="Text Note Font Color"
         android:textColor="@color/blackDefault" />
 
     <androidx.gridlayout.widget.GridLayout

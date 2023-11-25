@@ -1,22 +1,15 @@
 package com.mobdeve.xx22.memomate.note.note_text;
 
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -32,7 +25,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
-import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
 
@@ -102,6 +94,8 @@ public class TextNoteActivity extends AppCompatActivity
         noteTextView.setText(noteContent);
         noteTitleView.setText(titleContent);
 
+        setUpPopupWindows();
+
         // Retrieve note content if available from Intent extras
         if (getIntent().hasExtra("noteContent")) {
             noteContent = getIntent().getStringExtra("noteContent");
@@ -116,6 +110,8 @@ public class TextNoteActivity extends AppCompatActivity
 
         currentNoteID = getIntent().getIntExtra("noteID", -1);
         int folderKey = getIntent().getIntExtra("folderKey", -1);
+        
+        setFontColor(getIntent().getIntExtra("noteFontColor", -1));
 
         //if noteID retrieved is default value, create new text note in db
         if(currentNoteID == -1) {
@@ -147,7 +143,6 @@ public class TextNoteActivity extends AppCompatActivity
         });
 
         noteTextView.addTextChangedListener(new TextWatcher() {
-            int textLength = noteTextView.getText().toString().length();
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
 
@@ -180,11 +175,7 @@ public class TextNoteActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable editable) {
-                // update character font color based on selected font color
-                if (textLength < editable.length())
-                    updateFontColor(editable);
 
-                textLength = editable.length();
             }
         });
 
@@ -277,36 +268,6 @@ public class TextNoteActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-
-
-        // Save the note content when the activity is paused
-        /*if (isNoteContentChanged || isTitleContentChanged) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    NoteDatabase db = new NoteDatabase(getApplicationContext());
-
-                    // Get the updated content
-                    String updatedTitle = noteTitleView.getText().toString();
-                    String updatedNoteContent = noteTextView.getText().toString();
-
-                    // Update the database only if the content has changed
-                    if (isTitleContentChanged) {
-                        // Update title in the database
-                        db.updateNoteTitle(currentNoteID, updatedTitle, currentDateTime);
-                        isTitleContentChanged = false; // Reset flag
-                    }
-
-                    if (isNoteContentChanged) {
-                        // Update note content in the database
-                        db.updateTextNoteContent(currentNoteID, updatedNoteContent, currentDateTime);
-                        isNoteContentChanged = false; // Reset flag
-                    }
-                }
-            });
-        }
-        */
-
     }
 
 
@@ -332,34 +293,17 @@ public class TextNoteActivity extends AppCompatActivity
     /**
      * Changes the font color of the text based on the color id
      */
-    private void setFontColor(int color, int startPos, int endPos) {
-        if (startPos == endPos) {
-            selectedFontColor = color;
-            fontColorBtn.setColorFilter(ContextCompat.getColor(this, color));
-        }
-        else {
-            Editable editable = noteTextView.getText();
-            int fontColor = ContextCompat.getColor(this, color);
-            editable.setSpan(new ForegroundColorSpan(fontColor), startPos,
-                    endPos, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            noteTextView.setSelection(endPos);
-        }
+    private void setFontColor(int color) {
+        int fontColor = ContextCompat.getColor(this, color);
+        noteTextView.setTextColor(fontColor);
+        fontColorBtn.setColorFilter(fontColor);
     }
 
     /**
-     * Changes the font color of the last character in noteTextView
+     * Setups popups for font styles
      */
-    private void updateFontColor(Editable editable) {
-        int fontColor = ContextCompat.getColor(this, selectedFontColor);
-        editable.setSpan(new ForegroundColorSpan(fontColor), noteTextView.getSelectionEnd() - 1,
-                noteTextView.getSelectionEnd(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-    }
-
-    /**
-     * Handles the font color settings menu
-     * @param anchorView the button view it will be attached to
-     */
-    private void showFontColorPopup(View anchorView) {
+    private void setUpPopupWindows() {
+        // Font Color
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_choose_font_color, null);
 
         popupWindow = new PopupWindow(
@@ -379,20 +323,36 @@ public class TextNoteActivity extends AppCompatActivity
         colorBtns.put(popupView.findViewById(R.id.colorBlueBtn), R.color.fontBlue);
         colorBtns.put(popupView.findViewById(R.id.colorPurpleBtn), R.color.fontPurple);
 
-        // If a color is selected, remove the checks from the other colors
-        // and set a check on this color
+        // If a color is selected, close popup and set font color
         for (Map.Entry<ImageButton, Integer> colorBtn : colorBtns.entrySet()) {
             ImageButton btn = colorBtn.getKey();
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int color = colorBtn.getValue();
-                    setFontColor(color, noteTextView.getSelectionStart(), noteTextView.getSelectionEnd());
                     popupWindow.dismiss();
-                    popupWindow = null;
+                    setFontColor(colorBtn.getValue());
+
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            NoteDatabase db = new NoteDatabase(getApplicationContext());
+                            db.updateTextNoteColor(currentNoteID, colorBtn.getValue());
+                        }
+                    });
                 }
             });
         }
+
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+
+    }
+
+    /**
+     * Handles the font color settings menu
+     * @param anchorView the button view it will be attached to
+     */
+    private void showFontColorPopup(View anchorView) {
 
         // find the location of the button
         int[] location = new int[2];
@@ -401,8 +361,6 @@ public class TextNoteActivity extends AppCompatActivity
         int y = location[1] - popupWindow.getHeight() - 325;
         popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
 
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
 
     }
 }
