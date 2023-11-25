@@ -64,7 +64,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/noteMenuLl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noteBarCl">
@@ -85,6 +85,35 @@
             android:textColorHint="@color/blackDefault" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/noteMenuLl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/whiteAccentDark"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <Button
+            android:id="@+id/fontSizeBtn"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:backgroundTint="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:text="16" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_text_color" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

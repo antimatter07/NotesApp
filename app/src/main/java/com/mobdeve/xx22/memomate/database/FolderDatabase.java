@@ -54,26 +54,6 @@ public class FolderDatabase {
         return result;
     }
 
-    public ArrayList<Integer> getAllFolderCounts() {
-        ArrayList<Integer> result = new ArrayList<>();
-        SQLiteDatabase ndb = noteHandler.getReadableDatabase();
-
-        String query = "SELECT " + noteHandler.COLUMN_FOLDER_KEY + ", " +
-                "COUNT( " + noteHandler.COLUMN_FOLDER_KEY + ") AS folderCount FROM " +
-                noteHandler.TABLE_NOTES + " GROUP BY " + noteHandler.COLUMN_FOLDER_KEY;
-
-        Cursor nc = ndb.rawQuery(query, null);
-
-        if (nc!=null) {
-            while(nc.moveToNext()) {
-                result.add(nc.getInt(nc.getColumnIndexOrThrow("folderCount")));
-            }
-        }
-        nc.close();
-
-        return result;
-    }
-
     // Inserts a provided folder item into the database. Returns the id provided by the DB.
     public int addFolder(FolderModel folder) {
         SQLiteDatabase db = folderHandler.getWritableDatabase();
