@@ -1,6 +1,5 @@
 package com.mobdeve.xx22.memomate.note.note_text;
 
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,12 +28,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
+import com.mobdeve.xx22.memomate.database.NoteFontColorDatabase;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
 import com.mobdeve.xx22.memomate.partials.ChangeFolderFragment;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -65,7 +64,7 @@ public class TextNoteActivity extends AppCompatActivity
     private String noteContent = "";
     private String titleContent = "";
     private int noteColor;
-    private int selectedFontColor = R.color.blackDefault;
+    private int selectedFontColor;
 
     private boolean isNoteContentChanged = false;
     private boolean isTitleContentChanged = false;
@@ -102,6 +101,9 @@ public class TextNoteActivity extends AppCompatActivity
         noteTextView.setText(noteContent);
         noteTitleView.setText(titleContent);
 
+        // Setup Font Style Popup Windows
+        setUpPopupWindows();
+
         // Retrieve note content if available from Intent extras
         if (getIntent().hasExtra("noteContent")) {
             noteContent = getIntent().getStringExtra("noteContent");
@@ -116,6 +118,8 @@ public class TextNoteActivity extends AppCompatActivity
 
         currentNoteID = getIntent().getIntExtra("noteID", -1);
         int folderKey = getIntent().getIntExtra("folderKey", -1);
+
+        selectedFontColor = ContextCompat.getColor(this, R.color.blackDefault);
 
         //if noteID retrieved is default value, create new text note in db
         if(currentNoteID == -1) {
@@ -134,6 +138,11 @@ public class TextNoteActivity extends AppCompatActivity
                 }
             });
         }
+        // Setup the font styles for noteTextView
+        else setupNoteFontStyle();
+
+
+
 
         // Setup Note Options Button
         ImageButton noteOptionsBtn = findViewById(R.id.textNoteOptionsBtn);
@@ -157,7 +166,6 @@ public class TextNoteActivity extends AppCompatActivity
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 isNoteContentChanged = true;
                 currentDateTime = getCurrentDateTime();
-
 
                 if(isNoteContentChanged) {
                     executorService.execute(new Runnable() {
@@ -238,8 +246,7 @@ public class TextNoteActivity extends AppCompatActivity
                 if (keypadHeight > (screenHeight * 0.15))
                     fontOptionsBar.setVisibility(View.VISIBLE);
                 else  {
-                    if (popupWindow != null)
-                        popupWindow.dismiss();
+                    popupWindow.dismiss();
                     fontOptionsBar.setVisibility(View.GONE);
                 }
             }
@@ -257,8 +264,7 @@ public class TextNoteActivity extends AppCompatActivity
         fontSizeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (popupWindow != null)
-                    popupWindow.dismiss();
+                popupWindow.dismiss();
                 PopupMenu popup = new PopupMenu(TextNoteActivity.this, v);
                 popup.setOnMenuItemClickListener(TextNoteActivity.this);
                 popup.inflate(R.menu.popup_font_size);
@@ -317,7 +323,6 @@ public class TextNoteActivity extends AppCompatActivity
         //noteTextView.setText(noteContent);
         //noteTitleView.setText(titleContent);
 
-
     }
 
     /**
@@ -335,24 +340,42 @@ public class TextNoteActivity extends AppCompatActivity
     private void setFontColor(int color, int startPos, int endPos) {
         if (startPos == endPos) {
             selectedFontColor = color;
-            fontColorBtn.setColorFilter(ContextCompat.getColor(this, color));
+            fontColorBtn.setColorFilter(color);
         }
         else {
             Editable editable = noteTextView.getText();
-            int fontColor = ContextCompat.getColor(this, color);
-            editable.setSpan(new ForegroundColorSpan(fontColor), startPos,
+            editable.setSpan(new ForegroundColorSpan(color), startPos,
                     endPos, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             noteTextView.setSelection(endPos);
         }
     }
 
     /**
-     * Changes the font color of the last character in noteTextView
+     * Changes the font color of the last added character in noteTextView
      */
     private void updateFontColor(Editable editable) {
-        int fontColor = ContextCompat.getColor(this, selectedFontColor);
-        editable.setSpan(new ForegroundColorSpan(fontColor), noteTextView.getSelectionEnd() - 1,
+        editable.setSpan(new ForegroundColorSpan(selectedFontColor), noteTextView.getSelectionEnd() - 1,
                 noteTextView.getSelectionEnd(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        saveFontConfig();
+    }
+
+    private void setupNoteFontStyle() {
+        NoteFontColorDatabase db = new NoteFontColorDatabase(getApplicationContext());
+
+         ArrayList<int[]> fontConfigs = db.getNoteFontColors(currentNoteID);
+
+         Log.d("JVC", "SIZE: " + fontConfigs.size());
+
+         if (fontConfigs.size() > 0) {
+             for(int i = 0; i < fontConfigs.size(); i++) {
+                Log.d("JVC", "color " + fontConfigs.get(i)[0]);
+                Log.d("JVC", "start " + fontConfigs.get(i)[1]);
+                Log.d("JVC", "end " + fontConfigs.get(i)[2]);
+                setFontColor(fontConfigs.get(i)[0], fontConfigs.get(i)[1], fontConfigs.get(i)[2]);
+
+             }
+        }
+
     }
 
     /**
@@ -360,6 +383,17 @@ public class TextNoteActivity extends AppCompatActivity
      * @param anchorView the button view it will be attached to
      */
     private void showFontColorPopup(View anchorView) {
+        // find the location of the button
+        int[] location = new int[2];
+        anchorView.getLocationOnScreen(location);
+        int x = location[0] - 100;
+        int y = location[1] - popupWindow.getHeight() - 325;
+        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
+
+    }
+
+    private void setUpPopupWindows() {
+        // Font Color
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_choose_font_color, null);
 
         popupWindow = new PopupWindow(
@@ -386,24 +420,44 @@ public class TextNoteActivity extends AppCompatActivity
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int color = colorBtn.getValue();
-                    setFontColor(color, noteTextView.getSelectionStart(), noteTextView.getSelectionEnd());
                     popupWindow.dismiss();
-                    popupWindow = null;
+                    int color = ContextCompat.getColor(TextNoteActivity.this, colorBtn.getValue());
+                    setFontColor(color, noteTextView.getSelectionStart(), noteTextView.getSelectionEnd());
+
+                    saveFontConfig();
                 }
             });
         }
 
-        // find the location of the button
-        int[] location = new int[2];
-        anchorView.getLocationOnScreen(location);
-        int x = location[0] - 100;
-        int y = location[1] - popupWindow.getHeight() - 325;
-        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
-
         popupWindow.setOutsideTouchable(true);
         popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
 
+    }
+
+    public void saveFontConfig() {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                // save font style config
+                Spannable spannable = noteTextView.getText();
+                ForegroundColorSpan[] colorSpans = spannable.getSpans(0, spannable.length(),
+                        ForegroundColorSpan.class);
+                NoteFontColorDatabase db = new NoteFontColorDatabase(getApplicationContext());
+                Log.d("JVC", "before delete. " + db.getNoteFontColors(currentNoteID).size());
+                db.getNoteFontColors(currentNoteID);
+                db.deleteNoteFontColors(currentNoteID);
+                Log.d("JVC", "Tried to delete. " + db.getNoteFontColors(currentNoteID).size());
+                for (ForegroundColorSpan colorSpan : colorSpans) {
+                    int[] fontColorConfig = {
+                            colorSpan.getForegroundColor(),
+                            spannable.getSpanStart(colorSpan),
+                            spannable.getSpanEnd(colorSpan)
+                    };
+
+                    db.addFontColor(currentNoteID, fontColorConfig);
+                }
+            }
+        });
     }
 }
 
