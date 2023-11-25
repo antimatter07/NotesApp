@@ -1,9 +1,14 @@
 package com.mobdeve.xx22.memomate.note.note_text;
 
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +17,8 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -31,13 +38,16 @@ import com.mobdeve.xx22.memomate.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 
-public class TextNoteActivity extends AppCompatActivity {
+public class TextNoteActivity extends AppCompatActivity
+                                implements PopupMenu.OnMenuItemClickListener {
 
      public static final String TEXT_KEY = "TEXT_KEY";
      public static final String TITLE_KEY = "TITLE_KEY";
@@ -46,12 +56,16 @@ public class TextNoteActivity extends AppCompatActivity {
 
      private ConstraintLayout noteBar;
      private LinearLayout fontOptionsBar;
-     private TextView noteTextView;
+     private EditText noteTextView;
     private TextView noteTitleView;
+    private Button fontSizeBtn;
     private ImageButton fontColorBtn;
+
+    private PopupWindow popupWindow;
     private String noteContent = "";
     private String titleContent = "";
     private int noteColor;
+    private int selectedFontColor = R.color.blackDefault;
 
     private boolean isNoteContentChanged = false;
     private boolean isTitleContentChanged = false;
@@ -78,6 +92,7 @@ public class TextNoteActivity extends AppCompatActivity {
         noteTextView = findViewById(R.id.noteBodyText);
         noteTitleView = findViewById(R.id.noteTitleText);
         noteBar = findViewById(R.id.noteBarCl);
+        fontSizeBtn = findViewById(R.id.fontSizeBtn);
         fontColorBtn = findViewById(R.id.fontColorBtn);
 
         noteColor = ContextCompat.getColor(this, getIntent().getIntExtra("noteColor", R.color.folderDefault));
@@ -98,7 +113,6 @@ public class TextNoteActivity extends AppCompatActivity {
             titleContent = getIntent().getStringExtra("titleContent");
             noteTitleView.setText(titleContent);
         }
-
 
         currentNoteID = getIntent().getIntExtra("noteID", -1);
         int folderKey = getIntent().getIntExtra("folderKey", -1);
@@ -184,8 +198,8 @@ public class TextNoteActivity extends AppCompatActivity {
                     executorService.execute(new Runnable() {
                         @Override
                         public void run() {
-
-
+                            // update character font color based on selected font color
+                            updateFontColor();
                             // Get the updated content
                             String updatedTitle = noteTitleView.getText().toString();
 
@@ -220,6 +234,8 @@ public class TextNoteActivity extends AppCompatActivity {
                 if (keypadHeight > (screenHeight * 0.15))
                     fontOptionsBar.setVisibility(View.VISIBLE);
                 else  {
+                    if (popupWindow != null)
+                        popupWindow.dismiss();
                     fontOptionsBar.setVisibility(View.GONE);
                 }
             }
@@ -234,6 +250,23 @@ public class TextNoteActivity extends AppCompatActivity {
             }
         });
 
+        fontSizeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (popupWindow != null)
+                    popupWindow.dismiss();
+                PopupMenu popup = new PopupMenu(TextNoteActivity.this, v);
+                popup.setOnMenuItemClickListener(TextNoteActivity.this);
+                popup.inflate(R.menu.popup_font_size);
+                popup.show();
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
     }
 
     @Override
@@ -293,17 +326,77 @@ public class TextNoteActivity extends AppCompatActivity {
     }
 
     /**
+     * Changes the font color of the text based on the color id
+     */
+    private void setFontColor(int color, int startPos, int endPos) {
+        if (startPos == endPos) {
+            selectedFontColor = color;
+        }
+        else {
+            String text = noteTextView.getText().toString();
+            SpannableString ss = new SpannableString(text);
+            int fontColor = ContextCompat.getColor(this, color);
+            ss.setSpan(new ForegroundColorSpan(fontColor), startPos, endPos, 0);
+            noteTextView.setText(ss);
+            noteTextView.setSelection(endPos);
+        }
+    }
+
+    /**
+     * Changes the font color of the last character in noteTextView
+     */
+    private void updateFontColor() {
+        Editable editable = noteTextView.getText();
+
+        ForegroundColorSpan[] existingSpans = editable.getSpans(0, editable.length(), ForegroundColorSpan.class);
+        for (ForegroundColorSpan span : existingSpans) {
+            editable.removeSpan(span);
+        }
+        int fontColor = ContextCompat.getColor(this, selectedFontColor);
+        editable.setSpan(new ForegroundColorSpan(fontColor), 0, editable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+//        int fontColor = ContextCompat.getColor(this, selectedFontColor);
+//        ss.setSpan(new ForegroundColorSpan(fontColor), 0, endPos, 0);
+//        noteTextView.setText(ss);
+
+    }
+    /**
      * Handles the font color settings menu
      * @param anchorView the button view it will be attached to
      */
     private void showFontColorPopup(View anchorView) {
         View popupView = LayoutInflater.from(this).inflate(R.layout.popup_choose_font_color, null);
 
-        PopupWindow popupWindow = new PopupWindow(
+        popupWindow = new PopupWindow(
                 popupView,
                 450,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
+
+        // setup buttons for popup
+        Map<ImageButton, Integer> colorBtns = new HashMap<>();
+        colorBtns.put(popupView.findViewById(R.id.colorDefaultBtn), R.color.blackDefault);
+        colorBtns.put(popupView.findViewById(R.id.colorRedBtn), R.color.fontRed);
+        colorBtns.put(popupView.findViewById(R.id.colorOrangeBtn), R.color.fontOrange);
+        colorBtns.put(popupView.findViewById(R.id.colorYellowBtn), R.color.fontYellow);
+        colorBtns.put(popupView.findViewById(R.id.colorGreenBtn), R.color.fontGreen);
+        colorBtns.put(popupView.findViewById(R.id.colorCyanBtn), R.color.fontCyan);
+        colorBtns.put(popupView.findViewById(R.id.colorBlueBtn), R.color.fontBlue);
+        colorBtns.put(popupView.findViewById(R.id.colorPurpleBtn), R.color.fontPurple);
+
+        // If a color is selected, remove the checks from the other colors
+        // and set a check on this color
+        for (Map.Entry<ImageButton, Integer> colorBtn : colorBtns.entrySet()) {
+            ImageButton btn = colorBtn.getKey();
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int color = colorBtn.getValue();
+                    setFontColor(color, noteTextView.getSelectionStart(), noteTextView.getSelectionEnd());
+                    popupWindow.dismiss();
+                }
+            });
+        }
 
         // find the location of the button
         int[] location = new int[2];
@@ -312,18 +405,9 @@ public class TextNoteActivity extends AppCompatActivity {
         int y = location[1] - popupWindow.getHeight() - 325;
         popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
 
-//        popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
 
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                // Handle dismiss actions if needed
-            }
-        });
-
     }
-
 }
 
