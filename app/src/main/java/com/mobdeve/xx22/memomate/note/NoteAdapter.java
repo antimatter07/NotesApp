@@ -144,7 +144,7 @@ public class NoteAdapter extends BaseAdapter {
                         intent.putExtra("folderKey", noteData.getFolderKey());
                         intent.putExtra("noteColor", folderDatabase.getFolderColor(noteData.getFolderKey()));
                         intent.putExtra("noteFontColor", ((TextNoteModel) noteData).getFontColor());
-
+                        intent.putExtra("noteFontSize", ((TextNoteModel) noteData).getFontSize());
 
                         context.startActivity(intent);
                         break;

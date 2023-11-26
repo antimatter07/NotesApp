@@ -105,6 +105,7 @@ public class NoteDatabase {
 
                 TextNoteModel textNote = new TextNoteModel(title, folderKey, noteText);
                 textNote.setFontColor(c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_COLOR)));
+                textNote.setFontSize(c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_SIZE)));
 
                 ParentNoteModel note = (ParentNoteModel) textNote;
 
@@ -355,6 +356,26 @@ public class NoteDatabase {
 
         ContentValues values = new ContentValues();
         values.put(NoteDatabaseHandler.COLUMN_NOTE_COLOR, fontColor);
+
+        String selection = NoteDatabaseHandler.COLUMN_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(currentNoteID)};
+
+        db.update(NoteDatabaseHandler.TABLE_NOTES, values, selection, selectionArgs);
+
+        db.close();
+
+    }
+
+    /**
+     * Updates font size of the note.
+     * @param currentNoteID ID of note to change title
+     * @param fontSize __sp of font size
+     */
+    public synchronized void updateTextNoteSize(int currentNoteID, int fontSize) {
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_NOTE_SIZE, fontSize);
 
         String selection = NoteDatabaseHandler.COLUMN_ID + " = ?";
         String[] selectionArgs = {String.valueOf(currentNoteID)};

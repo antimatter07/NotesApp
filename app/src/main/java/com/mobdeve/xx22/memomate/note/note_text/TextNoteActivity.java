@@ -59,6 +59,7 @@ public class TextNoteActivity extends AppCompatActivity {
     private String noteContent = "";
     private String titleContent = "";
     private int noteColor;
+    private int noteSize;
 
     private boolean isNoteContentChanged = false;
     private boolean isTitleContentChanged = false;
@@ -90,6 +91,7 @@ public class TextNoteActivity extends AppCompatActivity {
 
         noteColor = ContextCompat.getColor(this, getIntent().getIntExtra("noteColor", R.color.folderDefault));
         noteBar.setBackgroundColor(noteColor);
+        noteSize = getIntent().getIntExtra("noteFontSize", -1);
 
         // Initially set the TextView to display the note content
         noteTextView.setText(noteContent);
@@ -113,6 +115,7 @@ public class TextNoteActivity extends AppCompatActivity {
         int folderKey = getIntent().getIntExtra("folderKey", -1);
 
         setFontColor(getIntent().getIntExtra("noteFontColor", -1));
+        setFontSize(noteSize);
 
         //if noteID retrieved is default value, create new text note in db
         if(currentNoteID == -1) {
@@ -282,6 +285,14 @@ public class TextNoteActivity extends AppCompatActivity {
     }
 
     /**
+     * Changes the font size of the text based on the color id
+     */
+    private void setFontSize(int size) {
+        float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, getResources().getDisplayMetrics());
+        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+    }
+
+    /**
      * Changes the font color of the text based on the color id
      */
     private void setFontColor(int color) {
@@ -358,31 +369,27 @@ public class TextNoteActivity extends AppCompatActivity {
             public void onClick(View v) {
                 fontSizePopup.dismiss();
                 String fontSize = ((Button) v).getText().toString();
-                float textSize = 0;
+                int sizeToNum = 0;
                 switch(fontSize) {
                     case "Small":
-                        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getResources().getDisplayMetrics());
-                        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                        sizeToNum = 14;
                         break;
                     case "Medium":
-                        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 18, getResources().getDisplayMetrics());
-                        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                        sizeToNum = 18;
                         break;
                     case "Large":
-                        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 22, getResources().getDisplayMetrics());
-                        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                        sizeToNum = 22;
                         break;
                     default:
                         break;
                 }
-                // setFontColor(colorBtn.getValue());
-
-
+                setFontSize(sizeToNum);
+                int finalSizeToNum = sizeToNum;
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
                         NoteDatabase db = new NoteDatabase(getApplicationContext());
-                       // db.updateTextNoteColor(currentNoteID, colorBtn.getValue());
+                        db.updateTextNoteSize(currentNoteID, finalSizeToNum);
                     }
                 });
             }

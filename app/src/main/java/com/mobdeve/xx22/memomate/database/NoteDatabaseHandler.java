@@ -37,6 +37,7 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
 
     public static final String COLUMN_NOTE_TEXT = "note_text"; // For Text notes
     public static final String COLUMN_NOTE_COLOR = "note_color"; // font color for text notes
+    public static final String COLUMN_NOTE_SIZE = "note_size"; // font size for text notes
 
     /**
      * Attributes for TABLE_CHECKLIST_ITEMS
@@ -58,7 +59,8 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
             + COLUMN_DATE_MODIFIED + " TEXT,"
             + COLUMN_NOTE_TYPE + " TEXT, "
             + COLUMN_NOTE_TEXT + " TEXT,"
-            + COLUMN_NOTE_COLOR + " INTEGER)";
+            + COLUMN_NOTE_COLOR + " INTEGER,"
+            + COLUMN_NOTE_SIZE + " INTEGER)";
 
 
     private static final String CREATE_TABLE_CHECKLIST_ITEMS = "CREATE TABLE IF NOT EXISTS " + TABLE_CHECKLIST_ITEMS + "("
@@ -109,6 +111,7 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
                 values.put(COLUMN_NOTE_TEXT, textNote.getText());
                 values.put(COLUMN_NOTE_TYPE, textNote.getNoteType());
                 values.put(COLUMN_NOTE_COLOR, textNote.getFontColor());
+                values.put(COLUMN_NOTE_SIZE, textNote.getFontSize());
 
                 Log.d("DUMMY DATA", "Entering (Text)" +note.getTitle() + " INTO DB");
                 db.insert(TABLE_NOTES, null, values);
