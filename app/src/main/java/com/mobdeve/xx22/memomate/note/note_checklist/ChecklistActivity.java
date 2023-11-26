@@ -2,17 +2,20 @@ package com.mobdeve.xx22.memomate.note.note_checklist;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -24,8 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-
-
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.databinding.ChecklistItemBinding;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
@@ -54,6 +56,7 @@ public class ChecklistActivity extends AppCompatActivity {
 
     private PopupWindow fontSizePopup;
     private PopupWindow fontColorPopup;
+    private EditText activeChecklistItem;
 
     /**
      * note id of current checklist note
@@ -96,7 +99,8 @@ public class ChecklistActivity extends AppCompatActivity {
 
         //set up views and adapter with received data
         viewBinding.noteTitle.setText(titleString);
-        ChecklistAdapter adapter = new ChecklistAdapter(getApplicationContext(), listData, noteDatabase, noteColor);
+        ChecklistAdapter adapter = new ChecklistAdapter(getApplicationContext(), this, listData, noteDatabase, noteColor);
+
         RecyclerView recyclerview = viewBinding.recyclerView;
 
         // set up popups
@@ -272,7 +276,6 @@ public class ChecklistActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * Gets current date and time in proper format for sorting in SQLite
      * @return SimpleDateFormat when ParantNoteModel was instantiated.
@@ -312,16 +315,20 @@ public class ChecklistActivity extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fontColorPopup.dismiss();
-                    // setFontColor(colorBtn.getValue());
+                    if (activeChecklistItem != null) {
+                        fontColorPopup.dismiss();
+                        activeChecklistItem.setTextColor(
+                                ContextCompat.getColor(ChecklistActivity.this, colorBtn.getValue()));
 
-                    executorService.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            NoteDatabase db = new NoteDatabase(getApplicationContext());
+                        executorService.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                NoteDatabase db = new NoteDatabase(getApplicationContext());
 //                            db.updateTextNoteColor(currentNoteID, colorBtn.getValue());
-                        }
-                    });
+                            }
+                        });
+                    }
+
                 }
             });
         }
@@ -348,31 +355,34 @@ public class ChecklistActivity extends AppCompatActivity {
         View.OnClickListener sizeListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fontSizePopup.dismiss();
-                String fontSize = ((Button) v).getText().toString();
-                int sizeToNum = 0;
-                switch(fontSize) {
-                    case "Small":
-                        sizeToNum = 14;
-                        break;
-                    case "Medium":
-                        sizeToNum = 18;
-                        break;
-                    case "Large":
-                        sizeToNum = 22;
-                        break;
-                    default:
-                        break;
-                }
-                // setFontSize(sizeToNum);
-                int finalSizeToNum = sizeToNum;
-                executorService.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        NoteDatabase db = new NoteDatabase(getApplicationContext());
-//                        db.updateTextNoteSize(currentNoteID, finalSizeToNum);
+                if (activeChecklistItem != null) {
+                    fontSizePopup.dismiss();
+                    String fontSize = ((Button) v).getText().toString();
+                    int sizeToNum = 0;
+                    switch(fontSize) {
+                        case "Small":
+                            sizeToNum = 14;
+                            break;
+                        case "Medium":
+                            sizeToNum = 18;
+                            break;
+                        case "Large":
+                            sizeToNum = 22;
+                            break;
+                        default:
+                            break;
                     }
-                });
+                    activeChecklistItem.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeToNum);
+                    int finalSizeToNum = sizeToNum;
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            NoteDatabase db = new NoteDatabase(getApplicationContext());
+//                        db.updateTextNoteSize(currentNoteID, finalSizeToNum);
+                        }
+                    });
+                }
+
             }
         };
 
@@ -417,4 +427,7 @@ public class ChecklistActivity extends AppCompatActivity {
 
     }
 
+    public void setActiveChecklistItem(EditText activeChecklistItem) {
+        this.activeChecklistItem = activeChecklistItem;
+    }
 }

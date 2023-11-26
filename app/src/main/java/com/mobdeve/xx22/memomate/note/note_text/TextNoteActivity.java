@@ -288,8 +288,7 @@ public class TextNoteActivity extends AppCompatActivity {
      * Changes the font size of the text based on the color id
      */
     private void setFontSize(int size) {
-        float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, getResources().getDisplayMetrics());
-        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        noteTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     /**
