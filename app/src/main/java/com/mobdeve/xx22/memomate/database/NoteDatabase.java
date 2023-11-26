@@ -231,6 +231,8 @@ public class NoteDatabase {
 
         values.put(NoteDatabaseHandler.COLUMN_NOTE_TEXT, note.getText());
         values.put(NoteDatabaseHandler.COLUMN_NOTE_TYPE, note.getNoteType());
+        values.put(NoteDatabaseHandler.COLUMN_NOTE_SIZE, note.getFontSize());
+        values.put(NoteDatabaseHandler.COLUMN_NOTE_COLOR, note.getFontColor());
 
         Log.d("ADDING NEW NOTE!", "Entering (Text)" +note.getTitle() + " INTO DB");
         int row = (int) db.insert(NoteDatabaseHandler.TABLE_NOTES, null, values);
@@ -628,11 +630,20 @@ public class NoteDatabase {
 
             //create note object based on type of note
             if (noteType.equals("text")) {
+
                 String noteText = c.getString(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_TEXT));
 
                 TextNoteModel textNote = new TextNoteModel(title, folderKey, noteText);
+                textNote.setFontColor(c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_COLOR)));
+                textNote.setFontSize(c.getInt(c.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_NOTE_SIZE)));
 
                 ParentNoteModel note = (ParentNoteModel) textNote;
+
+                note.setNoteID(id);
+                note.setLocked(isLocked);
+                note.setDateCreated(dateCreated);
+                note.setDateModified(dateModified);
+
 
                 note.setNoteID(id);
                 note.setLocked(isLocked);
@@ -670,6 +681,7 @@ public class NoteDatabase {
                         ChecklistItemModel item = new ChecklistItemModel(itemId, id, isChecked, checklistItemText);
                         item.setItemSize(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE));
                         item.setItemColor(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR));
+
                         items.add(item);
 
 

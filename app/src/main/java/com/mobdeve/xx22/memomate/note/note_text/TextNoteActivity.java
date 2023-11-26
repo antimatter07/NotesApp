@@ -91,7 +91,7 @@ public class TextNoteActivity extends AppCompatActivity {
 
         noteColor = ContextCompat.getColor(this, getIntent().getIntExtra("noteColor", R.color.folderDefault));
         noteBar.setBackgroundColor(noteColor);
-        noteSize = getIntent().getIntExtra("noteFontSize", -1);
+        noteSize = getIntent().getIntExtra("noteFontSize", 18);
 
         // Initially set the TextView to display the note content
         noteTextView.setText(noteContent);
@@ -114,7 +114,7 @@ public class TextNoteActivity extends AppCompatActivity {
         currentNoteID = getIntent().getIntExtra("noteID", -1);
         int folderKey = getIntent().getIntExtra("folderKey", -1);
 
-        setFontColor(getIntent().getIntExtra("noteFontColor", -1));
+        setFontColor(getIntent().getIntExtra("noteFontColor", R.color.blackDefault));
         setFontSize(noteSize);
 
         //if noteID retrieved is default value, create new text note in db
