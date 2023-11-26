@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
+    android:background="@color/whiteAccent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -64,7 +65,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/noteMenuLl"
+        app:layout_constraintBottom_toTopOf="@id/fontOptionsLl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noteBarCl">
@@ -82,35 +83,35 @@
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
             android:scrollHorizontally="false"
-            android:textColorHint="@color/blackDefault" />
+            android:textColorHint="@color/blackDefault"
+            android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
-        android:id="@+id/noteMenuLl"
+        android:id="@+id/fontOptionsLl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/whiteAccentDark"
+        android:background="@drawable/bg_rectangle_border"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <Button
+        <ImageButton
             android:id="@+id/fontSizeBtn"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:backgroundTint="@android:color/transparent"
-            android:drawableEnd="@drawable/ic_arrow_down"
-            android:text="16" />
+            android:background="@drawable/ripple_rectangle"
+            android:src="@drawable/ic_text_font" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/fontColorBtn"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
-            android:backgroundTint="@android:color/transparent"
+            android:background="@drawable/ripple_rectangle"
             android:src="@drawable/ic_text_color" />
 
     </LinearLayout>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fontColorLl"
+    android:layout_width="220dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rectangle_round_corners"
+    android:orientation="vertical"
+    android:padding="8dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        android:id="@+id/fontColorTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Font Color"
+        android:textColor="@color/blackDefault" />
+
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/colorsGl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:columnCount="4"
+        app:columnOrderPreserved="true"
+        app:rowCount="2"
+        app:rowOrderPreserved="true">
+
+        <ImageButton
+            android:id="@+id/colorDefaultBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/blackDefault"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+
+        <ImageButton
+            android:id="@+id/colorRedBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/fontRed"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+
+        <ImageButton
+            android:id="@+id/colorOrangeBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/fontOrange"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+
+        <ImageButton
+            android:id="@+id/colorYellowBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/fontYellow"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+
+        <ImageButton
+            android:id="@+id/colorGreenBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/fontGreen"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+
+        <ImageButton
+            android:id="@+id/colorCyanBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/fontCyan"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+
+        <ImageButton
+            android:id="@+id/colorBlueBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/fontBlue"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+
+
+        <ImageButton
+            android:id="@+id/colorPurpleBtn"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_margin="2dp"
+            android:background="@color/fontPurple"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill" />
+    </androidx.gridlayout.widget.GridLayout>
+
+</LinearLayout>
