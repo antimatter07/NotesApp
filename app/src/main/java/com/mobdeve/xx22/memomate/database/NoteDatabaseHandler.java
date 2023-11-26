@@ -47,7 +47,8 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
     public static final String COLUMN_IS_CHECKED = "is_checked";
 
     public static final String COLUMN_CHECKLIST_ITEM_TEXT = "checklist_item_text";
-
+    public static final String COLUMN_CHECKLIST_ITEM_COLOR = "checklist_item_color";
+    public static final String COLUMN_CHECKLIST_ITEM_SIZE = "checklist_item_size";
 
     // SQL statement to create the notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE IF NOT EXISTS " + TABLE_NOTES + "("
@@ -68,6 +69,8 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
             + COLUMN_NOTE_ID + " INTEGER, "
             + COLUMN_CHECKLIST_ITEM_TEXT + " TEXT,"
             + COLUMN_IS_CHECKED + " INTEGER,"
+            + COLUMN_CHECKLIST_ITEM_SIZE + " INTEGER,"
+            + COLUMN_CHECKLIST_ITEM_COLOR + " INTEGER,"
             + "FOREIGN KEY (" + COLUMN_NOTE_ID + ") REFERENCES " + TABLE_NOTES + "(" + COLUMN_ID + "))";
 
 
@@ -84,7 +87,6 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
         ArrayList<ParentNoteModel> noteData = new ArrayList<>();
 
         //insert dummy data into db
-
 
         noteData.addAll(NoteDataHelper.loadTextNote());
         noteData.addAll(NoteDataHelper.loadCheckListNote());
@@ -150,6 +152,10 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
                     checklistValues.put(COLUMN_CHECKLIST_ITEM_TEXT, item.getText());
                     checklistValues.put(COLUMN_NOTE_ID, row_id);
                     checklistValues.put(COLUMN_IS_CHECKED, item.getIsChecked());
+                    checklistValues.put(COLUMN_CHECKLIST_ITEM_SIZE, item.getItemSize());
+                    checklistValues.put(COLUMN_CHECKLIST_ITEM_COLOR, item.getItemColor());
+
+
                     Log.d("CHECKLIST ITEM MODEL", "BEING INSERTED INTO DB:" + item.getText());
                     int row = (int) db.insert(TABLE_CHECKLIST_ITEMS, null, checklistValues);
                     Log.d("CHECKLIST ITEM INSERTED AT: ", String.valueOf(row));

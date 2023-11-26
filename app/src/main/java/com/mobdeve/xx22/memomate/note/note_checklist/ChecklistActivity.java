@@ -57,6 +57,7 @@ public class ChecklistActivity extends AppCompatActivity {
     private PopupWindow fontSizePopup;
     private PopupWindow fontColorPopup;
     private EditText activeChecklistItem;
+    private int activeItemID;
 
     /**
      * note id of current checklist note
@@ -127,8 +128,6 @@ public class ChecklistActivity extends AppCompatActivity {
         currentNoteID = getIntent().getIntExtra("noteID", -1);
         int folderKey = getIntent().getIntExtra(ChecklistActivity.FOLDER_KEY, -1);
 
-        Log.d("IN CHECKLIST ACT", "note id: " + currentNoteID);
-        Log.d("IN CHECKLIST ACT", "folder key: " + folderKey);
 
         //if noteID retrieved is default value, create a new checklist note in db
         if(currentNoteID == -1) {
@@ -278,7 +277,7 @@ public class ChecklistActivity extends AppCompatActivity {
 
     /**
      * Gets current date and time in proper format for sorting in SQLite
-     * @return SimpleDateFormat when ParantNoteModel was instantiated.
+     * @return SimpleDateFormat when ParentNoteModel was instantiated.
      */
     private String getCurrentDateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -324,7 +323,7 @@ public class ChecklistActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 NoteDatabase db = new NoteDatabase(getApplicationContext());
-//                            db.updateTextNoteColor(currentNoteID, colorBtn.getValue());
+                                db.updateChecklistItemColor(activeItemID, colorBtn.getValue());
                             }
                         });
                     }
@@ -374,11 +373,12 @@ public class ChecklistActivity extends AppCompatActivity {
                     }
                     activeChecklistItem.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeToNum);
                     int finalSizeToNum = sizeToNum;
+
                     executorService.execute(new Runnable() {
                         @Override
                         public void run() {
                             NoteDatabase db = new NoteDatabase(getApplicationContext());
-//                        db.updateTextNoteSize(currentNoteID, finalSizeToNum);
+                            db.updateChecklistItemSize(activeItemID, finalSizeToNum);
                         }
                     });
                 }
@@ -427,7 +427,8 @@ public class ChecklistActivity extends AppCompatActivity {
 
     }
 
-    public void setActiveChecklistItem(EditText activeChecklistItem) {
+    public void setActiveChecklistItem(EditText activeChecklistItem, int itemId) {
         this.activeChecklistItem = activeChecklistItem;
+        this.activeItemID = itemId;
     }
 }

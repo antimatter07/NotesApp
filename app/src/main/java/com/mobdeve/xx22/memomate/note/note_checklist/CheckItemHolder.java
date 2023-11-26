@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ChecklistItemBinding;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
@@ -19,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,7 +63,7 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
 
         editText.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus) {
-                activity.setActiveChecklistItem(binding.editText);
+                activity.setActiveChecklistItem(binding.editText, currentItemID);
             }
         });
 
@@ -159,7 +161,11 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
     public void bindData(ChecklistItemModel checklistItem, ChecklistActivity activity) {
         binding.checkBox.setChecked(checklistItem.getIsChecked());
         binding.editText.setText(checklistItem.getText());
-        Log.d("binding of checklist item", "item id value: " + String.valueOf(checklistItem.getItemId()));
+        binding.editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, checklistItem.getItemSize());
+
+        int fontColor = ContextCompat.getColor(activity.getApplicationContext(), checklistItem.getItemColor());
+        binding.editText.setTextColor(fontColor);
+
         currentItemID = checklistItem.getItemId();
         this.activity = activity;
     }

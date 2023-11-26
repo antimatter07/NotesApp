@@ -1,7 +1,9 @@
 package com.mobdeve.xx22.memomate.model;
 
+import com.mobdeve.xx22.memomate.R;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 //implement parcelable so that we can pass arraylist of ChecklistItemModel to an intent
 public class ChecklistItemModel implements Parcelable {
@@ -18,22 +20,31 @@ public class ChecklistItemModel implements Parcelable {
      */
     private int itemId;
 
+    private int itemColor;
+    private int itemSize;
+
     public ChecklistItemModel(int itemId, int noteId, boolean isChecked, String text) {
         this.isChecked = isChecked;
         this.text = text;
         this.noteId = noteId;
         this.itemId = itemId;
+        this.itemColor = R.color.blackDefault;
+        this.itemSize = 18;
     }
     public ChecklistItemModel(int noteId, boolean isChecked, String text) {
         this.isChecked = isChecked;
         this.text = text;
         this.noteId = noteId;
+        this.itemColor = R.color.blackDefault;
+        this.itemSize = 18;
     }
 
     public ChecklistItemModel(boolean isChecked, String text) {
         this.isChecked = isChecked;
         this.text = text;
         this.noteId = ParentNoteModel.DEFAULT_NOTE_ID;
+        this.itemColor = R.color.blackDefault;
+        this.itemSize = 18;
 
     }
 
@@ -76,6 +87,8 @@ public class ChecklistItemModel implements Parcelable {
         dest.writeString(text);
         dest.writeInt(noteId);
         dest.writeInt(itemId);
+        dest.writeInt(itemSize);
+        dest.writeInt(itemColor);
     }
 
 
@@ -97,5 +110,23 @@ public class ChecklistItemModel implements Parcelable {
         text = in.readString();
         noteId = in.readInt();
         itemId = in.readInt();
+        itemSize = in.readInt();
+        itemColor = in.readInt();
+    }
+
+    public int getItemColor() {
+        return itemColor;
+    }
+
+    public void setItemColor(int itemColor) {
+        this.itemColor = itemColor;
+    }
+
+    public int getItemSize() {
+        return itemSize;
+    }
+
+    public void setItemSize(int itemSize) {
+        this.itemSize = itemSize;
     }
 }

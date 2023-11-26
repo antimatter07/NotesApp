@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
@@ -42,7 +43,9 @@ public class NoteDatabase {
                 "ID",
                 NoteDatabaseHandler.COLUMN_NOTE_ID,
                 NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT,
-                NoteDatabaseHandler.COLUMN_IS_CHECKED
+                NoteDatabaseHandler.COLUMN_IS_CHECKED,
+                NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE,
+                NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR
         };
 
         // Define the selection criteria
@@ -141,9 +144,14 @@ public class NoteDatabase {
                         else
                             isChecked = false;
 
-                        Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
-                        items.add(new ChecklistItemModel(itemId, id, isChecked, checklistItemText));
+                        int itemSize = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE));
+                        int itemColor = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR));
 
+                        Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
+                        ChecklistItemModel item = new ChecklistItemModel(itemId, id, isChecked, checklistItemText);
+                        item.setItemSize(itemSize);
+                        item.setItemColor(itemColor);
+                        items.add(item);
 
 
                     } while (cursorCheckItem.moveToNext());
@@ -267,6 +275,8 @@ public class NoteDatabase {
             checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT, item.getText());
             checklistValues.put(NoteDatabaseHandler.COLUMN_NOTE_ID, row_id);
             checklistValues.put(NoteDatabaseHandler.COLUMN_IS_CHECKED, item.getIsChecked());
+            checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE, item.getItemSize());
+            checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR, item.getItemColor());
             Log.d("CHECKLIST ITEM MODEL", "BEING INSERTED INTO DB:" + item.getText());
             int row = (int) db.insert(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, null, checklistValues);
             Log.d("CHECKLIST ITEM INSERTED AT: ", String.valueOf(row));
@@ -446,6 +456,50 @@ public class NoteDatabase {
     }
 
     /**
+     * Updates font size of the checklist item
+     * @param item_id id of checklist item
+     * @param fontSize new font size
+     */
+    public synchronized void updateChecklistItemSize(int item_id, int fontSize) {
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE, fontSize);
+
+        String selection = "ID = ?";
+        String[] selectionArgs = {String.valueOf(item_id)};
+
+        db.update(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, values, selection, selectionArgs);
+
+        db.close();
+
+
+    }
+
+    /**
+     * Updates font color of the checklist item
+     * @param item_id id of checklist item
+     * @param fontColor new font size
+     */
+    public synchronized void updateChecklistItemColor(int item_id, int fontColor) {
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR, fontColor);
+
+        String selection = "ID = ?";
+        String[] selectionArgs = {String.valueOf(item_id)};
+
+        db.update(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, values, selection, selectionArgs);
+
+        db.close();
+
+
+    }
+
+    /**
      * Add a new checklist item when user presses add button in a checklist activity
      * @param currentNoteID current checklist note of user
      * @return int of added checklist item
@@ -459,6 +513,8 @@ public class NoteDatabase {
         checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_TEXT, "");
         checklistValues.put(NoteDatabaseHandler.COLUMN_NOTE_ID, currentNoteID);
         checklistValues.put(NoteDatabaseHandler.COLUMN_IS_CHECKED, false);
+        checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE, 18);
+        checklistValues.put(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR, R.color.blackDefault);
 
         Log.d("CHECKLIST ITEM MODEL", "BEING INSERTED INTO DB AT NOTE:" + currentNoteID);
         int row = (int) db.insert(NoteDatabaseHandler.TABLE_CHECKLIST_ITEMS, null, checklistValues);
@@ -611,7 +667,10 @@ public class NoteDatabase {
                             isChecked = false;
 
                         Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
-                        items.add(new ChecklistItemModel(itemId, id, isChecked, checklistItemText));
+                        ChecklistItemModel item = new ChecklistItemModel(itemId, id, isChecked, checklistItemText);
+                        item.setItemSize(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE));
+                        item.setItemColor(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR));
+                        items.add(item);
 
 
                     } while (cursorCheckItem.moveToNext());
