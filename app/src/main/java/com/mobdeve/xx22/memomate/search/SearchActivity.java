@@ -2,15 +2,18 @@ package com.mobdeve.xx22.memomate.search;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.databinding.ActivitySearchBinding;
+import com.mobdeve.xx22.memomate.model.TextNoteModel;
 import com.mobdeve.xx22.memomate.note.NoteAdapter;
 
 import java.util.ArrayList;
@@ -71,7 +74,6 @@ public class SearchActivity extends AppCompatActivity {
              searchResults = noteDatabase.searchNotes(query);
         else
             searchResults = noteDatabase.searchNotesWithFolderKey(query, folderKey);
-
 
 
         //update the adapter with the new search results

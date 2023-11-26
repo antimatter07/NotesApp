@@ -25,15 +25,16 @@ public class ChecklistAdapter extends RecyclerView.Adapter<CheckItemHolder>{
     private int itemColor;
 
     private NoteDatabase noteDatabase;
+    private ChecklistActivity activity;
 
-    public ChecklistAdapter(Context context, ArrayList<ChecklistItemModel> data, NoteDatabase db, int color) {
+    public ChecklistAdapter(Context context, ChecklistActivity activity, ArrayList<ChecklistItemModel> data, NoteDatabase db, int color) {
         this.data = data;
         this.context = context;
         this.noteDatabase = db;
 
-
-
         this.itemColor = color;
+
+        this.activity = activity;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<CheckItemHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull CheckItemHolder holder, int position) {
-        holder.bindData(data.get(position));
+        holder.bindData(data.get(position), activity);
         CheckBox checkBox = holder.binding.checkBox;
         checkBox.setButtonTintList(ColorStateList.valueOf(itemColor));
     }

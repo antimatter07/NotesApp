@@ -3,20 +3,24 @@ package com.mobdeve.xx22.memomate.note.note_checklist;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.mobdeve.xx22.memomate.R;
 import com.mobdeve.xx22.memomate.database.NoteDatabase;
 import com.mobdeve.xx22.memomate.databinding.ChecklistItemBinding;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,20 +34,38 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
     private NoteDatabase noteDatabase;
     private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
+    private ChecklistActivity activity;
+
     /**
      * Item id of checklist item
      */
     private int currentItemID;
+
+
     public CheckItemHolder(@NonNull ChecklistItemBinding binding, ArrayList<ChecklistItemModel> data, ChecklistAdapter adapter, NoteDatabase noteDatabase) {
         super(binding.getRoot());
         this.binding = binding;
         this.noteDatabase = noteDatabase;
 
 
-
         EditText editText = binding.editText;
 
         CheckBox checkBox = binding.checkBox;
+
+
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
+        editText.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                activity.setActiveChecklistItem(binding.editText, currentItemID);
+            }
+        });
 
 
         editText.setOnKeyListener(new View.OnKeyListener() {
@@ -136,14 +158,17 @@ public class CheckItemHolder extends RecyclerView.ViewHolder {
 
 
 
-    public void bindData(ChecklistItemModel checklistItem) {
+    public void bindData(ChecklistItemModel checklistItem, ChecklistActivity activity) {
         binding.checkBox.setChecked(checklistItem.getIsChecked());
         binding.editText.setText(checklistItem.getText());
-        Log.d("binding of checklist item", "item id value: " + String.valueOf(checklistItem.getItemId()));
+        binding.editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, checklistItem.getItemSize());
+
+        int fontColor = ContextCompat.getColor(activity.getApplicationContext(), checklistItem.getItemColor());
+        binding.editText.setTextColor(fontColor);
+
         currentItemID = checklistItem.getItemId();
+        this.activity = activity;
     }
-
-
 
 
 }
