@@ -677,13 +677,14 @@ public class NoteDatabase {
                         else
                             isChecked = false;
 
+                        int itemSize = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE));
+                        int itemColor = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR));
+
                         Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
                         ChecklistItemModel item = new ChecklistItemModel(itemId, id, isChecked, checklistItemText);
-                        item.setItemSize(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE));
-                        item.setItemColor(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR));
-
+                        item.setItemSize(itemSize);
+                        item.setItemColor(itemColor);
                         items.add(item);
-
 
                     } while (cursorCheckItem.moveToNext());
 
@@ -795,8 +796,14 @@ public class NoteDatabase {
                         else
                             isChecked = false;
 
+                        int itemSize = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_SIZE));
+                        int itemColor = cursorCheckItem.getInt(cursorCheckItem.getColumnIndexOrThrow(NoteDatabaseHandler.COLUMN_CHECKLIST_ITEM_COLOR));
+
                         Log.d("IN NOTEDATABASE", "item id of check item model: " + itemId);
-                        items.add(new ChecklistItemModel(itemId, id, isChecked, checklistItemText));
+                        ChecklistItemModel item = new ChecklistItemModel(itemId, id, isChecked, checklistItemText);
+                        item.setItemSize(itemSize);
+                        item.setItemColor(itemColor);
+                        items.add(item);
 
 
                     } while (cursorCheckItem.moveToNext());
