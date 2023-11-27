@@ -6,15 +6,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.mobdeve.xx22.memomate.MainActivity;
 import com.mobdeve.xx22.memomate.database.FolderDatabase;
 import com.mobdeve.xx22.memomate.partials.NoteOptionsFragment;
 import com.mobdeve.xx22.memomate.R;
@@ -112,19 +115,22 @@ public class NoteAdapter extends BaseAdapter {
 
         ImageButton optionsButton = convertView.findViewById(R.id.noteOptionsBtn);
 
+
+
         //listener for options btn
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Open note options modal
-                NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
+                openNoteOptions(noteData);
+            }
+        });
 
-                //pass noteID for deletions
-                noteOptionsFragment.setNoteID(noteData.getNoteID());
-                noteOptionsFragment.setFolderID(noteData.getFolderKey());
-
-                noteOptionsFragment.show(fragmentManager, "NoteOptionsDialog");
-
+        // long press
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                openNoteOptions(noteData);
+                return true;
             }
         });
 
@@ -227,6 +233,17 @@ public class NoteAdapter extends BaseAdapter {
         }
 
         Collections.sort(data, comparator);
+    }
+
+    private void openNoteOptions(ParentNoteModel noteData) {
+        // Open note options modal
+        NoteOptionsFragment noteOptionsFragment = new NoteOptionsFragment();
+
+        //pass noteID for deletions
+        noteOptionsFragment.setNoteID(noteData.getNoteID());
+        noteOptionsFragment.setFolderID(noteData.getFolderKey());
+
+        noteOptionsFragment.show(fragmentManager, "NoteOptionsDialog");
     }
 
 
