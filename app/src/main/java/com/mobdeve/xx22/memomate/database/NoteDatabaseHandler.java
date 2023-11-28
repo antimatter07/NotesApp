@@ -5,13 +5,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
+import android.graphics.Path;
 import android.util.Log;
 
+import com.mobdeve.xx22.memomate.model.BrushStrokeModel;
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class NoteDatabaseHandler extends SQLiteOpenHelper {
@@ -23,6 +27,8 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_NOTES = "notes";
 
     public static final String TABLE_CHECKLIST_ITEMS = "checklist_items";
+
+    public static final String TABLE_DRAWING = "drawing";
 
     /**
      * Attributes for TABLE_NOTES
@@ -49,6 +55,20 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
     public static final String COLUMN_CHECKLIST_ITEM_TEXT = "checklist_item_text";
     public static final String COLUMN_CHECKLIST_ITEM_COLOR = "checklist_item_color";
     public static final String COLUMN_CHECKLIST_ITEM_SIZE = "checklist_item_size";
+
+    /**
+     * Attributes for TABLE_BRUSHSTROKES
+     */
+    public static final int COLUMN_PEN_COLOR = Color.BLACK;
+    public static final int COLUMN_PEN_WIDTH = 18;
+    public static final Path COLUMN_PATH = new Path();
+
+    /**
+     * Attributes for TABLE_DRAWING
+     */
+    public static final ArrayList<BrushStrokeModel> COLUMN_PATHS =  new ArrayList<>();
+
+
 
     // SQL statement to create the notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE IF NOT EXISTS " + TABLE_NOTES + "("
