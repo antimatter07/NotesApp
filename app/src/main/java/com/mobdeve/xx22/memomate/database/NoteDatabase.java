@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.mobdeve.xx22.memomate.R;
+import com.mobdeve.xx22.memomate.model.BrushStrokeModel;
 import com.mobdeve.xx22.memomate.model.CheckListNoteModel;
 import com.mobdeve.xx22.memomate.model.ChecklistItemModel;
+import com.mobdeve.xx22.memomate.model.DrawingNoteModel;
 import com.mobdeve.xx22.memomate.model.ParentNoteModel;
 import com.mobdeve.xx22.memomate.model.TextNoteModel;
 
@@ -821,6 +823,17 @@ public class NoteDatabase {
                 notes.add(note);
             } else if (noteType.equals("drawing")) {
                 //TODO: Add logic for drawing notes
+
+                DrawingNoteModel textNote = new DrawingNoteModel(title, folderKey);
+
+                ParentNoteModel note = (ParentNoteModel) textNote;
+
+                note.setNoteID(id);
+                note.setLocked(isLocked);
+                note.setDateCreated(dateCreated);
+                note.setDateModified(dateModified);
+
+                notes.add(note);
 
             }
 

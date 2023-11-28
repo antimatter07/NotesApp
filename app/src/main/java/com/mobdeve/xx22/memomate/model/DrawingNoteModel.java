@@ -1,42 +1,32 @@
 package com.mobdeve.xx22.memomate.model;
 
 import android.graphics.Path;
+
+import com.mobdeve.xx22.villarica.matthew.notes.R;
+
 import java.util.ArrayList;
 import java.util.List;
 public class DrawingNoteModel extends ParentNoteModel {
 
-    // placeholder default value for drawing drawable resource
-    private List<Path> paths;
+    private ArrayList<BrushStrokeModel> paths;
 
-    public DrawingNoteModel(){
-        super("test");
-        paths = new ArrayList<>();
-    }
-    public DrawingNoteModel(String title) {
+    public DrawingNoteModel(String title){
         super(title);
-        paths = new ArrayList<>();
-        this.setNoteType("drawing");
     }
 
-    public DrawingNoteModel(String title, ArrayList paths){
-        super(title);
-        this.paths = paths;
-        this.setNoteType("drawing");
+    public DrawingNoteModel (String title, int folderKey) {
+        super(title, folderKey);
     }
 
-    public List<Path> getPaths() {
+    public ArrayList<BrushStrokeModel> getPaths() {
         return paths;
     }
 
-    public void setPaths(List<Path> paths) {
+    public void setPaths(ArrayList<BrushStrokeModel> paths) {
         this.paths = paths;
     }
-
-    public void addPath(Path path){
-        paths.add(path);
-    }
-
-    public void clearPaths(){
-        paths.clear();
-    }
 }
+
+
+
+
