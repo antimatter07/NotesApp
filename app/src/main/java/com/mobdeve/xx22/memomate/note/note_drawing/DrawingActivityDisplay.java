@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.widget.Button;
 
@@ -22,14 +21,14 @@ import android.view.View;
 
 import java.util.ArrayList;
 
-public class DrawingNoteActivity extends View {
+public class DrawingActivityDisplay extends View {
 
     public static final String TITLE_KEY = "TITLE_KEY";
     public static final String FOLDER_KEY = "FOLDER_KEY";
     public static final String DATE_CREATED_KEY = "DATE_KEY";
     public static final String DATE_MODIFIED_KEY = "DATE_MODIFIED_KEY";
 
-    private DrawingNoteActivity paint;
+    private DrawingActivityDisplay paint;
     private Button color, size, undo, pen;
 
     private RangeSlider rangeSlider;
@@ -58,11 +57,11 @@ public class DrawingNoteActivity extends View {
     private Canvas mCanvas;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
-    public DrawingNoteActivity(Context context){
+    public DrawingActivityDisplay(Context context){
         this(context, null);
     }
 
-    public DrawingNoteActivity(Context context, AttributeSet attrs) {
+    public DrawingActivityDisplay(Context context, AttributeSet attrs) {
         super(context, attrs);
         mPaint = new Paint();
 

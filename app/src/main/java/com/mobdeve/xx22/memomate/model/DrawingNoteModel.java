@@ -1,11 +1,6 @@
 package com.mobdeve.xx22.memomate.model;
 
-import android.graphics.Path;
-
-import com.mobdeve.xx22.villarica.matthew.notes.R;
-
 import java.util.ArrayList;
-import java.util.List;
 public class DrawingNoteModel extends ParentNoteModel {
 
     private ArrayList<BrushStrokeModel> paths;
