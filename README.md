@@ -12,7 +12,7 @@ Group Members:
 - Move notes in between folders
 - Organize notes by folder, with each older assigned a color and name
 - Search for notes by title, with the option to do both a global search or filter by folder
-- Sort notes in descending and ascending order by date and title
+- Sort notes in descending and ascending order by date, title and date edited
 - Data is stored locally with SQLite
 ## Screenshots
 Main View:
